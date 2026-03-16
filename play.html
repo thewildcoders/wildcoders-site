@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wilderness Quest - WildCoders</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0b1628;color:#fff;font-family:'Fredoka',sans-serif;overflow-x:hidden}
+.nav-bar{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);padding:8px 16px;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{display:flex;align-items:center;gap:8px;cursor:pointer;text-decoration:none;color:#fff}
+.nav-logo img{width:28px;height:28px;border-radius:3px}
+.nav-logo span{font-size:14px;font-weight:700;opacity:0.6}
+.gate{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;background:linear-gradient(180deg,#090d18,#0e1628 40%,#121e34)}
+.gate h1{font-size:clamp(26px,5vw,36px);font-weight:800;margin:0 0 12px;line-height:1.15}
+.gate p{font-size:16px;opacity:0.45;line-height:1.6;margin-bottom:8px}
+.trust{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:20px}
+.trust div{display:flex;align-items:center;gap:6px}
+.trust span.t{font-size:12px;opacity:0.25}
+#game-wrapper{display:none;padding-top:44px}
+.hs_email input{background:rgba(255,255,255,0.08)!important;border:2px solid rgba(255,255,255,0.12)!important;border-radius:14px!important;padding:16px 20px!important;color:#fff!important;font-size:16px!important;font-family:"Fredoka",sans-serif!important;width:100%!important;box-sizing:border-box!important}
+.hs-submit input,.hs-button{background:linear-gradient(135deg,#f5a623,#e8912d)!important;color:#fff!important;padding:16px 32px!important;border-radius:50px!important;font-size:17px!important;font-weight:700!important;font-family:"Fredoka",sans-serif!important;border:none!important;cursor:pointer!important;box-shadow:0 4px 20px rgba(245,166,35,0.3)!important;width:100%!important;margin-top:10px!important}
+.hs-form label{display:none!important}
+.hs-error-msgs{color:#ef4444!important;font-size:12px!important}
+.hs-form .submitted-message{display:none!important}
+</style>
+</head>
+<body>
+<div class="nav-bar">
+  <a href="/" class="nav-logo">
+    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAsICAoIBwsKCQoNDAsNERwSEQ8PESIZGhQcKSQrKigkJyctMkA3LTA9MCcnOEw5PUNFSElIKzZPVU5GVEBHSEX/2wBDAQwNDREPESESEiFFLicuRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUX/wAARCABkAGQDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwDyKiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKcEZugJoAbRV+00a8vXCwwsxPoK6Kz+Ht9KMzukXsTk0AcdRXoqfDaPZ890d3stVL34czJzbTq49G4NAHC0Vp6joV5psmyeIj39aotbyqMlDQBFRQRjrRQAUUUUAFFFPiG6RR6mgCe0gWSVfMYKpPU9K7fS9M0RVRpruItjlcmoU8MXVvpsOqacVeZE8xoXQOGHfg5B47e1dfoT6fqek2d0+nWBeZDuxbpgMCQQOPb9a5cXiVhoqcotryNqNJ1XaO5a0mKykUrYmMqvB2VvR2SqhZiqqOpYgAfia446hH4e8aXVtbWm+K9ijltreFdoaUqF2gDoCQc+mKv/ANpSeJJYoL+2SCLTmJvIXHySXPICgd1Ay34itJVoRpe1e1rkKEpS5FudN5dqoy1zbj6yr/jVS+m0+2j3SXtsM8ACVWJPsAcmsK+fTlmFlY6Xp0l0VDvJLbJ5cCHozADJJ7L1PXgVVFloOlKbm6SB5M4M1wqoufRUHyj6AE1phefEQ9pyuK8zlxWIhh5ezesuy1ZjeMr1J1toYpoEBk+ct8zIOO35mtO5sdHlsonWKORMDaVO3cPWnv4v06NdtpeWcQHQBWUD8AlYfiTxtKdO8i1vVmlkypaPOEX8QOT+g+tdfsIRkpyle3Tuc6xFaouRU3G/V/8AD/5mF4o0/TLZA9pIElzgxZzmuXpXdnYsxJYnJJpKxnJSldKx2Qi4xs3cKKKKgsKdGdsin0NNooA9s8MXAudHtmQ8hdv4isfR1k0i+1XRySPssv2iH3jfAP8ANP1rF8CeIRbv9huGwrH5CexrofEl6lh4h0nVpkDW/wDx63OB96M56/gW/IVlWpKtTcGa0KvsqimaYFrb3EOsXZCzrELeDd2DMfm+pJKj2zVPXNaisLV76RVzyPLAx5s3QZ9eAMn0X3Fcn4118anqxjsmzaWz5Rl/jI43fTjA9qydb1ZtZ1CMFhHbx4A6kDP3m4/z+VeZSwM3KLn8PbyWx3zxVOHM4L3v89zag1K6RFjMp8+5CzzyE4LO/OSfQKQMVi+KJpDq1zDIzbLVjDGmegBI/XGT7mrTm3lZLeW8iiuYFEQmB3RXCDhWBGSDjA5Hbsc1trLZSIv2waVfzBQPPuJF3EDoOME/U19NdTpqCdrHz1vZ1HPlbb7HneT60Ek16BLNpNurTS6do7RRruKxHeznsoAPGT1PYZrnJblY7C5d4Yo3uCAqImAoHp7Vyzhy9bnTCfMr2sYNFFFZmgUUUUAFFFFAD4pGicOpwRW9d+Jpr7SBZT4cAj5iMniueooAsfaNwCklQDnHUZrX0uGC7LRzXSWxbhZHB8tj6Fh938RWBVmyv7iwl8y3k254ZSAysPQg8GrjNolxTOyvvDLW+nxNc2sFpHEG3Xk0oKzbum0gneR22D64rKtfDkl62+B0itOouLj5N47lUySRWbeaytzAqxWcUDjqyMxA/wB1ScL74rOM0h6u3505TuKMbdTq5bfRtLRjuN5OP42OFB9lHH55rm767N1MWxhRwAO1Vi7HqSaSobuVYKKKKQwooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD/2Q==" alt="WildCoders">
+    <span>WildCoders</span>
+  </a>
+  <div style="font-size:11px;opacity:0.25">Wilderness Quest</div>
+</div>
+<div id="email-gate" class="gate">
+  <div style="max-width:420px">
+    <div style="font-size:60px;margin-bottom:16px">&#x1F332;</div>
+    <h1>Wilderness Quest</h1>
+    <p>5 worlds. 50+ questions. A boss battle at the end.</p>
+    <p style="margin-bottom:28px">Enter your email to start your child's free adventure. We'll send you their learning report when they're done.</p>
+    <div id="hs-form-target"></div>
+    <div class="trust">
+      <div><span style="font-size:14px">&#x1F512;</span><span class="t">No spam. Ever.</span></div>
+      <div><span style="font-size:14px">&#x1F6E1;&#xFE0F;</span><span class="t">Safe and ad-free</span></div>
+      <div><span style="font-size:14px">&#x23F1;&#xFE0F;</span><span class="t">20-30 minutes</span></div>
+    </div>
+  </div>
+</div>
+<div id="game-wrapper">
+  <div id="root"></div>
+</div>
+<script src="https://js-na2.hsforms.net/forms/embed/v2.js"></script>
+<script>
+
+function unlockGame() {
+  document.getElementById("email-gate").style.display = "none";
+  document.getElementById("game-wrapper").style.display = "block";
+}
+
+// If already unlocked, skip gate immediately
+if (localStorage.getItem("wc_email_captured")) {
+  unlockGame();
+} else {
+  // Create HubSpot form when script is ready
+  function tryCreateForm() {
+    if (window.hbspt && window.hbspt.forms) {
+      hbspt.forms.create({
+        region: "na2",
+        portalId: "245560513",
+        formId: "b06266af-5d8c-4c3a-aa1b-5dcd9ae9c8b8",
+        target: "#hs-form-target",
+        onFormSubmitted: function() {
+          localStorage.setItem("wc_email_captured", "true");
+          unlockGame();
+        }
+      });
+    } else {
+      setTimeout(tryCreateForm, 200);
+    }
+  }
+  tryCreateForm();
+}
+
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+if (!window.storage) {
+  window.storage = {
+    async get(key) {
+      try {
+        const val = localStorage.getItem("wc_" + key);
+        if (val === null) throw new Error("not found");
+        return { key, value: val };
+      } catch(e) { throw e; }
+    },
+    async set(key, value) {
+      try {
+        localStorage.setItem("wc_" + key, value);
+        return { key, value };
+      } catch(e) { return null; }
+    },
+    async delete(key) {
+      localStorage.removeItem("wc_" + key);
+      return { key, deleted: true };
+    },
+    async list(prefix) {
+      const keys = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k.startsWith("wc_" + (prefix || ""))) keys.push(k.replace("wc_", ""));
+      }
+      return { keys };
+    }
+  };
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+function getProfile(age) {
+  if (age <= 7) return { label: "Explorer", icon: "🌱", diff: "easy", numQ: 3, bossHP: 7, playerHP: 12, hints: true, desc: "Ages 5-7: Gentle, extra hints, forgiving boss", ptsMult: 1 };
+  if (age <= 10) return { label: "Adventurer", icon: "⚡", diff: "medium", numQ: 4, bossHP: 10, playerHP: 10, hints: true, desc: "Ages 8-10: Balanced with hints", ptsMult: 1.5 };
+  return { label: "Expert", icon: "🔥", diff: "hard", numQ: 4, bossHP: 12, playerHP: 8, hints: false, desc: "Ages 11-13: Tough, no hints, fierce boss", ptsMult: 2 };
+}
+
+// Points system - transparent and visible
+const PTS = {
+  correct: 100,       // base points per correct answer
+  bonus: 200,         // secret bonus question
+  power: 150,         // earning a world power
+  bossHit: 120,       // hitting the boss
+  bossDouble: 250,    // double hit with matching power
+  streak: 50,         // per-question streak bonus
+  vibeTip: 75,        // completing a vibe tip
+  noHint: 50,         // answering without using hint
+};
+
+const WORLDS = [
+  { id:1, nm:"Enchanted Forest", em:"🌲", cl:"#2d6a1e", ac:"#7cfc00", bg:"linear-gradient(180deg,#0d1f0a,#1a3d12 40%,#3a8428)", pw:{nm:"Nature Shield",em:"🛡️",sl:"shield"}, pt:["🍃","🌿","🍂","🦋","✨"] },
+  { id:2, nm:"Scorching Desert", em:"🏜️", cl:"#c77d2a", ac:"#ffd700", bg:"linear-gradient(180deg,#4a2800,#8b5a1a 40%,#e8a937)", pw:{nm:"Sun Beam",em:"☀️",sl:"weapon"}, pt:["☀️","🌵","💨","🦂","✨"] },
+  { id:3, nm:"Frozen Arctic", em:"🧊", cl:"#2a7ab5", ac:"#87CEEB", bg:"linear-gradient(180deg,#0a1628,#1a3a5a 40%,#87CEEB)", pw:{nm:"Ice Blast",em:"❄️",sl:"boots"}, pt:["❄️","🌨️","⛄","🐧","✨"] },
+  { id:4, nm:"Mighty Mountains", em:"⛰️", cl:"#5a5a6e", ac:"#c0b283", bg:"linear-gradient(180deg,#1a1a2e,#3a3a4e 40%,#8a7a6e)", pw:{nm:"Earth Quake",em:"🌋",sl:"armor"}, pt:["🪨","🦅","⛰️","🌬️","✨"] },
+  { id:5, nm:"Wild Jungle", em:"🌴", cl:"#1a6b3a", ac:"#00ff88", bg:"linear-gradient(180deg,#061a0a,#0d3318 40%,#2d8b4a)", pw:{nm:"Vine Whip",em:"🌿",sl:"cape"}, pt:["🌺","🦜","🐒","🌴","✨"] },
+];
+
+const PRIZES = [
+  [{nm:"Compass",em:"🧭"},{nm:"Amulet",em:"💚"},{nm:"Feather",em:"🪶"}],
+  [{nm:"Goggles",em:"🥽"},{nm:"Scarab",em:"🪲"},{nm:"Map",em:"🗺️"}],
+  [{nm:"Crystal",em:"💎"},{nm:"Penguin",em:"🐧"},{nm:"Aurora",em:"🌌"}],
+  [{nm:"Eagle Eye",em:"🦅"},{nm:"Lava Stone",em:"🔴"},{nm:"Horn",em:"📯"}],
+  [{nm:"Crown",em:"👑"},{nm:"Parrot",em:"🦜"},{nm:"Vine",em:"🌿"}],
+];
+
+const QS = [
+  [
+    {type:"tf",q:"True or False: Trees need sunlight to grow.",a:0,c:["True","False"],h:"Plants need sun!",e:"Trees use sunlight for photosynthesis!",sk:"nature"},
+    {type:"trivia",q:"What color are most leaves in summer?",a:1,c:["Red","Green","Blue","Yellow"],h:"Look outside!",e:"Green from chlorophyll.",sk:"nature"},
+    {type:"riddle",q:"I have a trunk but I'm not an elephant. What am I?",a:0,c:["A tree","A car","A suitcase","A snake"],h:"Everywhere in forests!",e:"Tree trunks carry water!",sk:"critical"},
+    {type:"survival",q:"Lost in the woods. What to do FIRST?",a:1,c:["Run fast","Stay calm, stay put","Climb a cliff","Shout nonstop"],h:"Don't panic!",e:"Rescue teams say STAY PUT!",sk:"survival"},
+    {type:"trivia",q:"Which animal hides acorns for winter?",a:0,c:["Squirrel","Deer","Owl","Bear"],h:"Bushy tail!",e:"They forget 25% which grow into trees!",sk:"nature"},
+    {type:"tf",q:"True or False: Mushrooms are plants.",a:1,c:["True","False"],h:"They're fungi!",e:"Fungi: more animal than plant!",sk:"critical"},
+    {type:"think",q:"Bird, squirrel, or fish: which uses trees MOST?",a:1,c:["Bird","Squirrel","Fish","All equal"],h:"One lives IN it!",e:"Squirrels live entirely in trees.",sk:"critical"},
+    {type:"survival",q:"Baby bear cub alone. What do you do?",a:2,c:["Pet it!","Photo close","Back away slowly","Offer food"],h:"Mama is near!",e:"Never approach bear cubs!",sk:"survival"},
+  ],
+  [
+    {type:"trivia",q:"Camels store fat in humps. Why useful?",a:2,c:["Looks cool","Sunburn shield","Converts to energy AND water","Swim help"],h:"Built-in fuel!",e:"Fat = water AND energy!",sk:"nature"},
+    {type:"tf",q:"True or False: It NEVER rains in the desert.",a:1,c:["True","False"],h:"Very little, but some!",e:"Under 10 inches per year.",sk:"nature"},
+    {type:"survival",q:"Limited water in desert. When to drink?",a:1,c:["Save it","Small sips regularly","All at once","Only at night"],h:"Stay hydrated!",e:"Your body is the best container!",sk:"survival"},
+    {type:"riddle",q:"Looks like water on hot roads but vanishes.",a:2,c:["Puddle","Rain","Mirage","Lake"],h:"Heat tricks light!",e:"Hot air bends light downward!",sk:"critical"},
+    {type:"trivia",q:"The Sahara is on which continent?",a:2,c:["South America","Asia","Africa","Europe"],h:"Lions live there!",e:"Almost big as the US!",sk:"nature"},
+    {type:"think",q:"Desert foxes have HUGE ears. Why?",a:1,c:["Hear underground","Release heat to cool down","Fly","Scare predators"],h:"Beyond hearing!",e:"Blood vessels release heat like AC!",sk:"critical"},
+    {type:"tf",q:"True or False: Some deserts are cold.",a:0,c:["True","False"],h:"Antarctica!",e:"Desert = low rain, not high heat!",sk:"critical"},
+    {type:"survival",q:"Found a cactus. Safe to drink from?",a:2,c:["Always safe!","Poison","Most NOT safe","Boil first"],h:"Movies lie!",e:"Most cactus liquid causes vomiting!",sk:"survival"},
+  ],
+  [
+    {type:"trivia",q:"Polar bear hair is actually...?",a:2,c:["Blue","Yellow","Hollow and clear","Painted by cold"],h:"Light bounces!",e:"Hollow tubes scatter light!",sk:"nature"},
+    {type:"riddle",q:"Frozen blocks keep me WARM inside.",a:1,c:["Ice castle","Igloo","Freezer","Snow fort"],h:"Inuit invention!",e:"60F inside at -40F outside!",sk:"critical"},
+    {type:"survival",q:"Fell through ice! First move?",a:2,c:["Swim fast","Remove coat","Kick toward edge you came from","Float"],h:"Go back safely!",e:"That ice held you before!",sk:"survival"},
+    {type:"tf",q:"True or False: Penguins and polar bears live together.",a:1,c:["True","False"],h:"Opposite poles!",e:"Bears=North. Penguins=South!",sk:"nature"},
+    {type:"think",q:"Arctic: SMALL ears. Desert: BIG ears. Why?",a:1,c:["No need to hear","Small ears keep heat in","Big ears freeze","Random"],h:"Same idea, reversed!",e:"Cold=small to keep heat!",sk:"critical"},
+    {type:"trivia",q:"Arctic winter darkness lasts?",a:2,c:["Days","Weeks","Up to 6 months","One year"],h:"Half a year!",e:"Earth's tilt hides the sun!",sk:"nature"},
+    {type:"think",q:"Arctic ice melting faster. Main cause?",a:0,c:["Greenhouse gases","Bigger sun","Volcanoes","Animals"],h:"Fossil fuels!",e:"Arctic warms 2-3x faster!",sk:"critical"},
+    {type:"survival",q:"Whiteout blizzard. What to do?",a:1,c:["Keep walking","Build shelter, wait","Run for help","Remove layers"],h:"You'd walk circles!",e:"Shelter in place!",sk:"survival"},
+  ],
+  [
+    {type:"trivia",q:"Higher = thinner air. Hard to...?",a:2,c:["See","Stay warm","Breathe","Balance"],h:"Oxygen tanks!",e:"1/3 oxygen at Everest peak!",sk:"nature"},
+    {type:"riddle",q:"I get bigger when you take from me.",a:1,c:["Tunnel","Hole","Cave","Valley"],h:"More digging = bigger!",e:"Holes grow when you remove!",sk:"critical"},
+    {type:"survival",q:"Lightning on a ridge! Safest position?",a:2,c:["Lie flat","Under tree","Crouch low, feet together","Hold metal"],h:"Low + minimal contact!",e:"Crouching = safest!",sk:"survival"},
+    {type:"tf",q:"True or False: Everest grows 4mm taller each year.",a:0,c:["True","False"],h:"Tectonic plates!",e:"India pushes into Asia!",sk:"nature"},
+    {type:"think",q:"Mountain goats climb cliffs. Secret?",a:1,c:["Suction cups","Soft rubbery hoof pads","Very light","Horns as hooks"],h:"Special hooves!",e:"Hard edges + soft pads!",sk:"critical"},
+    {type:"trivia",q:"Rock INSIDE volcano: magma. After erupting?",a:0,c:["Lava","Still magma","Obsidian","Pumice"],h:"Name changes!",e:"Underground=magma, above=lava!",sk:"nature"},
+    {type:"think",q:"Colder higher up, closer to sun. Why?",a:2,c:["Sun weaker","Wind carries heat","Thin air holds less heat","Mountains block"],h:"Air = blanket!",e:"Drops 3.5F per 1,000 feet!",sk:"critical"},
+    {type:"survival",q:"Rockslide above! What to do?",a:1,c:["Run downhill","Move sideways","Hide behind rock","Climb toward"],h:"Rocks fall DOWN!",e:"SIDEWAYS exits their path!",sk:"survival"},
+  ],
+  [
+    {type:"trivia",q:"Top rainforest layer?",a:2,c:["Canopy","Understory","Emergent layer","Floor"],h:"Emerging!",e:"200ft tall!",sk:"nature"},
+    {type:"riddle",q:"Louder than a concert, 3 miles away.",a:1,c:["Jaguar","Howler monkey","Macaw","Gorilla"],h:"Name = action!",e:"140 decibels!",sk:"critical"},
+    {type:"survival",q:"Bright blue frog. Touch it?",a:2,c:["Yes!","With gloves","NO bright = danger!","Only small ones"],h:"Bright = warning!",e:"Can kill 10 adults!",sk:"survival"},
+    {type:"tf",q:"True or False: Rainforests 6% of Earth, 50%+ species.",a:0,c:["True","False"],h:"Tiny area, most life!",e:"70 million years of evolution!",sk:"nature"},
+    {type:"think",q:"Jungle trees grow 200+ feet. Why?",a:1,c:["Rich soil","Racing for sunlight","Rain pushes","Animals pull"],h:"Shade = death!",e:"Taller wins sun!",sk:"critical"},
+    {type:"trivia",q:"Amazon creates its OWN rain. How?",a:0,c:["Trees release water as clouds","Animal breath","Rivers up","Machines"],h:"Trees sweat!",e:"20 billion tons vapor daily!",sk:"nature"},
+    {type:"think",q:"Jungle leaves have pointed tips. Why?",a:2,c:["Collect sun","Poke animals","Drain rain, no mold","Catch bugs"],h:"Wet = moldy!",e:"Drip tips = gutters!",sk:"critical"},
+    {type:"survival",q:"Large animal approaching. Best move?",a:1,c:["Climb tree","Look big, make noise","Play dead","Sprint"],h:"Animals avoid YOU!",e:"Big + loud = not prey!",sk:"survival"},
+  ],
+];
+
+const SECRET_QS = [
+  {q:"BONUS: Most common hardwood tree?",c:["Oak","Pine","Birch","Spruce"],a:0,h:"Acorns!",e:"600 oak species!",sk:"nature"},
+  {q:"BONUS: Hottest desert temp ever?",c:["120F","134F","150F","112F"],a:1,h:"Death Valley!",e:"134F! Egg-frying hot!",sk:"nature"},
+  {q:"BONUS: Narwhal tusk is a...?",c:["Horn","Tooth!","Bone spike","Antenna"],a:1,h:"From mouth!",e:"10-foot tooth!",sk:"nature"},
+  {q:"BONUS: % volcanoes underwater?",c:["10%","30%","50%","80%"],a:3,h:"Way more!",e:"80%! Thousands unseen!",sk:"nature"},
+  {q:"BONUS: Best jungle architect?",c:["Spider","Termite","Gorilla","Parrot"],a:1,h:"Tiny builders!",e:"30ft mounds with AC!",sk:"critical"},
+];
+
+const BOSS_QS = [
+  {q:"Which biome's animals survive longest without water?",c:["Forest","Desert","Arctic","Jungle"],a:1,pw:1,e:"Kangaroo rats never drink!"},
+  {q:"In vibe coding, feedback beats memorizing code.",c:["True","False"],a:0,pw:-1,e:"AI writes code. You direct!"},
+  {q:"Polar bear fur + cactus storage = survive...?",c:["Only hot","Only cold","Almost anywhere!","Underwater"],a:2,pw:2,e:"Insulation + water = any climate!"},
+  {q:"Bright animal = probably...?",c:["Friendly","Hungry","Dangerous","Cold"],a:2,pw:4,e:"Warning colors in ALL biomes!"},
+  {q:"Vibe coding step 1?",c:["Memorize code","Plan ideas","Buy software","Copy"],a:1,pw:-1,e:"Plans = better code!"},
+  {q:"Tectonic plates cause mountains AND...?",c:["Rainbows","Earthquakes","Snow","Tides"],a:1,pw:3,e:"Slow mountains, sudden quakes!"},
+  {q:"All biomes need this for life:",c:["Sand","Snow","Water","WiFi"],a:2,pw:0,e:"H2O everywhere!"},
+  {q:"Fixing game problems = ...?",c:["Crying","Giving up","Debugging","Uninstalling"],a:2,pw:-1,e:"Named after a moth in 1947!"},
+  {q:"Small arctic + big desert ears control...?",c:["Sound","Body heat","Speed","Intelligence"],a:1,pw:1,e:"Cold=small. Hot=big!"},
+  {q:"Build, Test, Feedback, Improve = ...?",c:["Guessing","Iteration","Deletion","Memorization"],a:1,pw:-1,e:"v1 to v7 through iteration!"},
+  {q:"Best vibe coding feedback?",c:["Its bad","Boss HP too fast (specific!)","Whatever","None"],a:1,pw:-1,e:"Specific = powerful!"},
+  {q:"#1 survival skill?",c:["Strength","Gear","Stay calm and think","Speed"],a:2,pw:0,e:"Calm = survival."},
+];
+
+const VIBE_TIPS = [
+  {t:"Be Specific!",em:"🎯",tip:"BAD: 'Game broken.'\nGOOD: 'Boss dies in 1 hit.'\n\nSpecific = fixable!",ch:"You said 'boss HP wrong' = perfect!"},
+  {t:"Say WHY",em:"🧠",tip:"BAD: 'Add map.'\nGOOD: 'Add map so I see progress.'\n\nWHY = better decisions!",ch:"Think of a change + explain WHY."},
+  {t:"Small Steps",em:"🪜",tip:"BAD: 'Rebuild everything.'\nGOOD: 'Fix bug, then add map.'\n\nv1 to v7, step by step!",ch:"What ONE thing for v8?"},
+  {t:"Show Examples",em:"📸",tip:"BAD: 'Make it better.'\nGOOD: 'Like Link from Zelda.'\n\nExamples = clear picture!",ch:"Reference games you love!"},
+];
+
+const SKILLS = [
+  {id:"critical",nm:"Critical Thinking",em:"🧠",cl:"#a78bfa"},
+  {id:"nature",nm:"Nature Knowledge",em:"🌿",cl:"#4ade80"},
+  {id:"survival",nm:"Survival Skills",em:"🏕️",cl:"#fbbf24"},
+  {id:"vibe",nm:"Vibe Coding",em:"💻",cl:"#3b82f6"},
+  {id:"grit",nm:"Perseverance",em:"💪",cl:"#f472b6"},
+];
+
+const SKILL_MAP = {};
+SKILLS.forEach(s => { SKILL_MAP[s.id] = s; });
+
+// === COMPONENTS ===
+function Particles({items}) {
+  return (<div style={{position:"absolute",inset:0,overflow:"hidden",pointerEvents:"none",zIndex:0}}>
+    {Array.from({length:10}).map((_,i)=>(<div key={i} style={{position:"absolute",fontSize:12+Math.random()*16,left:`${Math.random()*100}%`,top:`${Math.random()*100}%`,animation:`fp ${3+Math.random()*5}s ease-in-out infinite`,animationDelay:`${Math.random()*4}s`,opacity:0.2+Math.random()*0.2}}>{items[i%items.length]}</div>))}
+  </div>);
+}
+
+function HPBar({cur,max,label,color}) {
+  return (<div style={{width:"100%",marginBottom:5}}>
+    <div style={{display:"flex",justifyContent:"space-between",fontSize:13,fontWeight:700,color:"#fff",marginBottom:2}}><span>{label}</span><span>{cur}/{max}</span></div>
+    <div style={{background:"rgba(0,0,0,0.4)",borderRadius:10,height:18,overflow:"hidden",border:"2px solid rgba(255,255,255,0.08)"}}>
+      <div style={{width:`${Math.max(0,(cur/max)*100)}%`,height:"100%",background:`linear-gradient(90deg,${color},${color}88)`,borderRadius:8,transition:"width 0.5s"}}/>
+    </div>
+  </div>);
+}
+
+// Score popup that floats up and fades
+function ScorePopup({text, color}) {
+  if (!text) return null;
+  return (<div style={{position:"absolute",top:-20,right:0,color:color||"#ffd700",fontSize:14,fontWeight:800,animation:"scoreFloat 1.2s ease-out forwards",pointerEvents:"none",zIndex:20,textShadow:"0 1px 4px rgba(0,0,0,0.4)"}}>
+    {text}
+  </div>);
+}
+
+// Live score bar shown during gameplay
+function LiveScore({score, rank, hiScore}) {
+  return (<div style={{display:"flex",justifyContent:"space-between",alignItems:"center",fontSize:11,fontWeight:700,padding:"6px 12px",background:"rgba(0,0,0,0.25)",borderRadius:12,marginBottom:8,border:"1px solid rgba(255,255,255,0.05)"}}>
+    <span style={{color:"#ffd700"}}>Score: {score.toLocaleString()}</span>
+    {hiScore > 0 && <span style={{opacity:0.35}}>High: {hiScore.toLocaleString()}</span>}
+    {rank > 0 && <span style={{opacity:0.4}}>Rank #{rank}</span>}
+  </div>);
+}
+
+function Hero({powers=[],prizes=[],size=120,animate=false,speech="",showSp=false,gender="boy"}) {
+  const has = (sl) => powers.some(p => WORLDS[p] && WORLDS[p].pw.sl === sl);
+  const hairColor = gender === "girl" ? "#8B4513" : "#4a2a12";
+  const sf = has("armor") ? "#7a7a8e" : "#4a8c38";
+  return (<div style={{position:"relative",width:size,height:size*1.25,margin:"0 auto",animation:animate?"charIdle 2.5s ease-in-out infinite":"none"}}>
+    {showSp && speech && (<div style={{position:"absolute",top:-34,left:"50%",transform:"translateX(-50%)",background:"rgba(255,255,255,0.92)",color:"#222",padding:"5px 12px",borderRadius:14,fontSize:12,fontWeight:700,whiteSpace:"nowrap",animation:"bi 0.3s ease",zIndex:10,boxShadow:"0 2px 10px rgba(0,0,0,0.15)"}}>{speech}</div>)}
+    <svg viewBox="0 0 200 250" style={{width:"100%",height:"100%"}}>
+      <defs><radialGradient id="skn"><stop offset="0%" stopColor="#FDDCB5"/><stop offset="100%" stopColor="#E8B88A"/></radialGradient></defs>
+      {has("cape") && <path d="M64 105 Q50 175 42 235 Q100 222 158 235 Q150 175 136 105" fill="#1a6b3a" opacity="0.7"/>}
+      {has("boots") ? (<g><rect x="58" y="222" width="32" height="18" rx="7" fill="#2a7ab5"/><rect x="110" y="222" width="32" height="18" rx="7" fill="#2a7ab5"/></g>) : (<g><rect x="60" y="222" width="30" height="16" rx="6" fill="#6B3A1A"/><rect x="112" y="222" width="30" height="16" rx="6" fill="#6B3A1A"/></g>)}
+      <rect x="64" y="170" width="25" height="55" rx="10" fill="#5a4a32"/><rect x="112" y="170" width="25" height="55" rx="10" fill="#5a4a32"/>
+      {has("armor") ? (<g><rect x="52" y="97" width="96" height="78" rx="15" fill="#7a7a8e" stroke="#5a5a6e" strokeWidth="1.5"/><path d="M70 108 L100 130 L130 108" fill="none" stroke="#c0b283" strokeWidth="2"/></g>) : (<rect x="54" y="97" width="92" height="78" rx="15" fill="#4a8c38"/>)}
+      <rect x="58" y="168" width="84" height="8" rx="4" fill="#4a3020"/><rect x="94" y="166" width="12" height="12" rx="3" fill="#c0a050"/>
+      <rect x="28" y="100" width="26" height="46" rx="11" fill={sf}>{animate&&<animateTransform attributeName="transform" type="rotate" values="-3 41 106;3 41 106;-3 41 106" dur="2s" repeatCount="indefinite"/>}</rect>
+      <ellipse cx="41" cy="150" rx="8" ry="8" fill="url(#skn)"/>
+      <rect x="146" y="100" width="26" height="46" rx="11" fill={sf}>{animate&&<animateTransform attributeName="transform" type="rotate" values="3 159 106;-3 159 106;3 159 106" dur="2s" repeatCount="indefinite"/>}</rect>
+      <ellipse cx="159" cy="150" rx="8" ry="8" fill="url(#skn)"/>
+      {has("shield") && <ellipse cx="20" cy="118" rx="14" ry="20" fill="#2d6a1e" stroke="#7cfc00" strokeWidth="2.5"/>}
+      {has("weapon") && <g><line x1="165" y1="144" x2="190" y2="70" stroke="#c77d2a" strokeWidth="5" strokeLinecap="round"/><circle cx="192" cy="64" r="12" fill="#ffd700" opacity="0.75"><animate attributeName="r" values="10;14;10" dur="1.5s" repeatCount="indefinite"/></circle></g>}
+      <ellipse cx="100" cy="68" rx="30" ry="32" fill="url(#skn)" stroke="#d4a574" strokeWidth="0.8"/>
+      {gender==="girl" ? (<g><path d="M68 62 Q72 28 100 22 Q128 28 132 62" fill={hairColor}/><path d="M68 62 Q62 90 58 110" stroke={hairColor} strokeWidth="8" fill="none" strokeLinecap="round"/><path d="M132 62 Q138 90 142 110" stroke={hairColor} strokeWidth="8" fill="none" strokeLinecap="round"/><circle cx="100" cy="30" r="6" fill="#ff69b4" opacity="0.8"/><circle cx="94" cy="28" r="3" fill="#ff1493" opacity="0.6"/><circle cx="106" cy="28" r="3" fill="#ff1493" opacity="0.6"/></g>) : (<g><path d="M70 60 Q74 30 100 24 Q126 30 130 60" fill={hairColor}/><path d="M62 54 Q100 16 138 54" fill="#3a7d2e"/><ellipse cx="100" cy="56" rx="38" ry="6" fill="#2d6a1e"/></g>)}
+      {powers.length>0 && <circle cx="100" cy={gender==="girl"?28:38} r="5" fill="#ffd700" opacity="0.6"><animate attributeName="r" values="4;7;4" dur="2s" repeatCount="indefinite"/></circle>}
+      <ellipse cx="87" cy="64" rx="5" ry="6" fill="#fff"/><ellipse cx="113" cy="64" rx="5" ry="6" fill="#fff"/>
+      <ellipse cx="88" cy="65" rx="3" ry="3.5" fill="#3a2a1a"/><ellipse cx="114" cy="65" rx="3" ry="3.5" fill="#3a2a1a"/>
+      <circle cx="89.5" cy="63" r="1.3" fill="#fff"/><circle cx="115.5" cy="63" r="1.3" fill="#fff"/>
+      <path d="M90 80 Q100 88 110 80" fill="none" stroke="#6a3a20" strokeWidth="1.8" strokeLinecap="round"/>
+      <circle cx="78" cy="76" r="5" fill="#f0a0a0" opacity="0.2"/><circle cx="122" cy="76" r="5" fill="#f0a0a0" opacity="0.2"/>
+      {prizes.filter(Boolean).map((pr,i)=>(<text key={i} x={170} y={100+i*15} fontSize="13" opacity="0.8">{pr.em}</text>))}
+    </svg>
+  </div>);
+}
+
+function BossSVG({hp=10,maxHp=10}) {
+  const rage = hp/maxHp < 0.35;
+  return (<div style={{animation:"bossIdle 3s ease-in-out infinite"}}>
+    <svg viewBox="0 0 200 200" style={{width:130,height:130}}>
+      <defs><radialGradient id="bb"><stop offset="0%" stopColor="#6a2080"/><stop offset="100%" stopColor="#3a0a4a"/></radialGradient></defs>
+      <path d="M55 48 Q40 12 30 2" stroke="#8B0000" strokeWidth="5" fill="none" strokeLinecap="round"/>
+      <path d="M145 48 Q160 12 170 2" stroke="#8B0000" strokeWidth="5" fill="none" strokeLinecap="round"/>
+      <circle cx="30" cy="5" r="5" fill="#ff4444" opacity="0.6"><animate attributeName="opacity" values="0.3;1;0.3" dur="1.5s" repeatCount="indefinite"/></circle>
+      <circle cx="170" cy="5" r="5" fill="#ff4444" opacity="0.6"><animate attributeName="opacity" values="0.3;1;0.3" dur="1.5s" begin="0.7s" repeatCount="indefinite"/></circle>
+      <ellipse cx="100" cy="80" rx="48" ry="44" fill="url(#bb)" stroke="#4a1060" strokeWidth="2"/>
+      <ellipse cx="78" cy="70" rx="12" ry="8" fill="#1a0020"/><ellipse cx="122" cy="70" rx="12" ry="8" fill="#1a0020"/>
+      <ellipse cx="78" cy="70" rx="7" ry="6" fill="#ff0000"/><ellipse cx="122" cy="70" rx="7" ry="6" fill="#ff0000"/>
+      <circle cx="76" cy="68" r="2.5" fill="#ff8888" opacity="0.5"/><circle cx="120" cy="68" r="2.5" fill="#ff8888" opacity="0.5"/>
+      <circle cx="92" cy="84" r="3" fill="#2a0038"/><circle cx="108" cy="84" r="3" fill="#2a0038"/>
+      {rage ? (<g><path d="M70 95 Q100 86 130 95" fill="#1a0020" stroke="#ff4444" strokeWidth="2"/>{[78,88,98,108,118].map((x,i)=><rect key={i} x={x-1.5} y={89} width={3} height={7} rx={1} fill="#fff" opacity="0.85"/>)}</g>) : (<path d="M78 92 Q100 104 122 92" fill="none" stroke="#ff4444" strokeWidth="2" strokeLinecap="round"/>)}
+      <ellipse cx="38" cy="115" rx="22" ry="30" fill="url(#bb)"/><ellipse cx="162" cy="115" rx="22" ry="30" fill="url(#bb)"/>
+      {[20,30,40].map((x,i)=><path key={`l${i}`} d={`M${x} 142 L${x-4} 158`} stroke="#8B0000" strokeWidth="3" strokeLinecap="round"/>)}
+      {[160,170,180].map((x,i)=><path key={`r${i}`} d={`M${x} 142 L${x+4} 158`} stroke="#8B0000" strokeWidth="3" strokeLinecap="round"/>)}
+      <ellipse cx="100" cy="155" rx="38" ry="24" fill="url(#bb)"/>
+      <ellipse cx="72" cy="182" rx="18" ry="10" fill="#3a0a4a"/><ellipse cx="128" cy="182" rx="18" ry="10" fill="#3a0a4a"/>
+      {hp/maxHp<0.5 && <g opacity="0.4" stroke="#ff8888" strokeWidth="1.5" fill="none"><path d="M76 90 L82 100 L74 108"/><path d="M124 86 L118 96 L126 102"/></g>}
+    </svg>
+  </div>);
+}
+
+const BS = (g,sh) => ({background:g,color:"#fff",padding:"14px 32px",borderRadius:50,fontSize:17,fontWeight:700,fontFamily:"inherit",border:"none",boxShadow:sh||"none",cursor:"pointer",transition:"all 0.15s"});
+const tLabel = (t) => ({tf:"TRUE / FALSE",trivia:"TRIVIA",riddle:"RIDDLE",survival:"SURVIVAL",think:"THINK"}[t] || "");
+
+// ===== MAIN GAME =====
+function App() {
+  const [scr, setScr] = useState("welcome");
+  const [onb, setOnb] = useState(0);
+  const [nm, setNm] = useState("");
+  const [age, setAge] = useState(0);
+  const [gender, setGender] = useState("");
+  const [prof, setProf] = useState(null);
+  const [wI, setWI] = useState(0);
+  const [qI, setQI] = useState(0);
+  const [powers, setPowers] = useState([]);
+  const [prizes, setPrizes] = useState([null,null,null,null,null]);
+  const [wS, setWS] = useState(0);
+  const [totC, setTotC] = useState(0);
+  const [sel, setSel] = useState(null);
+  const [sR, setSR] = useState(false);
+  const [sPath, setSPath] = useState(false);
+  const [sH, setSH] = useState(false);
+  const [bHP, setBHP] = useState(10);
+  const [pHP, setPHP] = useState(10);
+  const [bQI, setBQI] = useState(0);
+  const [gO, setGO] = useState(null);
+  const [sPr, setSPr] = useState(null);
+  const [sp, setSp] = useState("");
+  const [shSp, setShSp] = useState(false);
+  const [secQ, setSecQ] = useState(false);
+  const [secD, setSecD] = useState(false);
+  const [wQs, setWQs] = useState(() => QS.map(pool => shuffle(pool).slice(0,4)));
+  const [bQs, setBQs] = useState(() => shuffle(BOSS_QS).slice(0,10));
+  const [skills, setSkills] = useState({critical:0,nature:0,survival:0,vibe:0,grit:0});
+  const [score, setScore] = useState(0);
+  const [streak, setStreak] = useState(0);
+  const [scorePop, setScorePop] = useState("");
+  const [hiS, setHiS] = useState([]);
+  const [usedHint, setUsedHint] = useState(false);
+  const [skillLog, setSkillLog] = useState([]);
+  const tmr = useRef(null);
+  const popTmr = useRef(null);
+
+  useEffect(() => {
+    let m = true;
+    (async () => { try { const r = await window.storage.get("wq-v7-lb"); if (r && m) setHiS(JSON.parse(r.value)); } catch(e){} })();
+    return () => { m = false; if (tmr.current) clearTimeout(tmr.current); if (popTmr.current) clearTimeout(popTmr.current); };
+  }, []);
+
+  const say = (cat) => {
+    const ws = {start:["Let's go!","Ready!"],correct:["Yes!","Nailed it!","Awesome!"],wrong:["Tricky!","Next one!"],power:["POWER UP!"],boss:["Bring it!"],bosshit:["Take that!","Hit!"],bossmiss:["Ow!","Ouch!"],win:["WOOHOO!","CHAMPION!"]};
+    setSp(pick(ws[cat]||["..."])); setShSp(true);
+    if (tmr.current) clearTimeout(tmr.current);
+    tmr.current = setTimeout(() => setShSp(false), 1500);
+  };
+
+  const addSk = (id, pts=1) => {
+    setSkills(s => ({...s,[id]:(s[id]||0)+pts}));
+    const sk = SKILL_MAP[id];
+    if (sk) setSkillLog(l => [...l, {sk: sk.nm, em: sk.em, pts}]);
+  };
+
+  const addScore = (pts, label) => {
+    const mult = prof ? prof.ptsMult : 1;
+    const total = Math.round(pts * mult);
+    setScore(s => s + total);
+    setScorePop(`+${total} ${label || ""}`);
+    if (popTmr.current) clearTimeout(popTmr.current);
+    popTmr.current = setTimeout(() => setScorePop(""), 1200);
+  };
+
+  const getRank = (s) => {
+    const all = [...hiS, {score: s}].sort((a,b) => b.score - a.score);
+    return all.findIndex(x => x.score === s) + 1;
+  };
+
+  const topScore = hiS.length > 0 ? hiS[0].score : 0;
+
+  const w = WORLDS[wI] || WORLDS[0];
+  const p = prof || getProfile(8);
+  const nQ = p.numQ;
+  const aQ = secQ ? SECRET_QS[wI] : (wQs[wI] ? wQs[wI][qI] : null);
+  const cBQ = bQs[bQI] || null;
+  const totSk = Object.values(skills).reduce((a2,b) => a2+b, 0);
+
+  const start = () => { const pr = getProfile(age); setProf(pr); setBHP(pr.bossHP); setPHP(pr.playerHP); setScr("map"); say("start"); };
+
+  const reset = () => {
+    setWQs(QS.map(pool => shuffle(pool).slice(0,4))); setBQs(shuffle(BOSS_QS).slice(0,10));
+    setScr("welcome"); setOnb(0); setWI(0); setQI(0); setPowers([]); setPrizes([null,null,null,null,null]);
+    setWS(0); setTotC(0); setSel(null); setSR(false); setSPath(false); setSH(false);
+    setBHP(10); setPHP(10); setBQI(0); setGO(null); setSPr(null);
+    setSecQ(false); setSecD(false); setSkills({critical:0,nature:0,survival:0,vibe:0,grit:0});
+    setScore(0); setStreak(0); setSkillLog([]); setUsedHint(false);
+  };
+
+  const ans = (idx) => {
+    if (sR || !aQ) return;
+    setSel(idx); setSR(true);
+    if (idx === aQ.a) {
+      if (!secQ) setWS(s => s+1);
+      setTotC(t => t+1);
+      say("correct");
+      addSk(aQ.sk || "nature");
+      const streakBonus = streak * PTS.streak;
+      const hintBonus = usedHint ? 0 : PTS.noHint;
+      const base = secQ ? PTS.bonus : PTS.correct;
+      addScore(base + streakBonus + hintBonus, secQ ? "Bonus!" : "");
+      setStreak(s => s+1);
+    } else {
+      say("wrong"); addSk("grit"); setStreak(0);
+    }
+    setUsedHint(false);
+  };
+
+  const nxt = () => {
+    setSel(null); setSR(false); setSH(false);
+    if (secQ) { setSecD(true); setSecQ(false); setScr("worldDone"); return; }
+    if (qI < nQ-1) { setSPath(true); tmr.current = setTimeout(() => { setSPath(false); setQI(q => q+1); }, 1400); }
+    else {
+      const np = [...powers]; if (wS>=2) { np.push(wI); say("power"); addSk("nature",2); addScore(PTS.power, "Power!"); } setPowers(np);
+      if (wS>=3 && !secD) { setSecQ(true); setSR(false); setSel(null); setSH(false); }
+      else setScr("worldDone");
+    }
+  };
+
+  const bAns = (idx) => {
+    if (sR || !cBQ) return;
+    setSel(idx); setSR(true);
+    if (idx === cBQ.a) {
+      const dbl = cBQ.pw>=0 && powers.includes(cBQ.pw);
+      const d = dbl ? 2 : 1;
+      setBHP(h => Math.max(0,h-d));
+      setTotC(t => t+1);
+      say("bosshit");
+      addSk("critical");
+      addScore(dbl ? PTS.bossDouble : PTS.bossHit, dbl ? "DOUBLE!" : "");
+      setStreak(s => s+1);
+    } else {
+      setPHP(h => Math.max(0,h-1)); say("bossmiss"); addSk("grit"); setStreak(0);
+    }
+  };
+
+  const nBQ = () => {
+    if (bHP<=0) {
+      setGO("win"); say("win"); addSk("vibe",3);
+      const finalScore = score;
+      (async () => { try { const ns = [...hiS, {name:nm,score:finalScore,age,date:new Date().toLocaleDateString()}].sort((a2,b2) => b2.score-a2.score).slice(0,10); setHiS(ns); await window.storage.set("wq-v7-lb",JSON.stringify(ns)); } catch(e){} })();
+      return;
+    }
+    if (pHP<=0) { setGO("lose"); return; }
+    setSel(null); setSR(false);
+    if (bQI < bQs.length-1) setBQI(q => q+1); else setGO(bHP<=pHP?"win":"lose");
+  };
+
+  const bg = (scr==="boss"||scr==="preBoss") ? "linear-gradient(180deg,#0a0015,#1a0a2e 30%,#5a2a8e)" : scr==="welcome"||scr==="leaderboard" ? "linear-gradient(180deg,#0b1628,#152238 40%,#253d5f)" : scr==="map" ? "linear-gradient(180deg,#0d1520,#1a2a3a 40%,#2a3a4a)" : w.bg;
+
+  return (
+    <div style={{minHeight:"100vh",background:bg,color:"#fff",fontFamily:"'Fredoka',sans-serif",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",position:"relative",overflow:"hidden",padding:"16px 20px",transition:"background 0.8s"}}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap');
+        @keyframes fp{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-18px) rotate(8deg)}}
+        @keyframes bi{0%{transform:scale(0);opacity:0}60%{transform:scale(1.05)}100%{transform:scale(1);opacity:1}}
+        @keyframes su{0%{transform:translateY(20px);opacity:0}100%{transform:translateY(0);opacity:1}}
+        @keyframes gw{0%,100%{box-shadow:0 0 5px rgba(255,255,255,0.12)}50%{box-shadow:0 0 20px rgba(255,255,255,0.35)}}
+        @keyframes pd{0%{opacity:0;transform:scale(0)}100%{opacity:1;transform:scale(1)}}
+        @keyframes vb{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+        @keyframes charIdle{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+        @keyframes bossIdle{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+        @keyframes prizeGlow{0%,100%{box-shadow:0 0 8px rgba(255,215,0,0.15)}50%{box-shadow:0 0 22px rgba(255,215,0,0.5)}}
+        @keyframes fadeUp{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:translateY(0)}}
+        @keyframes scoreFloat{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-30px)}}
+        .cb{transition:all 0.15s;cursor:pointer;border:none}.cb:hover{transform:translateY(-2px);filter:brightness(1.08)}.cb:active{transform:translateY(0)}
+      `}</style>
+
+      {/* WELCOME */}
+      {scr==="welcome" && onb===0 && (
+        <div style={{textAlign:"center",zIndex:1,maxWidth:440,animation:"bi 0.5s ease"}}>
+          <div style={{fontSize:12,fontWeight:700,letterSpacing:4,opacity:0.3,marginBottom:8}}>WILDERNESS QUEST</div>
+          <h1 style={{fontSize:28,fontWeight:800,margin:"0 0 6px",lineHeight:1.2}}>Learn to Build With AI</h1>
+          <p style={{fontSize:14,opacity:0.5,margin:"6px 0 16px",lineHeight:1.5}}>The adventure that teaches kids the #1 future skill.</p>
+          <Hero powers={[]} prizes={[]} size={110} animate/>
+          <div style={{display:"flex",flexDirection:"column",gap:6,margin:"16px auto",maxWidth:320,textAlign:"left"}}>
+            {["Builds critical thinking","Real science + survival skills","Vibe coding: building with AI","Age-adaptive for ages 5-13","Ad-free, tracks 5 skill areas"].map((t,i)=>(
+              <div key={i} style={{fontSize:13,opacity:0.6,display:"flex",gap:8,animation:"fadeUp 0.3s ease forwards",animationDelay:`${i*0.08}s`}}>
+                <span style={{color:"#4ade80",fontWeight:700}}>+</span> {t}
+              </div>
+            ))}
+          </div>
+          <div style={{display:"flex",gap:10,justifyContent:"center",marginTop:12}}>
+            <button className="cb" onClick={()=>setOnb(1)} style={{...BS("linear-gradient(135deg,#3b82f6,#8b5cf6)","0 4px 16px rgba(59,130,246,0.3)"),animation:"gw 2s ease-in-out infinite"}}>Get Started</button>
+            {hiS.length > 0 && <button className="cb" onClick={()=>setScr("leaderboard")} style={{...BS("rgba(255,255,255,0.08)"),fontSize:14,padding:"14px 20px"}}>Leaderboard</button>}
+          </div>
+        </div>
+      )}
+
+      {scr==="welcome" && onb===1 && (
+        <div style={{textAlign:"center",zIndex:1,animation:"bi 0.4s ease",maxWidth:400}}>
+          <div style={{fontSize:40,marginBottom:8}}>Hello!</div>
+          <h2 style={{fontSize:24,fontWeight:700,margin:"0 0 12px"}}>What is your name?</h2>
+          <input type="text" placeholder="Type your name here" value={nm} onChange={e=>setNm(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&nm.trim())setOnb(2);}}
+            style={{background:"rgba(255,255,255,0.07)",border:"2px solid rgba(255,255,255,0.12)",borderRadius:16,padding:"14px 20px",color:"#fff",fontSize:18,fontFamily:"inherit",fontWeight:600,textAlign:"center",width:"80%",maxWidth:300,outline:"none",boxSizing:"border-box"}}/>
+          <br/><button className="cb" onClick={()=>{if(nm.trim())setOnb(2);}} style={{...BS(nm.trim()?"linear-gradient(135deg,#3b82f6,#8b5cf6)":"rgba(255,255,255,0.06)"),marginTop:14,opacity:nm.trim()?1:0.4}}>Next</button>
+        </div>
+      )}
+
+      {scr==="welcome" && onb===2 && (
+        <div style={{textAlign:"center",zIndex:1,animation:"bi 0.4s ease",maxWidth:420}}>
+          <h2 style={{fontSize:22,fontWeight:700,margin:"0 0 16px"}}>Choose your character!</h2>
+          <div style={{display:"flex",gap:20,justifyContent:"center",marginBottom:16}}>
+            {["boy","girl"].map(g=>(
+              <button key={g} className="cb" onClick={()=>setGender(g)} style={{background:gender===g?"rgba(255,255,255,0.12)":"rgba(255,255,255,0.03)",border:gender===g?"3px solid #ffd700":"3px solid rgba(255,255,255,0.06)",borderRadius:20,padding:"12px 16px",cursor:"pointer"}}>
+                <Hero powers={[]} prizes={[]} size={90} animate={gender===g} gender={g}/>
+                <div style={{fontSize:14,fontWeight:700,marginTop:4}}>{g==="boy"?"Boy":"Girl"}</div>
+              </button>
+            ))}
+          </div>
+          {gender && <button className="cb" onClick={()=>setOnb(3)} style={{...BS("linear-gradient(135deg,#3b82f6,#8b5cf6)"),animation:"bi 0.3s ease"}}>Next</button>}
+        </div>
+      )}
+
+      {scr==="welcome" && onb===3 && (
+        <div style={{textAlign:"center",zIndex:1,animation:"bi 0.4s ease",maxWidth:420}}>
+          <h2 style={{fontSize:24,fontWeight:700,margin:"0 0 6px"}}>How old are you, {nm}?</h2>
+          <p style={{fontSize:13,opacity:0.45,marginBottom:14}}>Sets the perfect challenge for your age.</p>
+          <div style={{display:"flex",gap:8,justifyContent:"center",flexWrap:"wrap",marginBottom:14}}>
+            {[5,6,7,8,9,10,11,12,13].map(a=>(
+              <button key={a} className="cb" onClick={()=>setAge(a)} style={{width:52,height:52,borderRadius:14,background:age===a?"rgba(59,130,246,0.25)":"rgba(255,255,255,0.04)",border:age===a?"3px solid #3b82f6":"3px solid rgba(255,255,255,0.06)",color:"#fff",fontSize:20,fontWeight:700,fontFamily:"inherit"}}>{a}</button>
+            ))}
+          </div>
+          {age>0 && (()=>{const pr=getProfile(age);return(
+            <div style={{background:"rgba(255,255,255,0.05)",borderRadius:14,padding:"12px 16px",marginBottom:14,animation:"bi 0.3s ease"}}>
+              <div style={{fontSize:18,fontWeight:700}}>{pr.icon} {pr.label} Mode</div>
+              <div style={{fontSize:12,opacity:0.45,marginTop:2}}>{pr.desc}</div>
+              <div style={{fontSize:11,opacity:0.35,marginTop:4}}>Score multiplier: {pr.ptsMult}x</div>
+            </div>
+          );})()}
+          <button className="cb" onClick={start} disabled={!age} style={{...BS(age?"linear-gradient(135deg,#ff6b35,#ff3366)":"rgba(255,255,255,0.06)","0 4px 16px rgba(255,51,102,0.3)"),opacity:age?1:0.4}}>Start Adventure!</button>
+        </div>
+      )}
+
+      {/* LEADERBOARD */}
+      {scr==="leaderboard" && (
+        <div style={{textAlign:"center",zIndex:1,animation:"bi 0.5s ease",maxWidth:420,width:"100%"}}>
+          <div style={{fontSize:12,fontWeight:700,letterSpacing:3,opacity:0.35,marginBottom:8}}>ALL-TIME LEADERBOARD</div>
+          <h2 style={{fontSize:22,fontWeight:700,margin:"0 0 16px"}}>Top Adventurers</h2>
+          {hiS.length === 0 ? (
+            <p style={{opacity:0.4,fontSize:14}}>No scores yet. Be the first!</p>
+          ) : (
+            <div style={{display:"flex",flexDirection:"column",gap:6}}>
+              {hiS.map((s,i) => (
+                <div key={i} style={{display:"flex",alignItems:"center",gap:12,background:i===0?"rgba(255,215,0,0.1)":"rgba(255,255,255,0.04)",borderRadius:14,padding:"12px 16px",border:i===0?"2px solid rgba(255,215,0,0.3)":"1px solid rgba(255,255,255,0.04)"}}>
+                  <div style={{fontSize:22,fontWeight:800,opacity:i<3?1:0.4,color:i===0?"#ffd700":i===1?"#c0c0c0":i===2?"#cd7f32":"#fff",minWidth:32}}>{i===0?"👑":i+1}</div>
+                  <div style={{flex:1,textAlign:"left"}}>
+                    <div style={{fontSize:15,fontWeight:700}}>{s.name} <span style={{fontSize:11,opacity:0.35}}>age {s.age}</span></div>
+                    <div style={{fontSize:11,opacity:0.4}}>{s.date || ""}</div>
+                  </div>
+                  <div style={{fontSize:18,fontWeight:800,color:"#ffd700"}}>{s.score.toLocaleString()}</div>
+                </div>
+              ))}
+            </div>
+          )}
+          {hiS.length > 0 && (
+            <div style={{background:"rgba(255,215,0,0.06)",borderRadius:12,padding:"10px 14px",marginTop:14,border:"1px solid rgba(255,215,0,0.1)",fontSize:12}}>
+              #1 score wins a FREE subscription!
+            </div>
+          )}
+          <button className="cb" onClick={()=>{setScr("welcome");setOnb(0);}} style={{...BS("rgba(255,255,255,0.08)"),marginTop:14}}>Back</button>
+        </div>
+      )}
+
+      {/* MAP */}
+      {scr==="map" && (
+        <div style={{textAlign:"center",zIndex:1,animation:"bi 0.5s ease",maxWidth:420,width:"100%"}}>
+          <LiveScore score={score} hiScore={topScore} rank={getRank(score)}/>
+          <svg viewBox="0 0 260 400" style={{width:"100%",maxWidth:300,height:"auto",margin:"0 auto",display:"block"}}>
+            {[{x:55,y:340},{x:185,y:278},{x:75,y:216},{x:195,y:154},{x:100,y:92}].map((n,i,arr)=>{
+              if(!i)return null; const prev=arr[i-1];
+              return <line key={i} x1={prev.x} y1={prev.y} x2={n.x} y2={n.y} stroke={i<=wI?"#ffd700":"rgba(255,255,255,0.08)"} strokeWidth={i<=wI?3.5:2} strokeDasharray={i<=wI?"none":"8,5"} strokeLinecap="round"/>;
+            })}
+            {[{x:55,y:340},{x:185,y:278},{x:75,y:216},{x:195,y:154},{x:100,y:92}].map((n,i)=>{
+              const wd=WORLDS[i]; const done=i<wI; const active=i===wI;
+              return (<g key={i}>
+                <circle cx={n.x} cy={n.y} r={active?30:25} fill={done||active?wd.cl:"rgba(255,255,255,0.04)"} stroke={done?"#ffd700":active?"#fff":"rgba(255,255,255,0.05)"} strokeWidth={active?3:2} opacity={i>wI?0.25:1}>{active&&<animate attributeName="r" values="28;33;28" dur="2s" repeatCount="indefinite"/>}</circle>
+                <text x={n.x} y={n.y+8} fontSize={active?24:20} textAnchor="middle">{done?"✅":wd.em}</text>
+                <text x={n.x} y={n.y+46} fontSize="11" fill="#fff" textAnchor="middle" opacity={i>wI?0.15:0.6} fontWeight="600">{wd.nm}</text>
+                {done&&powers.includes(i)&&<text x={n.x+28} y={n.y-14} fontSize="16">{wd.pw.em}</text>}
+              </g>);
+            })}
+            <circle cx={130} cy={28} r={wI>=5?26:18} fill={wI>=5?"#5a2a8e":"rgba(255,255,255,0.03)"} stroke={wI>=5?"#ff4444":"rgba(255,255,255,0.05)"} strokeWidth="2" opacity={wI>=5?1:0.2}/>
+            <text x={130} y={34} fontSize={wI>=5?18:12} textAnchor="middle" fill="#fff" opacity={wI>=5?1:0.2}>Boss</text>
+          </svg>
+          <button className="cb" onClick={()=>{if(wI<5){setWS(0);setQI(0);setSecQ(false);setSecD(false);setScr("worldIntro");}else setScr("preBoss");}} style={{...BS("linear-gradient(135deg,#ff6b35,#ff3366)","0 4px 14px rgba(255,51,102,0.25)"),marginTop:8}}>
+            {wI<5?`Enter ${WORLDS[wI].nm}`:"Face the Boss!"}
+          </button>
+        </div>
+      )}
+
+      {/* WORLD INTRO */}
+      {scr==="worldIntro" && (
+        <div style={{textAlign:"center",zIndex:1,animation:"bi 0.5s ease",maxWidth:420}}>
+          <Particles items={w.pt}/>
+          <LiveScore score={score} hiScore={topScore} rank={getRank(score)}/>
+          <div style={{fontSize:64,margin:"6px 0"}}>{w.em}</div>
+          <h2 style={{fontSize:26,fontWeight:700,margin:"0 0 6px"}}>{w.nm}</h2>
+          <p style={{opacity:0.5,fontSize:14}}>2+ correct = {w.pw.em} power | 3+ = bonus!</p>
+          <Hero powers={powers} prizes={prizes} size={80} animate speech="Ready!" showSp gender={gender}/>
+          <button className="cb" onClick={()=>{setWS(0);setScr("question");}} style={BS(`linear-gradient(135deg,${w.cl},${w.cl}bb)`,`0 4px 12px ${w.cl}44`)}>Enter</button>
+        </div>
+      )}
+
+      {/* QUESTION */}
+      {scr==="question" && !sPath && aQ && (
+        <div style={{maxWidth:500,width:"100%",zIndex:1,position:"relative"}}>
+          <Particles items={w.pt}/>
+          <LiveScore score={score} hiScore={topScore} rank={getRank(score)}/>
+          <ScorePopup text={scorePop} color="#ffd700"/>
+          <div style={{display:"flex",justifyContent:"space-between",fontSize:12,fontWeight:600,opacity:0.4,marginBottom:6}}>
+            <span>{w.em} {w.nm}</span>
+            <span>{secQ?"BONUS":`${wS}/${nQ}`}{streak>1?` | ${streak}x streak`:""}</span>
+          </div>
+          {!secQ && (<div style={{display:"flex",gap:6,justifyContent:"center",marginBottom:10}}>{Array.from({length:nQ}).map((_,i)=>(<div key={i} style={{width:36,height:6,borderRadius:3,background:i<qI?w.ac:i===qI?"#fff":"rgba(255,255,255,0.08)"}}/>))}</div>)}
+          <div style={{display:"flex",justifyContent:"center",marginBottom:8}}>
+            <Hero powers={powers} prizes={prizes} size={50} animate speech={sp} showSp={shSp} gender={gender}/>
+          </div>
+          <div style={{animation:"su 0.3s ease"}}>
+            <div style={{background:secQ?"rgba(255,215,0,0.06)":"rgba(0,0,0,0.25)",borderRadius:16,padding:"14px 18px",marginBottom:10,border:secQ?"2px solid rgba(255,215,0,0.2)":"1px solid rgba(255,255,255,0.04)"}}>
+              <div style={{fontSize:10,fontWeight:700,opacity:0.35,marginBottom:6,letterSpacing:1}}>{secQ?"SECRET BONUS":tLabel(aQ.type)}</div>
+              <div style={{fontSize:16,fontWeight:600,lineHeight:1.4}}>{aQ.q}</div>
+            </div>
+            <div style={{display:"flex",flexDirection:"column",gap:8,marginBottom:8}}>
+              {aQ.c.map((c,i)=>{
+                const isC=i===aQ.a, isS=sel===i;
+                let bg2="rgba(255,255,255,0.06)",bd="2px solid rgba(255,255,255,0.06)";
+                if(sR){if(isC){bg2="rgba(74,222,128,0.16)";bd="2px solid #4ade80";}else if(isS){bg2="rgba(239,68,68,0.16)";bd="2px solid #ef4444";}}
+                return (<button key={i} className="cb" onClick={()=>ans(i)} style={{background:bg2,border:bd,borderRadius:14,padding:aQ.c.length===2?"14px 18px":"12px 16px",color:"#fff",fontSize:aQ.c.length===2?17:15,fontWeight:600,fontFamily:"inherit",textAlign:"left",display:"flex",alignItems:"center",gap:10,opacity:sR&&!isC&&!isS?0.15:1}}>
+                  <span style={{width:28,height:28,borderRadius:"50%",flexShrink:0,background:sR&&isC?"#4ade80":sR&&isS?"#ef4444":"rgba(255,255,255,0.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:700}}>
+                    {sR&&isC?"Y":sR&&isS?"X":aQ.c.length===2?(i===0?"T":"F"):String.fromCharCode(65+i)}
+                  </span>{c}
+                </button>);
+              })}
+            </div>
+            {!sR&&!sH&&p.hints&&(<button className="cb" onClick={()=>{setSH(true);setUsedHint(true);}} style={{background:"none",border:"1px solid rgba(255,255,255,0.08)",color:"#fff",padding:"6px 14px",borderRadius:14,fontSize:12,fontFamily:"inherit",opacity:0.35}}>Hint (-50pts)</button>)}
+            {sH&&!sR&&<div style={{background:"rgba(255,255,255,0.04)",borderRadius:10,padding:"8px 12px",fontSize:13,opacity:0.55,animation:"su 0.2s"}}>{aQ.h}</div>}
+            {sR && (<div style={{animation:"bi 0.25s ease"}}>
+              <div style={{textAlign:"center",fontSize:18,fontWeight:700,marginBottom:4,color:sel===aQ.a?"#4ade80":"#ff6b6b"}}>
+                {sel===aQ.a ? "Correct!" : "Not quite!"}
+              </div>
+              {/* Skill earned indicator */}
+              {sel===aQ.a && aQ.sk && SKILL_MAP[aQ.sk] && (
+                <div style={{textAlign:"center",fontSize:11,opacity:0.5,marginBottom:4}}>
+                  {SKILL_MAP[aQ.sk].em} +1 {SKILL_MAP[aQ.sk].nm}
+                  {streak > 1 && <span style={{color:"#ffd700"}}> | {streak}x streak!</span>}
+                </div>
+              )}
+              {sel!==aQ.a && <div style={{textAlign:"center",fontSize:11,opacity:0.4,marginBottom:4}}>💪 +1 Perseverance (learning from mistakes!)</div>}
+              <div style={{background:sel===aQ.a?"rgba(74,222,128,0.05)":"rgba(239,68,68,0.05)",borderRadius:12,padding:"10px 14px",marginBottom:8,border:`1px solid ${sel===aQ.a?"rgba(74,222,128,0.12)":"rgba(239,68,68,0.12)"}`}}>
+                <div style={{fontSize:10,fontWeight:700,opacity:0.4,marginBottom:2}}>{sel===aQ.a?"Fun Fact:":"Did You Know?"}</div>
+                <div style={{fontSize:13,lineHeight:1.4,opacity:0.7}}>{aQ.e}</div>
+              </div>
+              <div style={{textAlign:"center"}}><button className="cb" onClick={nxt} style={BS("linear-gradient(135deg,#667eea,#764ba2)","0 3px 10px rgba(102,126,234,0.2)")}>{secQ||qI>=nQ-1?"Finish":"Next"}</button></div>
+            </div>)}
+          </div>
+        </div>
+      )}
+
+      {scr==="question"&&sPath&&(<div style={{textAlign:"center",zIndex:1,animation:"bi 0.4s ease"}}><div style={{fontSize:18,fontWeight:700,marginBottom:14}}>Path Unlocked!</div><div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:4}}><Hero powers={powers} prizes={prizes} size={40} gender={gender}/>{Array.from({length:5}).map((_,i)=>(<div key={i} style={{width:12,height:12,borderRadius:"50%",background:i%2===0?"#ffd700":"rgba(255,255,255,0.1)",animation:"pd 0.3s ease forwards",animationDelay:`${i*0.12}s`,opacity:0}}/>))}<span style={{fontSize:28}}>?</span></div></div>)}
+
+      {/* WORLD DONE */}
+      {scr==="worldDone" && (
+        <div style={{textAlign:"center",zIndex:1,animation:"bi 0.5s ease",maxWidth:400}}>
+          <Particles items={w.pt}/>
+          <LiveScore score={score} hiScore={topScore} rank={getRank(score)}/>
+          <div style={{fontSize:52}}>{w.em}</div>
+          <h2 style={{fontSize:22,fontWeight:700,margin:"4px 0"}}>{w.nm} Complete!</h2>
+          <p style={{fontSize:15}}>{nm}: <strong>{wS}/{nQ}</strong>{secD?" +bonus!":""}</p>
+          <Hero powers={wS>=2?[...powers]:powers} prizes={prizes} size={85} animate speech={wS>=2?"POWER UP!":"Onward!"} showSp gender={gender}/>
+          {wS>=2 ? (
+            <div style={{background:"rgba(74,222,128,0.08)",borderRadius:14,padding:12,border:"2px solid #4ade80",marginBottom:10,animation:"gw 2s ease-in-out infinite"}}><div style={{fontSize:10,fontWeight:700,opacity:0.5}}>POWER EARNED!</div><div style={{fontSize:28}}>{w.pw.em}</div><div style={{fontSize:16,fontWeight:700}}>{w.pw.nm}</div></div>
+          ) : (
+            <div style={{background:"rgba(239,68,68,0.06)",borderRadius:14,padding:12,border:"2px solid rgba(239,68,68,0.2)",marginBottom:10}}><p style={{margin:0,fontSize:13}}>Need 2 correct for power. Prize still earned!</p></div>
+          )}
+          <button className="cb" onClick={()=>setScr("prize")} style={BS("linear-gradient(135deg,#ffd700,#ff8c00)","0 3px 12px rgba(255,215,0,0.25)")}>Choose Prize</button>
+        </div>
+      )}
+
+      {/* PRIZE */}
+      {scr==="prize" && (
+        <div style={{textAlign:"center",zIndex:1,animation:"bi 0.4s ease",maxWidth:420}}>
+          <div style={{fontSize:11,fontWeight:700,opacity:0.4,letterSpacing:2,marginBottom:8}}>CHOOSE A PRIZE</div>
+          <div style={{display:"flex",gap:10,justifyContent:"center",marginBottom:12}}>
+            {PRIZES[wI].map((pr,i)=>(<button key={i} className="cb" onClick={()=>{const np=[...prizes];np[wI]=pr;setPrizes(np);setSPr(pr);}} style={{background:sPr===pr?"rgba(255,215,0,0.1)":"rgba(255,255,255,0.04)",border:sPr===pr?"3px solid #ffd700":"2px solid rgba(255,255,255,0.05)",borderRadius:16,padding:"14px 16px",minWidth:100,color:"#fff",fontFamily:"inherit",animation:sPr===pr?"prizeGlow 1.5s ease-in-out infinite":"none"}}><div style={{fontSize:32}}>{pr.em}</div><div style={{fontSize:13,fontWeight:700,marginTop:2}}>{pr.nm}</div></button>))}
+          </div>
+          {sPr && (<div style={{animation:"bi 0.3s ease"}}><Hero powers={powers} prizes={prizes.map((pr2,i)=>i===wI?sPr:pr2)} size={80} animate gender={gender}/><button className="cb" onClick={()=>{setSPr(null);if(wI<4){addSk("vibe",2);addScore(PTS.vibeTip,"Tip!");setScr("vibeTip");}else setScr("preBoss");}} style={BS("linear-gradient(135deg,#ff6b35,#ff3366)","0 3px 10px rgba(255,51,102,0.2)")}>{wI<4?"Continue":"Boss Time!"}</button></div>)}
+        </div>
+      )}
+
+      {/* VIBE TIP */}
+      {scr==="vibeTip" && VIBE_TIPS[wI] && (
+        <div style={{textAlign:"center",zIndex:1,animation:"bi 0.5s ease",maxWidth:420}}>
+          <div style={{fontSize:40,marginBottom:4}}>{VIBE_TIPS[wI].em}</div>
+          <div style={{fontSize:10,fontWeight:700,opacity:0.3,letterSpacing:2}}>VIBE CODING TIP #{wI+1}</div>
+          <h2 style={{fontSize:20,fontWeight:700,margin:"4px 0 8px"}}>{VIBE_TIPS[wI].t}</h2>
+          <div style={{background:"rgba(255,255,255,0.05)",borderRadius:14,padding:"12px 16px",fontSize:14,lineHeight:1.5,marginBottom:8,textAlign:"left",border:"1px solid rgba(255,255,255,0.04)",whiteSpace:"pre-line"}}>{VIBE_TIPS[wI].tip}</div>
+          <div style={{background:"rgba(255,215,0,0.04)",borderRadius:12,padding:"8px 12px",fontSize:12,marginBottom:12,textAlign:"left",border:"1px solid rgba(255,215,0,0.08)"}}>Try it: {VIBE_TIPS[wI].ch}</div>
+          <button className="cb" onClick={()=>{setWI(w2=>w2+1);setQI(0);setWS(0);setSel(null);setSR(false);setSH(false);setSecQ(false);setSecD(false);setScr("map");}} style={BS("linear-gradient(135deg,#667eea,#764ba2)","0 3px 10px rgba(102,126,234,0.2)")}>Map</button>
+        </div>
+      )}
+
+      {/* PRE-BOSS */}
+      {scr==="preBoss" && (
+        <div style={{textAlign:"center",zIndex:1,animation:"bi 0.5s ease",maxWidth:420}}>
+          <Particles items={["🔥","💀","⚡","💥"]}/>
+          <LiveScore score={score} hiScore={topScore} rank={getRank(score)}/>
+          <BossSVG hp={p.bossHP} maxHp={p.bossHP}/>
+          <h2 style={{fontSize:22,fontWeight:700,margin:"6px 0"}}>{nm}, Boss Time!</h2>
+          <Hero powers={powers} prizes={prizes} size={85} animate speech="Bring it!" showSp gender={gender}/>
+          <div style={{display:"flex",gap:4,justifyContent:"center",margin:"6px 0",flexWrap:"wrap"}}>
+            {WORLDS.map((w2,i)=>(<span key={i} style={{fontSize:10,opacity:powers.includes(i)?1:0.2,background:"rgba(255,255,255,0.08)",borderRadius:10,padding:"3px 8px",fontWeight:600}}>{w2.pw.em} {powers.includes(i)?w2.pw.nm:"?"}</span>))}
+          </div>
+          <button className="cb" onClick={()=>setScr("boss")} style={{...BS("linear-gradient(135deg,#9333ea,#dc2626)","0 4px 16px rgba(147,51,234,0.3)"),animation:"gw 2s ease-in-out infinite"}}>FIGHT!</button>
+        </div>
+      )}
+
+      {/* BOSS */}
+      {scr==="boss" && !gO && cBQ && (
+        <div style={{maxWidth:500,width:"100%",zIndex:1,position:"relative"}}>
+          <Particles items={["🔥","💀","⚡","💥"]}/>
+          <LiveScore score={score} hiScore={topScore} rank={getRank(score)}/>
+          <ScorePopup text={scorePop} color="#ffd700"/>
+          <HPBar cur={bHP} max={p.bossHP} label="Biome Boss" color="#dc2626"/>
+          <HPBar cur={pHP} max={p.playerHP} label={nm} color="#4ade80"/>
+          <div style={{display:"flex",justifyContent:"space-around",alignItems:"center",margin:"10px 0",minHeight:110}}>
+            <Hero powers={powers} prizes={prizes} size={65} animate speech={sp} showSp={shSp} gender={gender}/>
+            <div style={{fontSize:22,fontWeight:900,opacity:0.2}}>VS</div>
+            <BossSVG hp={bHP} maxHp={p.bossHP}/>
+          </div>
+          {cBQ.pw>=0&&powers.includes(cBQ.pw)&&<div style={{textAlign:"center",fontSize:11,color:"#ffd700",fontWeight:600,marginBottom:4}}>{WORLDS[cBQ.pw].pw.nm} = DOUBLE damage!</div>}
+          <div style={{background:"rgba(0,0,0,0.25)",borderRadius:14,padding:"12px 16px",marginBottom:8,border:"1px solid rgba(255,255,255,0.04)",animation:"su 0.25s"}}>
+            <div style={{fontSize:9,opacity:0.25,marginBottom:3}}>Q{bQI+1}/{bQs.length}{streak>1?` | ${streak}x streak`:""}</div>
+            <div style={{fontSize:15,fontWeight:600,lineHeight:1.35}}>{cBQ.q}</div>
+          </div>
+          <div style={{display:"flex",flexDirection:"column",gap:6,marginBottom:6}}>
+            {cBQ.c.map((c,i)=>{
+              const isC=i===cBQ.a, isS=sel===i;
+              let bg2="rgba(255,255,255,0.05)",bd="2px solid rgba(255,255,255,0.05)";
+              if(sR){if(isC){bg2="rgba(74,222,128,0.14)";bd="2px solid #4ade80";}else if(isS){bg2="rgba(239,68,68,0.14)";bd="2px solid #ef4444";}}
+              return (<button key={i} className="cb" onClick={()=>bAns(i)} style={{background:bg2,border:bd,borderRadius:12,padding:cBQ.c.length===2?"12px 16px":"10px 14px",color:"#fff",fontSize:cBQ.c.length===2?16:14,fontWeight:600,fontFamily:"inherit",textAlign:"left",display:"flex",alignItems:"center",gap:8,opacity:sR&&!isC&&!isS?0.12:1}}>
+                <span style={{width:24,height:24,borderRadius:"50%",flexShrink:0,background:sR&&isC?"#4ade80":sR&&isS?"#ef4444":"rgba(255,255,255,0.05)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:700}}>
+                  {sR&&isC?"Y":sR&&isS?"X":cBQ.c.length===2?(i===0?"T":"F"):String.fromCharCode(65+i)}
+                </span>{c}
+              </button>);
+            })}
+          </div>
+          {sR && (<div style={{animation:"bi 0.2s ease"}}>
+            <div style={{textAlign:"center",fontSize:16,fontWeight:700,marginBottom:4,color:sel===cBQ.a?"#4ade80":"#ff6b6b"}}>{sel===cBQ.a?(cBQ.pw>=0&&powers.includes(cBQ.pw)?"DOUBLE HIT!":"Hit!"):"Boss strikes!"}</div>
+            <div style={{background:sel===cBQ.a?"rgba(74,222,128,0.04)":"rgba(239,68,68,0.04)",borderRadius:10,padding:"8px 12px",marginBottom:6}}>
+              <div style={{fontSize:12,lineHeight:1.35,opacity:0.6}}>{cBQ.e}</div>
+            </div>
+            <div style={{textAlign:"center"}}><button className="cb" onClick={nBQ} style={BS("linear-gradient(135deg,#9333ea,#dc2626)","0 3px 10px rgba(147,51,234,0.2)")}>{bHP<=0?"Victory!":pHP<=0?"Results":"Next"}</button></div>
+          </div>)}
+        </div>
+      )}
+
+      {/* GAME OVER + REPORT */}
+      {scr==="boss" && gO && (
+        <div style={{textAlign:"center",zIndex:1,animation:"bi 0.5s ease",maxWidth:420}}>
+          {gO==="win" ? (
+            <div>
+              <div style={{fontSize:48,animation:"vb 1s ease-in-out infinite"}}>Champion!</div>
+              <Hero powers={powers} prizes={prizes} size={90} animate speech="WOOHOO!" showSp gender={gender}/>
+              <div style={{fontSize:28,fontWeight:800,color:"#ffd700",margin:"6px 0"}}>{score.toLocaleString()} pts</div>
+              <p style={{fontSize:14,opacity:0.5}}>Rank #{getRank(score)} | Powers: {powers.length}/5</p>
+              {getRank(score)===1 && <div style={{background:"rgba(255,215,0,0.1)",borderRadius:12,padding:"8px 14px",border:"2px solid rgba(255,215,0,0.3)",marginBottom:8,fontSize:14,fontWeight:700,color:"#ffd700",animation:"gw 2s ease-in-out infinite"}}>#1 HIGH SCORE! Free subscription earned!</div>}
+            </div>
+          ) : (
+            <div>
+              <div style={{fontSize:36,marginBottom:6}}>Boss Won!</div>
+              <Hero powers={powers} prizes={prizes} size={70} speech="Next time!" showSp gender={gender}/>
+              <div style={{fontSize:22,fontWeight:700,margin:"6px 0"}}>{score.toLocaleString()} pts</div>
+              <p style={{fontSize:13,opacity:0.55}}>New questions next time!</p>
+            </div>
+          )}
+
+          {/* LEARNING REPORT - transparent skills */}
+          <div style={{background:"rgba(255,255,255,0.04)",borderRadius:16,padding:14,margin:"12px 0",border:"1px solid rgba(255,255,255,0.05)",textAlign:"left"}}>
+            <div style={{fontSize:11,fontWeight:700,opacity:0.3,letterSpacing:1,marginBottom:8}}>LEARNING REPORT</div>
+            <div style={{fontSize:12,opacity:0.45,marginBottom:6}}>{nm} (age {age}) | {p.icon} {p.label} | {p.ptsMult}x multiplier</div>
+
+            {/* HOW SCORE WAS EARNED */}
+            <div style={{fontSize:10,fontWeight:700,opacity:0.3,marginBottom:4}}>SCORE BREAKDOWN</div>
+            <div style={{fontSize:11,opacity:0.4,marginBottom:8,lineHeight:1.6}}>
+              Correct answers: {totC} x {Math.round(PTS.correct * p.ptsMult)} = {totC * Math.round(PTS.correct * p.ptsMult)}<br/>
+              Streak bonuses, powers, boss hits, and tips make up the rest.
+            </div>
+
+            {/* SKILLS - with clear correlation */}
+            <div style={{fontSize:10,fontWeight:700,opacity:0.3,marginBottom:4}}>SKILLS EARNED FROM QUESTIONS</div>
+            {SKILLS.map(sk => {
+              const pts = skills[sk.id] || 0;
+              if (pts === 0) return null;
+              const mx = Math.max(totSk,1);
+              const pct = Math.min(100,(pts/mx)*200);
+              return (
+                <div key={sk.id} style={{marginBottom:8}}>
+                  <div style={{display:"flex",justifyContent:"space-between",fontSize:12,fontWeight:600,marginBottom:2}}>
+                    <span>{sk.em} {sk.nm}</span><span style={{opacity:0.3}}>{pts} pts</span>
+                  </div>
+                  <div style={{background:"rgba(255,255,255,0.08)",borderRadius:6,height:8,overflow:"hidden"}}>
+                    <div style={{width:`${pct}%`,height:"100%",background:sk.cl,borderRadius:6,transition:"width 0.5s"}}/>
+                  </div>
+                  <div style={{fontSize:9,opacity:0.3,marginTop:1}}>
+                    {sk.id==="critical" && "Earned from riddles and thinking questions"}
+                    {sk.id==="nature" && "Earned from trivia about biomes and animals"}
+                    {sk.id==="survival" && "Earned from real-world safety questions"}
+                    {sk.id==="vibe" && "Earned from vibe coding tips and boss victory"}
+                    {sk.id==="grit" && "Earned each time you learned from a wrong answer"}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div style={{display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap",marginTop:10}}>
+            {gO==="win" && (
+              <button className="cb" onClick={()=>{/* Stage 2 placeholder */alert("Stage 2: Build Mode coming soon! You will learn to build your OWN game with AI.");}} style={BS("linear-gradient(135deg,#3b82f6,#8b5cf6)","0 4px 14px rgba(59,130,246,0.3)")}>
+                Stage 2: Build Mode
+              </button>
+            )}
+            <button className="cb" onClick={reset} style={BS("linear-gradient(135deg,#ff6b35,#ff3366)","0 3px 10px rgba(255,51,102,0.25)")}>New Adventure</button>
+            <button className="cb" onClick={()=>setScr("leaderboard")} style={BS("rgba(255,255,255,0.08)")}>Leaderboard</button>
+          </div>
+        </div>
+      )}
+
+      {/* LEADERBOARD from game over */}
+      {scr==="leaderboard" && gO && (
+        <div style={{textAlign:"center",zIndex:1,animation:"bi 0.5s ease",maxWidth:420,width:"100%"}}>
+          <h2 style={{fontSize:22,fontWeight:700,margin:"0 0 16px"}}>Leaderboard</h2>
+          {hiS.map((s,i)=>(<div key={i} style={{display:"flex",alignItems:"center",gap:12,background:i===0?"rgba(255,215,0,0.1)":"rgba(255,255,255,0.04)",borderRadius:14,padding:"12px 16px",marginBottom:6,border:i===0?"2px solid rgba(255,215,0,0.3)":"1px solid rgba(255,255,255,0.04)"}}>
+            <div style={{fontSize:22,fontWeight:800,color:i===0?"#ffd700":i===1?"#c0c0c0":i===2?"#cd7f32":"#fff",minWidth:32,opacity:i<3?1:0.4}}>{i===0?"👑":i+1}</div>
+            <div style={{flex:1,textAlign:"left"}}><div style={{fontSize:15,fontWeight:700}}>{s.name} <span style={{fontSize:11,opacity:0.35}}>age {s.age}</span></div></div>
+            <div style={{fontSize:18,fontWeight:800,color:"#ffd700"}}>{s.score.toLocaleString()}</div>
+          </div>))}
+          {hiS.length>0 && <div style={{background:"rgba(255,215,0,0.06)",borderRadius:12,padding:"10px 14px",marginTop:10,border:"1px solid rgba(255,215,0,0.1)",fontSize:12}}>#1 score = FREE subscription!</div>}
+          <button className="cb" onClick={reset} style={{...BS("linear-gradient(135deg,#ff6b35,#ff3366)","0 3px 10px rgba(255,51,102,0.25)"),marginTop:12}}>New Adventure</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+
+ReactDOM.render(<App />, document.getElementById("root"));
+</script>
+</body>
+</html>
