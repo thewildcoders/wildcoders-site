@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wilderness Quest - WildCoders</title>
+<meta name="description" content="Play Wilderness Quest! A free adventure game from WildCoders that teaches kids critical thinking, survival skills, and the foundations of building with AI.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0b1628;color:#fff;font-family:'Fredoka',sans-serif;overflow-x:hidden}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+const WC_LOGO = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjQwIDgwIDIwMCAxNjAiIHdpZHRoPSIyMDAiIGhlaWdodD0iMTIwIj4KICA8ZWxsaXBzZSBjeD0iMTIwIiBjeT0iMTY1IiByeD0iNjQiIHJ5PSI2OCIgZmlsbD0iI0U4OTU4QSIvPgogIDxlbGxpcHNlIGN4PSIxMTUiIGN5PSIxNDAiIHJ4PSIzNiIgcnk9IjMwIiBmaWxsPSIjRjRCOEE4IiBvcGFjaXR5PSIwLjQ1Ii8+CiAgPGVsbGlwc2UgY3g9IjY2IiBjeT0iMTA2IiByeD0iMjIiIHJ5PSIyOCIgZmlsbD0iI0U4OTU4QSIvPgogIDxlbGxpcHNlIGN4PSI2NiIgY3k9IjEwOCIgcng9IjE0IiByeT0iMTgiIGZpbGw9IiNENDcyNkEiIG9wYWNpdHk9IjAuMyIvPgogIDxlbGxpcHNlIGN4PSI2NiIgY3k9IjExMCIgcng9IjEwIiByeT0iMTQiIGZpbGw9IiNGRkVFRTciLz4KICA8ZWxsaXBzZSBjeD0iMTc0IiBjeT0iMTA2IiByeD0iMjIiIHJ5PSIyOCIgZmlsbD0iI0U4OTU4QSIvPgogIDxlbGxpcHNlIGN4PSIxNzQiIGN5PSIxMDgiIHJ4PSIxNCIgcnk9IjE4IiBmaWxsPSIjRDQ3MjZBIiBvcGFjaXR5PSIwLjMiLz4KICA8ZWxsaXBzZSBjeD0iMTc0IiBjeT0iMTEwIiByeD0iMTAiIHJ5PSIxNCIgZmlsbD0iI0ZGRUVFNyIvPgogIDxlbGxpcHNlIGN4PSI4OCIgY3k9IjE2OCIgcng9IjE0IiByeT0iMTIiIGZpbGw9IiNGNEI4QTgiIG9wYWNpdHk9IjAuMyIvPgogIDxlbGxpcHNlIGN4PSIxNTIiIGN5PSIxNjgiIHJ4PSIxNCIgcnk9IjEyIiBmaWxsPSIjRjRCOEE4IiBvcGFjaXR5PSIwLjMiLz4KICA8ZWxsaXBzZSBjeD0iMTIwIiBjeT0iMTgyIiByeD0iMzQiIHJ5PSIyOCIgZmlsbD0iI0ZGRUVFNyIvPgogIDxlbGxpcHNlIGN4PSIxMjAiIGN5PSIxNzYiIHJ4PSIyMiIgcnk9IjE2IiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjE1Ii8+CiAgPHBhdGggZD0iTTY4IDEyNCBRNzYgMTM0IDY0IDE0NiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRDQ3MjZBIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC42Ii8+CiAgPHBhdGggZD0iTTgyIDExNiBRODYgMTI0IDc4IDEzMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRDQ3MjZBIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC41Ii8+CiAgPHBhdGggZD0iTTE3MiAxMjQgUTE2NCAxMzQgMTc2IDE0NiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRDQ3MjZBIiBzdHJva2Utd2lkdGg9IjQiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC42Ii8+CiAgPHBhdGggZD0iTTE1OCAxMTYgUTE1NCAxMjQgMTYyIDEzMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRDQ3MjZBIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC41Ii8+CiAgPGVsbGlwc2UgY3g9Ijk2IiBjeT0iMTU4IiByeD0iMTQiIHJ5PSIxMyIgZmlsbD0iI0Q0NzI2QSIgb3BhY2l0eT0iMC4xIi8+CiAgPGVsbGlwc2UgY3g9Ijk2IiBjeT0iMTYwIiByeD0iMTMiIHJ5PSIxMiIgZmlsbD0iI2ZmZiIvPgogIDxlbGxpcHNlIGN4PSI5OSIgY3k9IjE2MSIgcng9IjcuNSIgcnk9IjkiIGZpbGw9IiM0QThBNUEiLz4KICA8ZWxsaXBzZSBjeD0iMTAwIiBjeT0iMTYyIiByeD0iNCIgcnk9IjUuNSIgZmlsbD0iIzJEMzQzNiIvPgogIDxjaXJjbGUgY3g9IjEwMiIgY3k9IjE1OCIgcj0iMyIgZmlsbD0iI2ZmZiIvPgogIDxlbGxpcHNlIGN4PSIxNDQiIGN5PSIxNTgiIHJ4PSIxNCIgcnk9IjEzIiBmaWxsPSIjRDQ3MjZBIiBvcGFjaXR5PSIwLjEiLz4KICA8ZWxsaXBzZSBjeD0iMTQ0IiBjeT0iMTYwIiByeD0iMTMiIHJ5PSIxMiIgZmlsbD0iI2ZmZiIvPgogIDxlbGxpcHNlIGN4PSIxNDEiIGN5PSIxNjEiIHJ4PSI3LjUiIHJ5PSI5IiBmaWxsPSIjNEE4QTVBIi8+CiAgPGVsbGlwc2UgY3g9IjE0MCIgY3k9IjE2MiIgcng9IjQiIHJ5PSI1LjUiIGZpbGw9IiMyRDM0MzYiLz4KICA8Y2lyY2xlIGN4PSIxNDMiIGN5PSIxNTgiIHI9IjMiIGZpbGw9IiNmZmYiLz4KICA8cGF0aCBkPSJNMTEzIDE3NiBRMTIwIDE2OCAxMjcgMTc2IFExMjAgMTgyIDExMyAxNzZaIiBmaWxsPSIjRDQ3MjZBIi8+CiAgPGxpbmUgeDE9IjEyMCIgeTE9IjE4MSIgeDI9IjEyMCIgeTI9IjE4OCIgc3Ryb2tlPSIjQjU1NDRFIiBzdHJva2Utd2lkdGg9IjEuMyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHBhdGggZD0iTTExMCAxOTAgUTEyMCAxOTggMTMwIDE5MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjQjU1NDRFIiBzdHJva2Utd2lkdGg9IjEuOCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPGxpbmUgeDE9IjMwIiB5MT0iMTY4IiB4Mj0iODQiIHkyPSIxNzgiIHN0cm9rZT0iI0Q0NzI2QSIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9IjAuNCIvPgogIDxsaW5lIHgxPSIzNCIgeTE9IjE3OCIgeDI9Ijg0IiB5Mj0iMTgyIiBzdHJva2U9IiNENDcyNkEiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjQiLz4KICA8bGluZSB4MT0iMTU2IiB5MT0iMTc4IiB4Mj0iMjEwIiB5Mj0iMTY4IiBzdHJva2U9IiNENDcyNkEiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjQiLz4KICA8bGluZSB4MT0iMTU2IiB5MT0iMTgyIiB4Mj0iMjA2IiB5Mj0iMTc4IiBzdHJva2U9IiNENDcyNkEiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjQiLz4KPC9zdmc+";
+
+if (!window.storage) {
+  window.storage = {
+    async get(key) { try { const val = localStorage.getItem("wc_" + key); if (val === null) throw new Error("not found"); return { key, value: val }; } catch(e) { throw e; } },
+    async set(key, value) { try { localStorage.setItem("wc_" + key, value); return { key, value }; } catch(e) { return null; } },
+    async delete(key) { localStorage.removeItem("wc_" + key); return { key, deleted: true }; },
+    async list(prefix) { const keys = []; for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k.startsWith("wc_" + (prefix || ""))) keys.push(k.replace("wc_", "")); } return { keys }; }
+  };
+}
+
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+function pick(a){return a[Math.floor(Math.random()*a.length)];}
+
+const SKILLS = [
+  {id:"critical",name:"Critical Thinking",emoji:"🧠",color:"#E8958A"},
+  {id:"nature",name:"Nature Science",emoji:"🌿",color:"#4ade80"},
+  {id:"survival",name:"Survival Skills",emoji:"🏕️",color:"#ef4444"},
+  {id:"communicate",name:"Communication",emoji:"💬",color:"#3b9bf6"},
+  {id:"grit",name:"Perseverance",emoji:"💪",color:"#f472b6"},
+];
+
+const ROLES = [
+  {id:"scout",name:"Scout",emoji:"🔭",desc:"Finds extra food on the trail",bonus:{food:3},perk:"food"},
+  {id:"medic",name:"Medic",emoji:"🩺",desc:"Stays healthier longer",bonus:{health:2},perk:"health"},
+  {id:"engineer",name:"Engineer",emoji:"🔧",desc:"Starts with extra gear",bonus:{gear:2},perk:"gear"},
+];
+
+const BIOMES = [
+  {
+    id:"forest",name:"Enchanted Forest",emoji:"🌲",
+    desc:"Ancient trees tower overhead. The air smells like pine and rain.",
+    colors:{bg:"linear-gradient(180deg,#0d1f0a,#1a3d12 50%,#2d5a1e)",accent:"#7cfc00",card:"rgba(45,90,30,0.3)"},
+    particles:["🍃","🌿","🍂","🦋","✨"],
+    reward:{name:"Nature Shield",emoji:"🛡️"},
+    campfire:"The forest opens into a small clearing. Fireflies dance around your camp as you rest by a cool stream.",
+    funFact:"The oldest tree ever found was over 5,000 years old — a bristlecone pine in California.",
+    questions:[
+      {q:"A bear is blocking the trail. What should you do?",type:"survival",choices:["Run as fast as you can","Climb the nearest tree","Back away slowly and look big","Try to feed it"],answer:2,hint:"Bears see running as prey behavior.",skill:"survival",diff:"easy"},
+      {q:"Which of these mushrooms is safe to eat in the wild?",type:"nature",choices:["White mushrooms are always safe","Any mushroom growing on a tree","Mushrooms that smell good","Only ones you can identify with certainty"],answer:3,hint:"Many poisonous mushrooms look like safe ones.",skill:"nature",diff:"medium"},
+      {q:"You need to cross a river. The water is knee-deep and fast. What's safest?",type:"survival",choices:["Swim across quickly","Cross at the widest point where water is slower","Cross at the narrowest point","Wait for the water to stop"],answer:1,hint:"Wider river sections have shallower, slower water.",skill:"survival",diff:"medium"},
+      {q:"What do tree rings tell us?",type:"nature",choices:["What season it is now","How tall the tree will grow","The tree's age and growing conditions","What animals lived nearby"],answer:2,hint:"Each ring = one year of growth.",skill:"nature",diff:"easy"},
+      {q:"You're lost in the forest. Which is the BEST way to find your way?",type:"critical",choices:["Walk downhill to find a river","Keep walking in one direction","Climb the tallest tree","Stay put and signal for help"],answer:3,hint:"Rescuers look where you were last seen.",skill:"critical",diff:"medium"},
+      {q:"Describe a huge waterfall in a mossy forest. Which description is best?",type:"communicate",choices:["A waterfall","It's wet and green","Water goes down, there are trees","Water crashes 50 feet into a pool surrounded by moss-covered rocks, mist hangs in the air"],answer:3,hint:"Good descriptions include size, color, sound, and feeling.",skill:"communicate",diff:"medium"},
+      {q:"A snake with bright red, yellow, and black bands crosses your path. What do you do?",type:"survival",choices:["Pick it up to look closer","Keep your distance and go around it","Poke it with a stick","Throw rocks at it"],answer:1,hint:"Bright colors often mean danger in nature.",skill:"survival",diff:"easy"},
+      {q:"Why do some trees lose their leaves in autumn?",type:"nature",choices:["To save water and energy during cold months","Because the wind blows them off","To make room for new animals","Because leaves get too old"],answer:0,hint:"Think about what trees need to survive winter.",skill:"nature",diff:"easy"},
+      {q:"You find two paths. One is well-worn but uphill. One is overgrown but flat. You need to conserve energy. Which?",type:"critical",choices:["The flat path — saving energy matters","Neither — make your own path","Flip a coin","The uphill path — it's well-worn for a reason"],answer:3,hint:"Well-worn paths mean other travelers found them reliable.",skill:"critical",diff:"hard"},
+      {q:"If you have 8 units of food and each day uses 2, how many days can you travel?",type:"critical",choices:["8 days","6 days","4 days","2 days"],answer:2,hint:"Divide your total food by daily usage.",skill:"critical",diff:"easy"},
+      {q:"What is the most common cause of forest fires?",type:"nature",choices:["Lightning","Volcanic eruptions","Humans","Spontaneous combustion"],answer:2,hint:"Over 80% of wildfires are caused by people.",skill:"nature",diff:"medium"},
+      {q:"You hear a loud crack above you in the forest. What should you do first?",type:"survival",choices:["Look up and keep walking","Freeze and look around","Move away from under the trees quickly","Sit down and cover your head"],answer:2,hint:"A cracking sound could mean a falling branch.",skill:"survival",diff:"easy"},
+      {q:"Moss tends to grow thickest on which side of trees?",type:"nature",choices:["East","South","West","North"],answer:3,hint:"Moss prefers shade. In the Northern Hemisphere, the north side gets the least sun.",skill:"nature",diff:"hard"},
+      {q:"Your campfire is dying and you need it for warmth. Which wood burns longest?",type:"survival",choices:["Thin twigs","Dry hardwood like oak","Green leaves","Pine needles"],answer:1,hint:"Dense, dry wood burns slowly and produces lasting heat.",skill:"survival",diff:"medium"},
+      {q:"An owl can rotate its head up to how many degrees?",type:"nature",choices:["90 degrees","180 degrees","270 degrees","360 degrees"],answer:2,hint:"It's more than halfway around but not a full circle.",skill:"nature",diff:"medium"}
+    ],
+  },
+  {
+    id:"desert",name:"Scorching Desert",emoji:"🏜️",
+    desc:"Heat waves ripple off the sand. The sun is relentless but the stars at night are incredible.",
+    colors:{bg:"linear-gradient(180deg,#4a2800,#8b5a1a 50%,#c8841a)",accent:"#ffd700",card:"rgba(139,90,26,0.3)"},
+    particles:["☀️","🌵","💨","🦂","✨"],
+    reward:{name:"Sun Beam",emoji:"☀️"},
+    campfire:"The desert sky explodes with stars. Without city lights, you can see the Milky Way stretching across the heavens.",
+    funFact:"The Sahara Desert is almost as big as the entire United States.",
+    questions:[
+      {q:"You're running low on water in the desert. When is the best time to travel?",type:"survival",choices:["Middle of the day","Only at night","Early morning and late evening","It doesn't matter"],answer:2,hint:"The sun is weakest when it's low in the sky.",skill:"survival",diff:"easy"},
+      {q:"Camels can survive weeks without water. How?",type:"nature",choices:["They store water in their humps","They don't need water at all","They drink sand","They store fat in their humps that converts to energy"],answer:3,hint:"It's not water in those humps!",skill:"nature",diff:"medium"},
+      {q:"You see a shimmering pool of water on the horizon. Is it real?",type:"critical",choices:["Definitely real water","Only real if it's morning","Probably a mirage — hot air bending light","Real if you can hear it"],answer:2,hint:"Hot air near the ground can bend light and create illusions.",skill:"critical",diff:"easy"},
+      {q:"What's the most important supply to carry extra of in the desert?",type:"survival",choices:["A compass","Food","Rope","Water"],answer:3,hint:"Dehydration is the #1 danger in desert environments.",skill:"survival",diff:"easy"},
+      {q:"A sandstorm is approaching fast. What's your best move?",type:"survival",choices:["Stand tall and face it","Run away from it","Climb to high ground","Get low, cover mouth and nose, turn away from the wind"],answer:3,hint:"Sand particles travel fast and can hurt eyes and lungs.",skill:"survival",diff:"medium"},
+      {q:"Desert animals are mostly active at night. This is called being...",type:"nature",choices:["Hibernating","Nocturnal","Migrating","Camouflaged"],answer:1,hint:"The Latin word 'nox' means night.",skill:"nature",diff:"easy"},
+      {q:"You have a choice: carry 2 extra water or 4 extra food in the desert. Which is smarter?",type:"critical",choices:["Equal amounts of both","4 extra food — you need energy","Neither — travel light","2 extra water — dehydration kills faster than hunger"],answer:3,hint:"You can survive weeks without food but only days without water.",skill:"critical",diff:"medium"},
+      {q:"Cactus spines are actually modified...",type:"nature",choices:["Roots","Seeds","Flowers","Leaves"],answer:3,hint:"Regular leaves would lose too much water in the desert.",skill:"nature",diff:"hard"},
+      {q:"You need to signal a rescue helicopter in an open desert. What's the best method?",type:"survival",choices:["Wave your arms","Shout as loud as you can","Write HELP in the sand","Use a mirror to reflect sunlight"],answer:3,hint:"Light travels farther than sound.",skill:"survival",diff:"medium"},
+      {q:"Why do desert temperatures drop so much at night?",type:"communicate",choices:["Sand holds heat well and releases it slowly","Deserts are always cold","Cold air comes from the mountains","Sand doesn't hold heat well, so it escapes quickly when the sun sets"],answer:3,hint:"Think about what holds heat vs what releases it.",skill:"communicate",diff:"hard"},
+      {q:"The largest desert in the world is...",type:"nature",choices:["The Sahara","The Gobi","Antarctica","The Arabian Desert"],answer:2,hint:"A desert is defined by precipitation, not temperature.",skill:"nature",diff:"hard"},
+      {q:"What is an oasis?",type:"nature",choices:["A type of sand dune","A desert storm","A mirage that appears at noon","A fertile area with water in the desert"],answer:3,hint:"These green spots are lifelines for desert travelers.",skill:"nature",diff:"easy"},
+      {q:"Your water container has a small leak. Do you stop to fix it or keep walking to reach camp?",type:"critical",choices:["Keep walking — camp is close","Ignore it — small leaks don't matter","Stop and fix it — every drop of water counts in the desert","Pour the water into a different container while walking"],answer:2,hint:"In the desert, losing water can be life-threatening.",skill:"critical",diff:"medium"},
+      {q:"Sidewinder snakes move sideways across sand because...",type:"nature",choices:["They're confused","It reduces contact with hot sand","They can't move straight","They're chasing prey"],answer:1,hint:"Less body touching the sand means less heat absorbed.",skill:"nature",diff:"medium"}
+    ],
+  },
+  {
+    id:"arctic",name:"Frozen Arctic",emoji:"🧊",
+    desc:"Ice stretches to the horizon. The air is so cold it burns your lungs, but the silence is beautiful.",
+    colors:{bg:"linear-gradient(180deg,#0a1628,#1a3a5a 50%,#4a8ab5)",accent:"#87CEEB",card:"rgba(26,58,90,0.3)"},
+    particles:["❄️","🌨️","⛄","🐧","✨"],
+    reward:{name:"Ice Blast",emoji:"❄️"},
+    campfire:"You build a snow shelter and light a small fire. The Northern Lights appear — green and purple waves dancing across the sky.",
+    funFact:"Antarctica is actually a desert — it gets less precipitation than the Sahara.",
+    questions:[
+      {q:"You fall through thin ice into freezing water. What's your first priority?",type:"survival",choices:["Call for help first","Remove wet clothing while in water","Swim to find thicker ice","Get out of the water immediately — hypothermia kills fast"],answer:3,hint:"Body temperature drops dangerously fast in cold water.",skill:"survival",diff:"medium"},
+      {q:"Why do polar bears have black skin under white fur?",type:"nature",choices:["No reason — it's random","They're born black and turn white","It protects from UV light","Black absorbs heat from the sun better"],answer:3,hint:"Think about what color absorbs the most heat.",skill:"nature",diff:"medium"},
+      {q:"You need an emergency snow shelter. What shape is warmest?",type:"critical",choices:["A flat lean-to","A dome (igloo) — warm air rises and stays trapped","A tall tower shape","A long tunnel"],answer:1,hint:"Warm air rises. What shape traps rising air best?",skill:"critical",diff:"medium"},
+      {q:"Which direction does a compass point in the Arctic?",type:"nature",choices:["Always north","Always south","It becomes unreliable near the magnetic pole","It spins randomly"],answer:2,hint:"The magnetic north pole is in the Arctic.",skill:"nature",diff:"hard"},
+      {q:"You have 5 health and a blizzard will cost 2. Push through or rest (using 1 extra food)?",type:"critical",choices:["Push through — food is scarce","It doesn't matter","Push through if you have gear","Rest — preserving health is more important"],answer:3,hint:"Health reaching zero ends your journey. Food can be found.",skill:"critical",diff:"medium"},
+      {q:"Describe walking through a blizzard. Which uses the most senses?",type:"communicate",choices:["Snow is falling","You can't see anything","It's cold and white","Tiny ice needles sting your face, you can't see 10 feet ahead, wind screams past your ears"],answer:3,hint:"Use senses: touch, sight, hearing.",skill:"communicate",diff:"medium"},
+      {q:"Why do Arctic foxes change from brown to white in winter?",type:"nature",choices:["Their fur absorbs snow color","They shed and grow new fur","Camouflage — to blend in with snow","They get colder and turn white"],answer:2,hint:"Being invisible helps both predators and prey.",skill:"nature",diff:"easy"},
+      {q:"Eating snow when thirsty in freezing conditions is...",type:"survival",choices:["A great idea — it's free water","Fine as long as you eat slowly","Only okay if it's fresh snow","Dangerous — it lowers your body temperature"],answer:3,hint:"Your body spends energy melting snow inside you.",skill:"survival",diff:"medium"},
+      {q:"What causes the Northern Lights (Aurora Borealis)?",type:"nature",choices:["Moonlight reflecting off ice","Charged particles from the sun hitting Earth's atmosphere","Light from distant cities","Stars moving across the sky"],answer:1,hint:"The sun sends out more than just light.",skill:"nature",diff:"hard"},
+      {q:"Igloos are warm inside because...",type:"critical",choices:["They have heaters","Ice blocks the wind and traps body heat inside","Snow is actually warm","The sun melts them just enough"],answer:1,hint:"Snow is a great insulator.",skill:"critical",diff:"easy"},
+      {q:"How do penguins stay warm in extreme cold?",type:"nature",choices:["They build fires","They huddle together in large groups and take turns in the middle","They never get cold","They dig underground burrows"],answer:1,hint:"Teamwork is a survival strategy.",skill:"nature",diff:"easy"},
+      {q:"Your socks are wet from sweat inside your boots. In freezing conditions, this is...",type:"survival",choices:["No big deal","Good — moisture keeps you warm","Dangerous — wet clothing accelerates heat loss","Helpful for walking on ice"],answer:2,hint:"Wet anything in cold weather is a serious risk.",skill:"survival",diff:"medium"},
+      {q:"Which layer of clothing should be closest to your skin in cold weather?",type:"survival",choices:["Cotton","Wool or synthetic moisture-wicking material","Denim","Waterproof nylon"],answer:1,hint:"You want something that pulls sweat away from your skin.",skill:"survival",diff:"medium"}
+    ],
+  },
+  {
+    id:"mountain",name:"Mighty Mountains",emoji:"⛰️",
+    desc:"The trail gets steeper with every step. Clouds drift below you now. The view is breathtaking.",
+    colors:{bg:"linear-gradient(180deg,#1a1a2e,#3a3a4e 50%,#6a6a7e)",accent:"#c0b283",card:"rgba(58,58,78,0.3)"},
+    particles:["🪨","🦅","⛰️","🌬️","✨"],
+    reward:{name:"Earth Quake",emoji:"🌋"},
+    campfire:"Perched on a ledge, you watch clouds drift below like a white ocean. An eagle soars past at eye level.",
+    funFact:"Mount Everest grows about 4 millimeters taller every year because of shifting tectonic plates.",
+    questions:[
+      {q:"The air gets thinner as you climb. What does this mean for your body?",type:"nature",choices:["More oxygen — you feel stronger","No difference","Less oxygen — you breathe harder and tire faster","You can breathe underwater"],answer:2,hint:"There's less of everything at high altitude, including oxygen.",skill:"nature",diff:"medium"},
+      {q:"You reach a cliff with a 10-foot gap. You have rope and gear. What do you do?",type:"critical",choices:["Jump across — it's only 10 feet","Throw the rope across and swing","Build a bridge from rocks","Find a safer way around — unnecessary risk isn't brave"],answer:3,hint:"Good explorers avoid unnecessary risks.",skill:"critical",diff:"easy"},
+      {q:"Lightning during a mountain storm. Where is the WORST place to be?",type:"survival",choices:["In a low ditch","Inside a cave","Under a tall, isolated tree","Crouching in an open area"],answer:2,hint:"Lightning strikes the tallest object.",skill:"survival",diff:"easy"},
+      {q:"Why do mountaineers acclimatize (spend days at base camp) before climbing?",type:"nature",choices:["To wait for good weather","To let their bodies adjust to less oxygen","To plan their route","To rest after the hike to camp"],answer:1,hint:"Your blood needs time to adapt to high altitude.",skill:"nature",diff:"medium"},
+      {q:"A rockslide blocks the trail. Wait 2 days (costs 4 food) or try a dangerous detour?",type:"critical",choices:["Wait — safety first","Climb over the rockslide","Go back the way you came","Try the detour — waiting costs too much food"],answer:3,hint:"Calculate the supply cost of waiting vs the risk of the detour.",skill:"critical",diff:"hard"},
+      {q:"You meet another explorer. How do you ask for trail information?",type:"communicate",choices:["Don't talk to strangers","Just wave and keep going","Say 'how's the trail?'","Ask specific questions: 'How far to the next water source? Any dangers ahead?'"],answer:3,hint:"Specific questions get useful answers.",skill:"communicate",diff:"easy"},
+      {q:"What causes an echo in the mountains?",type:"nature",choices:["Mountains making their own sounds","Wind carrying your voice","Sound waves bouncing off rock surfaces back to you","Your imagination"],answer:2,hint:"Sound travels in waves, like throwing a ball against a wall.",skill:"nature",diff:"easy"},
+      {q:"The temperature drops 3 degrees for every 1,000 feet up. It's 60 at 2,000 feet. What is it at 5,000?",type:"critical",choices:["57 degrees","54 degrees","51 degrees","50 degrees"],answer:2,hint:"5,000 - 2,000 = 3,000 feet. 3 x 3 = 9 degrees less.",skill:"critical",diff:"hard"},
+      {q:"At high altitude, water boils at a LOWER temperature. This means...",type:"nature",choices:["Food cooks faster","Nothing changes","Water boils quicker","Food takes longer to cook"],answer:3,hint:"Lower boiling point = less heat in the water = slower cooking.",skill:"nature",diff:"hard"},
+      {q:"You see clouds forming below you on a mountain. What does this likely mean?",type:"nature",choices:["Rain is coming to the valleys below","You are very high up","A tornado is forming","The clouds are falling"],answer:1,hint:"Clouds typically form between 6,000 and 20,000 feet.",skill:"nature",diff:"easy"},
+      {q:"Your hiking partner twists their ankle. What do you do first?",type:"survival",choices:["Leave them and get help","Tell them to walk it off","Help them sit down, check the injury, and stabilize it","Carry them on your back"],answer:2,hint:"Assess before you act.",skill:"survival",diff:"easy"},
+      {q:"Which is more dangerous on a mountain: going up or coming down?",type:"survival",choices:["Going up — it's harder","Coming down — most accidents happen on descent","Both are equally safe","Neither is dangerous"],answer:1,hint:"Tired legs and steep downhill slopes are a bad combination.",skill:"survival",diff:"medium"},
+      {q:"A mountain goat can climb almost vertical cliffs. What helps them the most?",type:"nature",choices:["They have wings","Sticky pads like tree frogs","Soft, rubber-like pads on their hooves that grip rock","Very long legs"],answer:2,hint:"Their hooves are specially designed for rocky terrain.",skill:"nature",diff:"medium"}
+    ],
+  },
+  {
+    id:"jungle",name:"Wild Jungle",emoji:"🌴",
+    desc:"Vines hang everywhere. Birds, insects, and rushing water fill the air. Life is everywhere.",
+    colors:{bg:"linear-gradient(180deg,#061a0a,#0d3318 50%,#1a5a2e)",accent:"#00ff88",card:"rgba(13,51,24,0.3)"},
+    particles:["🌺","🦜","🐒","🌴","✨"],
+    reward:{name:"Vine Whip",emoji:"🌿"},
+    campfire:"Monkeys chatter above. A parrot lands nearby and watches you eat. The jungle never sleeps.",
+    funFact:"Rainforests produce over 20% of the world's oxygen and contain more than half of all species.",
+    questions:[
+      {q:"You need drinking water but only have a muddy river. What's safest?",type:"survival",choices:["Drink it — river water is clean","Wait for rain","Filter it through your shirt only","Boil the water over a fire first"],answer:3,hint:"Boiling kills bacteria and parasites.",skill:"survival",diff:"easy"},
+      {q:"Why is the jungle floor often dark even during the day?",type:"nature",choices:["The dirt absorbs light","Animals block the light","Jungles are always cloudy","The canopy of tall trees blocks most sunlight"],answer:3,hint:"Look up — what's between you and the sky?",skill:"nature",diff:"easy"},
+      {q:"You hear a loud unfamiliar animal sound. What should you do?",type:"survival",choices:["Run immediately","Freeze and don't move","Stay calm, make noise to announce yourself, and move slowly away","Go investigate the sound"],answer:2,hint:"Most animals attack when startled.",skill:"survival",diff:"medium"},
+      {q:"What adaptation helps tree frogs stick to wet leaves?",type:"nature",choices:["Glue they produce","Sharp claws","Suction cups","Sticky pads on their toes"],answer:3,hint:"Their toe pads work like sticky notes.",skill:"nature",diff:"medium"},
+      {q:"Follow the river (longer, guaranteed water) or cut through jungle (shorter, risky). What factors matter most?",type:"critical",choices:["Whatever is fastest","Flip a coin","Which path looks prettier","Current water supply, group health, and remaining food"],answer:3,hint:"Good decisions weigh multiple factors.",skill:"critical",diff:"medium"},
+      {q:"You found an amazing waterfall. What makes the best description to tell a friend?",type:"communicate",choices:["Say 'it was cool'","Say 'there was a waterfall'","Include sounds, size comparisons, how it felt, and colors","Send a photo"],answer:2,hint:"Great communication uses comparisons and multiple senses.",skill:"communicate",diff:"easy"},
+      {q:"Why do some jungle plants grow enormous leaves?",type:"nature",choices:["Big leaves taste better","To scare animals away","To collect rainwater","To catch as much scarce sunlight as possible"],answer:3,hint:"Think about what's limited on the dark jungle floor.",skill:"nature",diff:"medium"},
+      {q:"You have 6 food, 3 water, 4 health. Jungle path costs 3 food + 2 water. River path costs 1 food + 1 health. Which?",type:"critical",choices:["Both are equal","Jungle path — health matters more","Stay put","River path — you can't afford to lose that much food and water"],answer:3,hint:"After the jungle path you'd have only 3 food and 1 water.",skill:"critical",diff:"hard"},
+      {q:"What is the biggest threat to rainforests today?",type:"nature",choices:["Volcanic eruptions","Too much rain","Deforestation by humans","Wild animals"],answer:2,hint:"Humans cut down rainforest for farming and resources.",skill:"nature",diff:"easy"},
+      {q:"Piranhas are known as fierce predators. In reality, they...",type:"nature",choices:["Are mostly scavengers that rarely attack humans","Attack everything that enters the water","Only live in the ocean","Are completely harmless"],answer:0,hint:"Movies exaggerate. Most piranha attacks on humans are extremely rare.",skill:"nature",diff:"medium"},
+      {q:"You need to cross a jungle river. You see crocodile eyes in the water. Best plan?",type:"survival",choices:["Swim fast across","Walk upstream to find a narrower, shallower crossing with better visibility","Throw rocks to scare them away","Wait until dark when they sleep"],answer:1,hint:"Crocodiles hunt in deep, murky water. Shallow clear water is safer.",skill:"survival",diff:"medium"},
+      {q:"Jungle humidity makes you sweat constantly. Why is staying hydrated extra important here?",type:"survival",choices:["Sweat doesn't cool you in humidity, so you sweat MORE and lose water faster","It's not important","Sweating means you're healthy","Humidity provides water through your skin"],answer:0,hint:"When air is already wet, sweat can't evaporate to cool you.",skill:"survival",diff:"hard"},
+      {q:"A toucan's large beak is used for...",type:"nature",choices:["Fighting other birds","Digging holes in trees","Regulating body temperature and reaching fruit on thin branches","Attracting mates with sound"],answer:2,hint:"The beak has blood vessels that release heat.",skill:"nature",diff:"medium"},
+      {q:"The Amazon Rainforest produces what percentage of the world's oxygen?",type:"nature",choices:["About 5%","About 20%","About 50%","About 80%"],answer:1,hint:"It's significant but not the majority.",skill:"nature",diff:"medium"}
+    ],
+  },
+]
+
+
+
+const SUMMIT_QS = [
+  {q:"You've traveled through 5 biomes. What's the most important survival skill?",type:"critical",choices:["Being the strongest","Running fast","Having the most food","Adaptability — every environment is different"],answer:3,hint:"No single skill works everywhere.",skill:"critical",diff:"medium"},
+  {q:"The summit is 500 feet away. You have 2 health, 1 food, weather is turning. What do you do?",type:"critical",choices:["Push — you're so close","Turn back entirely","Wait for better weather","Camp — reaching the summit dead isn't reaching it"],answer:3,hint:"The summit will still be there tomorrow.",skill:"critical",diff:"hard"},
+  {q:"What percentage of Earth's surface is wilderness?",type:"nature",choices:["About 75%","About 50%","About 5%","About 23%"],answer:3,hint:"Humans have settled more than most people think.",skill:"nature",diff:"hard"},
+  {q:"On your journey, when did you learn the most?",type:"communicate",choices:["When everything went right","When things went wrong and I had to figure out a new plan","When I had the most supplies","When the trail was easy"],answer:1,hint:"Mistakes are where real learning happens.",skill:"grit",diff:"easy"},
+  {q:"Describe your journey in one sentence. Which teaches someone the most?",type:"communicate",choices:["It was hard","I answered questions","I walked really far","I crossed 5 biomes, managed limited supplies, and learned to adapt"],answer:3,hint:"Good summaries include what happened, what was hard, and what you learned.",skill:"communicate",diff:"medium"},
+  {q:"Final challenge: a steep ice wall. You have rope and a partner. What's the plan?",type:"survival",choices:["Both climb at the same time","Throw the rope over and pull yourself up","One stays behind","One climbs while the other belays, then switch"],answer:3,hint:"A belayer keeps the climber safe.",skill:"survival",diff:"medium"},
+  {q:"What matters more on the trail: supplies or decisions?",type:"critical",choices:["Both equally","Neither — it's all luck","The supplies — you need stuff to survive","The decisions — supplies run out but good judgment doesn't"],answer:3,hint:"Same supplies, different decisions = different outcomes.",skill:"critical",diff:"medium"},
+  {q:"One message to a kid starting this trail tomorrow. What helps most?",type:"communicate",choices:["Go fast","Bring lots of food","Good luck","Think before you choose, be specific about what you need, don't panic"],answer:3,hint:"Best advice is actionable and covers multiple situations.",skill:"communicate",diff:"easy"},
+  {q:"The summit guardian blocks your path. What approach wins?",type:"critical",choices:["Charge at it with full force","Observe its patterns, find weaknesses, then act strategically","Run past it","Give up and go home"],answer:1,hint:"Strategy beats brute force.",skill:"critical",diff:"medium"},
+  {q:"You made it to the top. What's the first thing a smart explorer does?",type:"survival",choices:["Run around celebrating","Stay as long as possible","Take a selfie","Check weather and plan descent — most accidents happen going down"],answer:3,hint:"The summit is only halfway. You still need to get home.",skill:"survival",diff:"medium"}
+];
+
+const TRAIL_EVENTS = [
+  {text:"Dark clouds roll in. A storm is approaching fast.",emoji:"⛈️",choices:[{text:"Find shelter and wait",effect:{food:-1,health:0},result:"You stay dry but use time and food."},{text:"Push through the rain",effect:{food:0,health:-1},result:"You save time but get soaked. Your health drops."}]},
+  {text:"You discover an abandoned campsite with supplies scattered around.",emoji:"🏕️",choices:[{text:"Search carefully for useful items",effect:{food:2,gear:1},result:"You find dried food and a useful tool!"},{text:"Leave it — could be a trap",effect:{food:0,health:0},result:"You play it safe. Nothing gained, nothing lost."}]},
+  {text:"A friendly traveler offers to trade: 2 food for 1 gear item.",emoji:"🤝",choices:[{text:"Accept the trade",effect:{food:-2,gear:1},result:"Less food, but the gear could save you later."},{text:"Decline politely",effect:{food:0,gear:0},result:"You keep your food. Smart if supplies are low."}]},
+  {text:"You find a patch of wild berries growing by the trail.",emoji:"🫐",choices:[{text:"Pick and eat them carefully",effect:{food:3,health:0},result:"Delicious! Your food supply grows."},{text:"Leave them — some berries are poisonous",effect:{food:0,health:0},result:"Safe choice. You can't be too careful."}]},
+  {text:"Your path splits. A shortcut through a cave, or the long way around?",emoji:"🕳️",choices:[{text:"Take the cave shortcut",effect:{food:0,health:-1},result:"Faster, but you bump your head in the dark."},{text:"Go the long way around",effect:{food:-1,health:0},result:"Safer, but you use extra food traveling further."}]},
+];
+
+function getDiff(age){
+  if(age<=7) return {label:"Explorer",icon:"🌱",numQ:3,summitQ:3,hintOk:true,ptsMult:1,supplyMult:1.5};
+  if(age<=10) return {label:"Adventurer",icon:"⚡",numQ:3,summitQ:4,hintOk:true,ptsMult:1.5,supplyMult:1};
+  return {label:"Expert",icon:"🔥",numQ:4,summitQ:5,hintOk:false,ptsMult:2,supplyMult:0.8};
+}
+
+// ============================================================
+// COMPONENTS
+// ============================================================
+
+function TrailMap({current,completed,biomes}){
+  const nodes=[{name:"Base Camp",emoji:"🏕️"},...biomes.map(b=>({name:b.name,emoji:b.emoji})),{name:"Summit",emoji:"🏔️"}];
+  return (
+    <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:0,padding:"8px 4px",overflowX:"auto",width:"100%"}}>
+      {nodes.map((n,i)=>{
+        const done=i>0&&i<=completed;
+        const isCur=i===current+1;
+        const isSummit=i===nodes.length-1;
+        const active=done||isCur;
+        return (
+          <div key={i} style={{display:"flex",alignItems:"center"}}>
+            <div style={{display:"flex",flexDirection:"column",alignItems:"center",minWidth:36}}>
+              <div style={{width:isCur?32:24,height:isCur?32:24,borderRadius:"50%",background:done?"rgba(74,222,128,0.2)":isCur?"rgba(232,149,138,0.25)":"rgba(255,255,255,0.06)",border:isCur?"2px solid #E8958A":done?"2px solid #4ade80":"1px solid rgba(255,255,255,0.08)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:isCur?16:12,transition:"all 0.3s",position:"relative"}}>
+                {done?"✓":n.emoji}
+                {isCur&&<div style={{position:"absolute",top:-2,right:-2,width:8,height:8,borderRadius:"50%",background:"#E8958A",animation:"pulse 1.5s ease-in-out infinite"}}/>}
+              </div>
+              <div style={{fontSize:8,opacity:active?0.5:0.15,marginTop:2,textAlign:"center",fontWeight:600,maxWidth:48,lineHeight:1.1}}>{n.name}</div>
+            </div>
+            {i<nodes.length-1&&<div style={{width:16,height:2,background:done?"#4ade80":"rgba(255,255,255,0.08)",margin:"0 1px",marginBottom:14,borderRadius:1}}/>}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function SupplyBar({supplies}){
+  const items=[
+    {key:"food",icon:"🍖",label:"Food",color:"#E8958A",max:15},
+    {key:"water",icon:"💧",label:"Water",color:"#3b9bf6",max:12},
+    {key:"health",icon:"❤️",label:"Health",color:"#ef4444",max:7},
+    {key:"gear",icon:"🎒",label:"Gear",color:"#a855f7",max:7},
+  ];
+  return (
+    <div style={{display:"flex",gap:10,justifyContent:"center",padding:"6px 8px",flexWrap:"wrap"}}>
+      {items.map(it=>{
+        const val=supplies[it.key]||0;
+        const pct=Math.min(100,(val/it.max)*100);
+        const low=pct<25;
+        return (
+          <div key={it.key} style={{display:"flex",alignItems:"center",gap:4,minWidth:60}}>
+            <span style={{fontSize:14}}>{it.icon}</span>
+            <div style={{flex:1,minWidth:36}}>
+              <div style={{display:"flex",justifyContent:"space-between",fontSize:10,fontWeight:700,opacity:0.4,marginBottom:1}}>
+                <span>{it.label}</span><span>{val}</span>
+              </div>
+              <div style={{background:"rgba(255,255,255,0.08)",borderRadius:3,height:5,overflow:"hidden"}}>
+                <div style={{width:`${pct}%`,height:"100%",background:low?"#ef4444":it.color,borderRadius:3,transition:"width 0.5s"}}/>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function Explorer({size=100,gender="boy",role="scout",animate=false,speech="",showSp=false}){
+  const w=size,h=size*1.4;
+  const skinTone="#E8B88A";
+  const hairColor=gender==="girl"?"#8B4513":"#3a2515";
+  const shirtColors={scout:"#2d6a1e",medic:"#2255aa",engineer:"#8B6914"};
+  const shirt=shirtColors[role]||"#2d6a1e";
+  return (
+    <div style={{position:"relative",width:w,height:h,margin:"0 auto",animation:animate?"charIdle 2.5s ease-in-out infinite":"none"}}>
+      {showSp&&speech&&(<div style={{position:"absolute",top:-28,left:"50%",transform:"translateX(-50%)",background:"rgba(255,255,255,0.92)",color:"#222",padding:"4px 10px",borderRadius:12,fontSize:11,fontWeight:700,whiteSpace:"nowrap",animation:"bi 0.3s ease",zIndex:10,boxShadow:"0 2px 8px rgba(0,0,0,0.15)"}}>{speech}</div>)}
+      <svg viewBox="0 0 100 140" style={{width:"100%",height:"100%"}}>
+        {/* Legs */}
+        <rect x="30" y="95" width="14" height="32" rx="5" fill="#5a4a3a"/>
+        <rect x="56" y="95" width="14" height="32" rx="5" fill="#5a4a3a"/>
+        {/* Boots */}
+        <rect x="27" y="123" width="18" height="10" rx="4" fill="#4a3828"/>
+        <rect x="55" y="123" width="18" height="10" rx="4" fill="#4a3828"/>
+        {/* Body */}
+        <rect x="25" y="52" width="50" height="46" rx="8" fill={shirt}/>
+        {/* Belt */}
+        <rect x="25" y="90" width="50" height="6" rx="2" fill="#3a2a1a"/>
+        <rect x="46" y="89" width="8" height="8" rx="2" fill="#c0a050"/>
+        {/* Arms */}
+        <rect x="12" y="54" width="14" height="30" rx="6" fill={shirt}>
+          {animate&&<animateTransform attributeName="transform" type="rotate" values="-4 19 58;4 19 58;-4 19 58" dur="2s" repeatCount="indefinite"/>}
+        </rect>
+        <ellipse cx="19" cy="86" rx="5" ry="5" fill={skinTone}/>
+        <rect x="74" y="54" width="14" height="30" rx="6" fill={shirt}>
+          {animate&&<animateTransform attributeName="transform" type="rotate" values="4 81 58;-4 81 58;4 81 58" dur="2s" repeatCount="indefinite"/>}
+        </rect>
+        <ellipse cx="81" cy="86" rx="5" ry="5" fill={skinTone}/>
+        {/* Backpack */}
+        <rect x="68" y="50" width="16" height="24" rx="4" fill="#6B5B3A" stroke="#4a3a2a" strokeWidth="0.5"/>
+        <rect x="70" y="52" width="4" height="4" rx="1" fill="#8B7B4A"/>
+        {/* Head */}
+        <ellipse cx="50" cy="32" rx="18" ry="20" fill={skinTone}/>
+        {/* Hair */}
+        {gender==="girl"?(
+          <g>
+            <path d="M31 28 Q34 8 50 4 Q66 8 69 28" fill={hairColor}/>
+            <path d="M31 28 Q26 48 24 62" stroke={hairColor} strokeWidth="5" fill="none" strokeLinecap="round"/>
+            <path d="M69 28 Q74 48 76 62" stroke={hairColor} strokeWidth="5" fill="none" strokeLinecap="round"/>
+            <circle cx="50" cy="10" r="3.5" fill="#ff69b4"/>
+          </g>
+        ):(
+          <g>
+            <path d="M32 26 Q36 8 50 4 Q64 8 68 26" fill={hairColor}/>
+            <ellipse cx="50" cy="12" rx="22" ry="8" fill="#3a7d2e"/>
+            <rect x="28" y="10" width="44" height="5" rx="2" fill="#2d6a1e"/>
+          </g>
+        )}
+        {/* Eyes */}
+        <ellipse cx="42" cy="30" rx="3.5" ry="4" fill="#fff"/>
+        <ellipse cx="58" cy="30" rx="3.5" ry="4" fill="#fff"/>
+        <ellipse cx="42.5" cy="31" rx="2" ry="2.5" fill="#3a2a1a"/>
+        <ellipse cx="58.5" cy="31" rx="2" ry="2.5" fill="#3a2a1a"/>
+        <circle cx="43.5" cy="29.5" r="0.8" fill="#fff"/>
+        <circle cx="59.5" cy="29.5" r="0.8" fill="#fff"/>
+        {/* Mouth */}
+        <path d="M44 38 Q50 42 56 38" fill="none" stroke="#7a4a2a" strokeWidth="1.2" strokeLinecap="round"/>
+        {/* Blush */}
+        <circle cx="38" cy="36" r="3" fill="#f0a0a0" opacity="0.15"/>
+        <circle cx="62" cy="36" r="3" fill="#f0a0a0" opacity="0.15"/>
+        {/* Role indicator */}
+        {role==="scout"&&<circle cx="88" cy="54" r="6" fill="#2d6a1e" stroke="#7cfc00" strokeWidth="1"><text x="88" y="57" fontSize="7" textAnchor="middle" fill="#fff">🔭</text></circle>}
+      </svg>
+    </div>
+  );
+}
+
+function BossCreature({hp,maxHp}){
+  const rage=hp/maxHp<0.35;
+  return (
+    <div style={{animation:"bossIdle 3s ease-in-out infinite"}}>
+      <svg viewBox="0 0 120 130" style={{width:110,height:110}}>
+        {/* Body */}
+        <ellipse cx="60" cy="65" rx="35" ry="30" fill="#4a1a6a" stroke="#6a2a8a" strokeWidth="1"/>
+        {/* Horns */}
+        <path d="M32 42 Q22 15 18 5" stroke="#8B0000" strokeWidth="3.5" fill="none" strokeLinecap="round"/>
+        <path d="M88 42 Q98 15 102 5" stroke="#8B0000" strokeWidth="3.5" fill="none" strokeLinecap="round"/>
+        <circle cx="18" cy="5" r="3" fill="#ff4444" opacity="0.6"><animate attributeName="opacity" values="0.3;1;0.3" dur="1.5s" repeatCount="indefinite"/></circle>
+        <circle cx="102" cy="5" r="3" fill="#ff4444" opacity="0.6"><animate attributeName="opacity" values="0.3;1;0.3" dur="1.5s" begin="0.7s" repeatCount="indefinite"/></circle>
+        {/* Eyes */}
+        <ellipse cx="46" cy="56" rx="8" ry="6" fill="#1a0020"/>
+        <ellipse cx="74" cy="56" rx="8" ry="6" fill="#1a0020"/>
+        <ellipse cx="46" cy="56" rx="5" ry="4" fill="#ff0000"/>
+        <ellipse cx="74" cy="56" rx="5" ry="4" fill="#ff0000"/>
+        {/* Mouth */}
+        {rage?(<g><path d="M40 76 Q60 68 80 76" fill="#1a0020" stroke="#ff4444" strokeWidth="1.5"/>{[46,54,62,70].map((x,i)=><rect key={i} x={x-1} y={72} width={2} height={5} rx={0.5} fill="#fff" opacity="0.8"/>)}</g>):(<path d="M44 74 Q60 82 76 74" fill="none" stroke="#ff4444" strokeWidth="1.5" strokeLinecap="round"/>)}
+        {/* Arms */}
+        <ellipse cx="22" cy="80" rx="14" ry="18" fill="#4a1a6a"/>
+        <ellipse cx="98" cy="80" rx="14" ry="18" fill="#4a1a6a"/>
+        {/* Claws */}
+        {[12,18,24].map((x,i)=><path key={`l${i}`} d={`M${x} 96 L${x-2} 108`} stroke="#8B0000" strokeWidth="2" strokeLinecap="round"/>)}
+        {[96,102,108].map((x,i)=><path key={`r${i}`} d={`M${x} 96 L${x+2} 108`} stroke="#8B0000" strokeWidth="2" strokeLinecap="round"/>)}
+        {/* Legs */}
+        <ellipse cx="42" cy="110" rx="12" ry="8" fill="#3a0a4a"/>
+        <ellipse cx="78" cy="110" rx="12" ry="8" fill="#3a0a4a"/>
+        {/* Damage */}
+        {hp/maxHp<0.5&&<g opacity="0.3" stroke="#ff8888" strokeWidth="1" fill="none"><path d="M48 70 L54 78 L46 84"/><path d="M72 68 L66 76 L74 80"/></g>}
+      </svg>
+    </div>
+  );
+}
+
+function HPBar({cur,max,label,color}){
+  return (
+    <div style={{marginBottom:6}}>
+      <div style={{display:"flex",justifyContent:"space-between",fontSize:10,fontWeight:700,opacity:0.4,marginBottom:2}}><span>{label}</span><span>{cur}/{max}</span></div>
+      <div style={{background:"rgba(0,0,0,0.3)",borderRadius:6,height:10,overflow:"hidden",border:"1px solid rgba(255,255,255,0.06)"}}>
+        <div style={{width:`${Math.max(0,(cur/max)*100)}%`,height:"100%",background:`linear-gradient(90deg,${color},${color}88)`,borderRadius:6,transition:"width 0.5s"}}/>
+      </div>
+    </div>
+  );
+}
+
+function Particles({items}){
+  return (<div style={{position:"absolute",top:0,left:0,right:0,bottom:0,pointerEvents:"none",overflow:"hidden",zIndex:0}}>
+    {items.map((it,i)=>(<div key={i} style={{position:"absolute",left:`${10+i*18}%`,top:`${5+((i*37)%60)}%`,fontSize:14+i*2,opacity:0.12,animation:`float${i%3} ${6+i*1.5}s ease-in-out infinite`}}>{it}</div>))}
+  </div>);
+}
+
+const BS=(g,sh)=>({background:g,color:"#fff",padding:"14px 28px",borderRadius:50,fontSize:16,fontWeight:700,fontFamily:"inherit",border:"none",boxShadow:sh||"none",cursor:"pointer",transition:"all 0.15s"});
+
+// ============================================================
+// MAIN GAME
+// ============================================================
+
+function Game(){
+  // Game state
+  const [scr,setScr]=useState("welcome");
+  const [nm,setNm]=useState("");
+  const [age,setAge]=useState(0);
+  const [gender,setGender]=useState("");
+  const [role,setRole]=useState("");
+  const [onb,setOnb]=useState(0);
+
+  // Trail state
+  const [biomeIdx,setBiomeIdx]=useState(0);
+  const [biomesDone,setBiomesDone]=useState(0);
+  const [supplies,setSupplies]=useState({food:10,water:8,health:5,gear:3});
+
+  // Question state
+  const [questions,setQuestions]=useState([]);
+  const [qIdx,setQIdx]=useState(0);
+  const [sel,setSel]=useState(null);
+  const [showResult,setShowResult]=useState(false);
+  const [showHint,setShowHint]=useState(false);
+  const [biomeCorrect,setBiomeCorrect]=useState(0);
+  const [usedHint,setUsedHint]=useState(false);
+
+  // Trail events
+  const [pendingEvent,setPendingEvent]=useState(null);
+  const [eventResult,setEventResult]=useState(null);
+  const [eventShown,setEventShown]=useState(false);
+
+  // Score & skills
+  const [score,setScore]=useState(0);
+  const [streak,setStreak]=useState(0);
+  const [skills,setSkills]=useState({critical:0,nature:0,survival:0,communicate:0,grit:0});
+  const [totalCorrect,setTotalCorrect]=useState(0);
+
+  // Boss
+  const [bossQs,setBossQs]=useState([]);
+  const [bossQIdx,setBossQIdx]=useState(0);
+  const [bossHP,setBossHP]=useState(10);
+  const [playerHP,setPlayerHP]=useState(10);
+  const [gameOver,setGameOver]=useState(null);
+
+  // Post-game
+  const [postStep,setPostStep]=useState(0);
+  const [parentEmail,setParentEmail]=useState("");
+  const [atkAnim,setAtkAnim]=useState(""); // "player" or "boss"
+
+  // Speech
+  const [sp,setSp]=useState("");
+  const [shSp,setShSp]=useState(false);
+  const spTimer=useRef(null);
+
+  const say=(text)=>{setSp(text);setShSp(true);clearTimeout(spTimer.current);spTimer.current=setTimeout(()=>setShSp(false),2000);};
+
+  // Leaderboard
+  const [hiScores,setHiScores]=useState([]);
+  useEffect(()=>{(async()=>{try{const r=await window.storage.get("wilderness_quest_v2_scores");setHiScores(JSON.parse(r.value));}catch(e){}})();},[]);
+
+  const saveScore=async(s)=>{const newScores=[...hiScores,{name:nm,age,score:s,role}].sort((a,b)=>b.score-a.score).slice(0,10);setHiScores(newScores);try{await window.storage.set("wilderness_quest_v2_scores",JSON.stringify(newScores));}catch(e){}};
+
+  const p=getDiff(age);
+  const biome=BIOMES[biomeIdx];
+
+  // Setup supplies based on role
+  const startGame=()=>{
+    const r=ROLES.find(x=>x.id===role);
+    const s={food:10,water:8,health:5,gear:3};
+    if(r&&r.bonus){Object.keys(r.bonus).forEach(k=>{s[k]=(s[k]||0)+r.bonus[k];});}
+    setSupplies(s);
+    // Prep first biome questions
+    prepBiome(0);
+    setScr("trailMap");
+  };
+
+  const prepBiome=(idx)=>{
+    const b=BIOMES[idx];
+    const filtered=b.questions.filter(q=>p.numQ>=4||q.diff!=="hard");
+    const qs=shuffle(filtered).slice(0,p.numQ);
+    setQuestions(qs);
+    setQIdx(0);
+    setSel(null);
+    setShowResult(false);
+    setShowHint(false);
+    setBiomeCorrect(0);
+    setUsedHint(false);
+    // Set a trail event for mid-biome
+    const ev=pick(TRAIL_EVENTS);
+    setPendingEvent(ev);
+    setEventShown(false);
+    setEventResult(null);
+  };
+
+  const answer=(idx)=>{
+    if(showResult)return;
+    setSel(idx);
+    setShowResult(true);
+    const q=questions[qIdx];
+    const correct=idx===q.answer;
+    if(correct){
+      setTotalCorrect(t=>t+1);
+      setBiomeCorrect(c=>c+1);
+      const pts=Math.round(100*p.ptsMult*(1+streak*0.25));
+      setScore(s=>s+pts);
+      setStreak(s=>s+1);
+      setSkills(sk=>({...sk,[q.skill]:(sk[q.skill]||0)+pts}));
+      say(pick(["Yes!","Nailed it!","Great!","Awesome!"]));
+      // Water check - dehydration
+      if(supplies.water<=0)setSupplies(s=>({...s,health:Math.max(0,s.health-1)}));
+      // Supply bonus
+      const bonus=role==="scout"?2:1;
+      if(q.type==="survival"||q.type==="nature")setSupplies(s=>({...s,food:Math.min(15,s.food+bonus)}));
+      if(q.type==="critical")setSupplies(s=>({...s,water:Math.min(12,s.water+1)}));
+    }else{
+      setStreak(0);
+      setSkills(sk=>({...sk,grit:(sk.grit||0)+25}));
+      say(pick(["Tricky!","Not quite!","Next one!"]));
+      // Supply cost
+      const cost=role==="medic"?0:2;
+      if(cost>0)setSupplies(s=>({...s,health:Math.max(0,s.health-cost)}));
+    }
+  };
+
+  const nextQuestion=()=>{
+    setSel(null);setShowResult(false);setShowHint(false);setUsedHint(false);
+    // Check if health is 0
+    if(supplies.health<=0){setGameOver("exhausted");setScr("gameEnd");return;}
+    // Check if should show trail event (after question 1 or 2)
+    if(qIdx===1&&!eventShown&&pendingEvent){setScr("event");return;}
+    if(qIdx+1>=questions.length){
+      // Biome complete
+      const newDone=biomesDone+1;
+      setBiomesDone(newDone);
+      if(biomeCorrect>=2){
+        setScore(s=>s+200);setSkills(sk=>({...sk,grit:(sk.grit||0)+200}));say("POWER UP!");
+      }
+      setScr("biomeDone");
+    }else{
+      setQIdx(q=>q+1);
+    }
+  };
+
+  const goToCampfire=()=>{
+    // Deplete supplies at campfire
+    setSupplies(s=>({
+      ...s,
+      food:Math.max(0,s.food-3),
+      water:Math.max(0,s.water-2),
+    }));
+    setScr("campfire");
+  };
+
+  const nextBiome=()=>{
+    const next=biomeIdx+1;
+    if(next>=BIOMES.length){
+      // Go to summit
+      const sQs=shuffle(SUMMIT_QS).slice(0,p.summitQ);
+      setBossQs(sQs);
+      setBossQIdx(0);
+      setBossHP(Math.max(6,p.summitQ*2));
+      setPlayerHP(Math.max(2,supplies.health*2));
+      setScr("preSummit");
+    }else{
+      setBiomeIdx(next);
+      prepBiome(next);
+      setScr("biomeIntro");
+    }
+  };
+
+  const handleEvent=(choiceIdx)=>{
+    const choice=pendingEvent.choices[choiceIdx];
+    setEventResult({text:choice.result,effect:choice.effect});
+    setEventShown(true);
+    // Apply effects
+    setSupplies(s=>{
+      const n={...s};
+      Object.keys(choice.effect).forEach(k=>{
+        if(k in n)n[k]=Math.max(0,Math.min(k==="food"?15:k==="water"?12:7,n[k]+choice.effect[k]));
+      });
+      return n;
+    });
+  };
+
+  const continueAfterEvent=()=>{
+    setQIdx(q=>q+1);
+    setScr("question");
+  };
+
+  const bossAnswer=(idx)=>{
+    if(showResult)return;
+    setSel(idx);setShowResult(true);
+    const q=bossQs[bossQIdx];
+    const correct=idx===q.answer;
+    if(correct){
+      setTotalCorrect(t=>t+1);
+      const pts=Math.round(150*p.ptsMult);
+      setScore(s=>s+pts);
+      setStreak(s=>s+1);
+      setSkills(sk=>({...sk,[q.skill]:(sk[q.skill]||0)+pts}));
+      setBossHP(h=>Math.max(0,h-2));
+      say(pick(["Hit!","Take that!","Direct hit!"]));
+      setAtkAnim("player");setTimeout(()=>setAtkAnim(""),1800);
+    }else{
+      setStreak(0);
+      setSkills(sk=>({...sk,grit:(sk.grit||0)+30}));
+      setPlayerHP(h=>Math.max(0,h-2));
+      say(pick(["Ouch!","Ow!","Keep going!"]));
+      setAtkAnim("boss");setTimeout(()=>setAtkAnim(""),1800);
+    }
+  };
+
+  const nextBossQ=()=>{
+    setSel(null);setShowResult(false);setShowHint(false);
+    if(bossHP<=0){setGameOver("win");saveScore(score+(supplies.health>0?300:0)+(supplies.food>0?200:0));setScr("gameEnd");return;}
+    if(playerHP<=0){setGameOver("lose");saveScore(score);setScr("gameEnd");return;}
+    if(bossQIdx+1>=bossQs.length){
+      // Cycle back through questions if both still alive
+      setBossQIdx(0);
+      setBossQs(qs=>shuffle([...qs]));
+    } else {
+      setBossQIdx(q=>q+1);
+    }
+  };
+
+  const reset=()=>{
+    setScr("welcome");setOnb(0);setNm("");setAge(0);setGender("");setRole("");
+    setBiomeIdx(0);setBiomesDone(0);setQIdx(0);setSel(null);setShowResult(false);
+    setShowHint(false);setBiomeCorrect(0);setScore(0);setStreak(0);
+    setSkills({critical:0,nature:0,survival:0,communicate:0,grit:0});
+    setTotalCorrect(0);setGameOver(null);setPostStep(0);setParentEmail("");
+    setBossQIdx(0);setBossHP(10);setPlayerHP(10);setAtkAnim("");
+  };
+
+  const totSk=Object.values(skills).reduce((a,b)=>a+b,0);
+  const curQ=scr==="question"?questions[qIdx]:scr==="summit"?bossQs[bossQIdx]:null;
+
+  // ============================================================
+  // RENDER
+  // ============================================================
+
+  const bg=scr==="campfire"?"linear-gradient(180deg,#0a0a1e,#1a1028 50%,#2a1a3a)":scr==="preSummit"||scr==="summit"?"linear-gradient(180deg,#1a1a2e,#2a2040 50%,#4a2060)":biome?biome.colors.bg:"linear-gradient(180deg,#090d18,#0e1628)";
+
+  return (
+    <div style={{minHeight:"100vh",background:bg,color:"#fff",fontFamily:"'Fredoka',sans-serif",display:"flex",flexDirection:"column",alignItems:"center",position:"relative",overflow:"hidden",transition:"background 0.8s"}}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap');
+        @keyframes pulse{0%,100%{opacity:0.4}50%{opacity:1}}
+        @keyframes bi{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:translateY(0)}}
+        @keyframes su{0%{opacity:0;transform:translateY(-6px)}100%{opacity:1;transform:translateY(0)}}
+        @keyframes charIdle{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+        @keyframes bossIdle{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-6px) scale(1.03)}}
+        @keyframes float0{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-20px) rotate(10deg)}}
+        @keyframes float1{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-15px) rotate(-8deg)}}
+        @keyframes float2{0%,100%{transform:translateY(0)}50%{transform:translateY(-25px)}}
+        @keyframes bossHit{0%{transform:translateX(0) scale(1)}8%{transform:translateX(-28px) scale(0.85)}18%{transform:translateX(24px) scale(1.1)}28%{transform:translateX(-20px) scale(0.9)}38%{transform:translateX(16px) scale(1.05)}50%{transform:translateX(-10px)}65%{transform:translateX(6px)}80%{transform:translateX(-3px)}100%{transform:translateX(0) scale(1)}}
+        @keyframes playerHit{0%{transform:translateX(0) scale(1)}8%{transform:translateX(24px) scale(0.85)}18%{transform:translateX(-20px) scale(1.1)}28%{transform:translateX(16px) scale(0.9)}38%{transform:translateX(-12px) scale(1.05)}50%{transform:translateX(8px)}65%{transform:translateX(-4px)}80%{transform:translateX(2px)}100%{transform:translateX(0) scale(1)}}
+        @keyframes slashRight{0%{opacity:1;transform:translateX(-50px) scale(0.6) rotate(-40deg)}25%{opacity:1;transform:translateX(-10px) scale(1.5) rotate(-10deg)}50%{opacity:1;transform:translateX(20px) scale(2.2) rotate(15deg)}75%{opacity:0.6;transform:translateX(45px) scale(1.5) rotate(30deg)}100%{opacity:0;transform:translateX(70px) scale(0.4) rotate(50deg)}}
+        @keyframes slashLeft{0%{opacity:1;transform:translateX(50px) scale(0.6) rotate(40deg)}25%{opacity:1;transform:translateX(10px) scale(1.5) rotate(10deg)}50%{opacity:1;transform:translateX(-20px) scale(2.2) rotate(-15deg)}75%{opacity:0.6;transform:translateX(-45px) scale(1.5) rotate(-30deg)}100%{opacity:0;transform:translateX(-70px) scale(0.4) rotate(-50deg)}}
+        @keyframes screenShake{0%{transform:translate(0,0)}8%{transform:translate(-6px,-5px)}16%{transform:translate(7px,4px)}24%{transform:translate(-5px,6px)}32%{transform:translate(6px,-4px)}40%{transform:translate(-4px,5px)}50%{transform:translate(5px,-3px)}60%{transform:translate(-3px,3px)}72%{transform:translate(2px,-2px)}85%{transform:translate(-1px,1px)}100%{transform:translate(0,0)}}
+        @keyframes dmgNumber{0%{opacity:1;transform:translateY(0) scale(0.5)}20%{opacity:1;transform:translateY(-10px) scale(1.6)}40%{opacity:1;transform:translateY(-25px) scale(1.8)}60%{opacity:0.8;transform:translateY(-40px) scale(1.4)}100%{opacity:0;transform:translateY(-70px) scale(0.6)}}
+        @keyframes hitFlash{0%{opacity:0}15%{opacity:0.5}40%{opacity:0.3}100%{opacity:0}}
+        @keyframes impactBurst{0%{transform:scale(0);opacity:1}30%{transform:scale(1.5);opacity:0.8}60%{transform:scale(3);opacity:0.5}100%{transform:scale(5);opacity:0}}
+        @keyframes glow{0%,100%{box-shadow:0 0 8px rgba(232,149,138,0.15)}50%{box-shadow:0 0 20px rgba(232,149,138,0.4)}}
+        .cb{transition:all 0.15s;cursor:pointer;border:none}
+        .cb:hover{transform:translateY(-2px);filter:brightness(1.08)}
+        .cb:active{transform:translateY(0)}
+      `}</style>
+
+      {/* PERSISTENT TRAIL MAP — shown during gameplay */}
+      {["biomeIntro","question","event","biomeDone","campfire","preSummit","summit"].includes(scr)&&(
+        <div style={{width:"100%",maxWidth:660,padding:"14px 12px 0",position:"relative",zIndex:10}}>
+          <TrailMap current={biomeIdx} completed={biomesDone} biomes={BIOMES}/>
+          <SupplyBar supplies={supplies}/>
+        </div>
+      )}
+
+      {/* CONTENT AREA */}
+      <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"16px 20px",width:"100%",maxWidth:700,position:"relative"}}>
+
+        {/* === WELCOME === */}
+        {scr==="welcome"&&onb===0&&(
+          <div style={{textAlign:"center",animation:"bi 0.5s ease",maxWidth:560}}>
+            <div style={{fontSize:52,marginBottom:8}}>🌲🏔️🌴</div>
+            <h1 style={{fontSize:42,fontWeight:800,margin:"0 0 12px"}}>Wilderness Quest</h1>
+            <p style={{fontSize:18,opacity:0.45,marginBottom:28,lineHeight:1.55}}>Lead an expedition from Base Camp to the Mountain Summit. Manage your supplies, survive 5 biomes, and defeat the Summit Guardian.</p>
+            <button className="cb" onClick={()=>setOnb(1)} style={BS("linear-gradient(135deg,#E8958A,#D4726A)","0 4px 14px rgba(232,149,138,0.3)")}>Start Expedition</button>
+
+          </div>
+        )}
+
+        {/* NAME */}
+        {scr==="welcome"&&onb===1&&(
+          <div style={{textAlign:"center",animation:"bi 0.4s ease",maxWidth:480}}>
+            <h2 style={{fontSize:30,fontWeight:700,margin:"0 0 18px"}}>What's your name, explorer?</h2>
+            <input type="text" placeholder="Type your name" value={nm} onChange={e=>setNm(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&nm.trim())setOnb(2);}} style={{background:"rgba(255,255,255,0.06)",border:"2px solid rgba(255,255,255,0.1)",borderRadius:14,padding:"14px 18px",color:"#fff",fontSize:16,fontFamily:"inherit",width:"100%",textAlign:"center",boxSizing:"border-box",outline:"none",marginBottom:10}} />
+            <button className="cb" onClick={()=>{if(nm.trim())setOnb(2);}} style={BS("linear-gradient(135deg,#E8958A,#D4726A)","0 3px 10px rgba(232,149,138,0.2)")}>Next</button>
+          </div>
+        )}
+
+        {/* AGE */}
+        {scr==="welcome"&&onb===2&&(
+          <div style={{textAlign:"center",animation:"bi 0.4s ease"}}>
+            <h2 style={{fontSize:22,fontWeight:700,margin:"0 0 12px"}}>How old are you, {nm}?</h2>
+            <div style={{display:"flex",gap:8,justifyContent:"center",flexWrap:"wrap"}}>
+              {[{label:"5-7",icon:"🌱",val:6},{label:"8-10",icon:"⚡",val:9},{label:"11-13",icon:"🔥",val:12}].map(a=>(
+                <button key={a.val} className="cb" onClick={()=>{setAge(a.val);setOnb(3);}} style={{background:"rgba(255,255,255,0.06)",border:"2px solid rgba(255,255,255,0.08)",borderRadius:16,padding:"16px 22px",color:"#fff",fontFamily:"inherit"}}>
+                  <div style={{fontSize:28}}>{a.icon}</div>
+                  <div style={{fontSize:16,fontWeight:700}}>{a.label}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* GENDER */}
+        {scr==="welcome"&&onb===3&&(
+          <div style={{textAlign:"center",animation:"bi 0.4s ease"}}>
+            <h2 style={{fontSize:22,fontWeight:700,margin:"0 0 12px"}}>Choose your explorer</h2>
+            <div style={{display:"flex",gap:16,justifyContent:"center"}}>
+              {["boy","girl"].map(g=>(
+                <button key={g} className="cb" onClick={()=>{setGender(g);setOnb(4);}} style={{background:"rgba(255,255,255,0.04)",border:"2px solid rgba(255,255,255,0.08)",borderRadius:18,padding:"14px 18px",color:"#fff",fontFamily:"inherit"}}>
+                  <Explorer size={70} gender={g} role="scout" animate={false}/>
+                  <div style={{fontSize:14,fontWeight:700,marginTop:4}}>{g==="boy"?"Boy":"Girl"}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ROLE */}
+        {scr==="welcome"&&onb===4&&(
+          <div style={{textAlign:"center",animation:"bi 0.4s ease",maxWidth:400}}>
+            <h2 style={{fontSize:22,fontWeight:700,margin:"0 0 4px"}}>Choose your role</h2>
+            <p style={{fontSize:13,opacity:0.4,marginBottom:14}}>Each role gives different starting supplies</p>
+            <div style={{display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap"}}>
+              {ROLES.map(r=>(
+                <button key={r.id} className="cb" onClick={()=>{setRole(r.id);setOnb(5);}} style={{flex:"1 1 100px",background:"rgba(255,255,255,0.04)",border:"2px solid rgba(255,255,255,0.08)",borderRadius:16,padding:"14px 12px",color:"#fff",fontFamily:"inherit"}}>
+                  <div style={{fontSize:28}}>{r.emoji}</div>
+                  <div style={{fontSize:15,fontWeight:700}}>{r.name}</div>
+                  <div style={{fontSize:11,opacity:0.4}}>{r.desc}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* EXPEDITION PLAN */}
+        {scr==="welcome"&&onb===5&&(
+          <div style={{textAlign:"center",animation:"bi 0.5s ease",maxWidth:580,width:"100%"}}>
+            <h2 style={{fontSize:22,fontWeight:700,margin:"0 0 6px"}}>Plan Your Expedition</h2>
+            <p style={{fontSize:13,opacity:0.4,marginBottom:14}}>{nm} the {ROLES.find(r=>r.id===role)?.name} | {getDiff(age).icon} {getDiff(age).label}</p>
+            <TrailMap current={-1} completed={0} biomes={BIOMES}/>
+            <div style={{margin:"12px 0"}}>
+              <div style={{fontSize:11,fontWeight:700,opacity:0.3,marginBottom:6}}>STARTING SUPPLIES</div>
+              <SupplyBar supplies={{food:10+(ROLES.find(r=>r.id===role)?.bonus?.food||0),water:8+(ROLES.find(r=>r.id===role)?.bonus?.water||0),health:5+(ROLES.find(r=>r.id===role)?.bonus?.health||0),gear:3+(ROLES.find(r=>r.id===role)?.bonus?.gear||0)}}/>
+            </div>
+            <button className="cb" onClick={()=>{startGame();}} style={{...BS("linear-gradient(135deg,#E8958A,#D4726A)","0 4px 14px rgba(232,149,138,0.3)"),animation:"glow 2s ease-in-out infinite"}}>Begin Expedition</button>
+          </div>
+        )}
+
+        {/* TRAIL MAP SCREEN */}
+        {scr==="trailMap"&&(
+          <div style={{textAlign:"center",animation:"bi 0.5s ease"}}>
+            <div style={{marginTop:20,marginBottom:10}}><Explorer size={80} gender={gender} role={role} animate speech="Let's go!" showSp/></div>
+            <div style={{marginTop:20}}>
+              <button className="cb" onClick={()=>{prepBiome(0);setScr("biomeIntro");}} style={BS("linear-gradient(135deg,#E8958A,#D4726A)","0 4px 14px rgba(232,149,138,0.3)")}>Enter {BIOMES[0].name}</button>
+            </div>
+          </div>
+        )}
+
+        {/* BIOME INTRO */}
+        {scr==="biomeIntro"&&(
+          <div style={{textAlign:"center",zIndex:1,animation:"bi 0.5s ease",maxWidth:420}}>
+            <Particles items={biome.particles}/>
+            <div style={{fontSize:52,margin:"8px 0"}}>{biome.emoji}</div>
+            <h2 style={{fontSize:28,fontWeight:700,margin:"0 0 8px"}}>{biome.name}</h2>
+            <p style={{fontSize:16,opacity:0.5,lineHeight:1.55,marginBottom:10}}>{biome.desc}</p>
+            <p style={{fontSize:12,opacity:0.3}}>{p.numQ} challenges ahead{pendingEvent?" + 1 trail event":""}</p>
+            <div style={{marginTop:28,marginBottom:14}}>
+              <Explorer size={70} gender={gender} role={role} animate speech="Ready!" showSp/>
+            </div>
+            <button className="cb" onClick={()=>setScr("question")} style={BS(`linear-gradient(135deg,${biome.colors.accent},${biome.colors.accent}bb)`,`0 4px 12px ${biome.colors.accent}44`)}>Enter</button>
+          </div>
+        )}
+
+        {/* QUESTION */}
+        {scr==="question"&&curQ&&(
+          <div style={{maxWidth:460,width:"100%",zIndex:1,position:"relative",animation:"bi 0.3s ease"}}>
+            <Particles items={biome.particles}/>
+            <div style={{display:"flex",justifyContent:"space-between",fontSize:11,fontWeight:600,opacity:0.4,marginBottom:4}}>
+              <span>{biome.emoji} {biome.name}</span>
+              <span>Q{qIdx+1}/{questions.length}{streak>1?` | ${streak}x streak`:""}</span>
+            </div>
+            <div style={{display:"flex",gap:4,justifyContent:"center",marginBottom:8}}>
+              {Array.from({length:questions.length}).map((_,i)=>(<div key={i} style={{width:32,height:5,borderRadius:3,background:i<qIdx?biome.colors.accent:i===qIdx?"#fff":"rgba(255,255,255,0.08)"}}/>))}
+            </div>
+            <div style={{display:"flex",justifyContent:"center",marginTop:24,marginBottom:14}}>
+              <Explorer size={45} gender={gender} role={role} animate speech={sp} showSp={shSp}/>
+            </div>
+            <div style={{background:biome.colors.card,borderRadius:16,padding:"14px 18px",marginBottom:10,border:"1px solid rgba(255,255,255,0.06)"}}>
+              <div style={{fontSize:10,fontWeight:700,opacity:0.3,letterSpacing:1,marginBottom:6}}>{curQ.type.toUpperCase()}</div>
+              <div style={{fontSize:17,fontWeight:600,lineHeight:1.5}}>{curQ.q}</div>
+            </div>
+            <div style={{display:"flex",flexDirection:"column",gap:7,marginBottom:8}}>
+              {curQ.choices.map((c,i)=>{
+                const isC=i===curQ.answer,isS=sel===i;
+                let bg2="rgba(255,255,255,0.06)",bd="2px solid rgba(255,255,255,0.06)";
+                if(showResult){if(isC){bg2="rgba(74,222,128,0.15)";bd="2px solid #4ade80";}else if(isS){bg2="rgba(239,68,68,0.15)";bd="2px solid #ef4444";}}
+                return (<button key={i} className="cb" onClick={()=>answer(i)} disabled={showResult} style={{background:bg2,border:bd,borderRadius:14,padding:"16px 22px",color:"#fff",fontSize:18,fontWeight:600,fontFamily:"inherit",textAlign:"left",display:"flex",alignItems:"center",gap:10,opacity:showResult&&!isC&&!isS?0.15:1}}>
+                  <span style={{width:26,height:26,borderRadius:"50%",flexShrink:0,background:showResult&&isC?"#4ade80":showResult&&isS?"#ef4444":"rgba(255,255,255,0.06)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:700}}>
+                    {showResult&&isC?"✓":showResult&&isS?"✗":String.fromCharCode(65+i)}
+                  </span>{c}
+                </button>);
+              })}
+            </div>
+            {supplies.food<=0&&!showResult&&<div style={{fontSize:11,color:"#E8958A",fontWeight:600,marginBottom:4}}>⚠️ No food! Hints disabled.</div>}
+            {supplies.water<=0&&!showResult&&<div style={{fontSize:11,color:"#3b9bf6",fontWeight:600,marginBottom:4}}>⚠️ No water! Losing health each question.</div>}
+            {!showResult&&!showHint&&p.hintOk&&supplies.food>0&&(<button className="cb" onClick={()=>{setShowHint(true);setUsedHint(true);setScore(s=>Math.max(0,s-50));if(curQ)setSkills(sk=>({...sk,[curQ.skill]:Math.max(0,(sk[curQ.skill]||0)-50)}));}} style={{background:"none",border:"1px solid rgba(255,255,255,0.08)",color:"#fff",padding:"5px 14px",borderRadius:14,fontSize:11,fontFamily:"inherit",opacity:0.3}}>Hint (-50pts)</button>)}
+            {showHint&&!showResult&&<div style={{background:"rgba(255,255,255,0.04)",borderRadius:10,padding:"6px 12px",fontSize:12,opacity:0.5,animation:"su 0.2s"}}>{curQ.hint}</div>}
+            {showResult&&(
+              <div style={{animation:"bi 0.25s ease",textAlign:"center"}}>
+                <div style={{fontSize:28,fontWeight:800,marginBottom:10,color:sel===curQ.answer?"#4ade80":"#ff6b6b"}}>{sel===curQ.answer?"✅ Correct!":"❌ Not quite!"}</div>
+                <div style={{background:sel===curQ.answer?"rgba(74,222,128,0.08)":"rgba(239,68,68,0.08)",borderRadius:14,padding:"14px 18px",border:sel===curQ.answer?"1px solid rgba(74,222,128,0.15)":"1px solid rgba(239,68,68,0.15)",marginBottom:10,textAlign:"left"}}>
+                  <div style={{fontSize:10,fontWeight:700,opacity:0.3,letterSpacing:1,marginBottom:4}}>{sel===curQ.answer?"WHY THIS IS RIGHT":"THE RIGHT ANSWER"}</div>
+                  <div style={{fontSize:18,lineHeight:1.55,opacity:0.7}}>{curQ.explanation||curQ.hint}</div>
+                  {sel!==curQ.answer&&<div style={{fontSize:14,fontWeight:700,color:"#4ade80",marginTop:8}}>✓ {curQ.choices[curQ.answer]}</div>}
+                </div>
+                <div style={{display:"flex",gap:8,justifyContent:"center",flexWrap:"wrap",marginBottom:8}}>
+                  {sel===curQ.answer&&(curQ.type==="survival"||curQ.type==="nature")&&<div style={{fontSize:13,color:"#4ade80",fontWeight:600}}>+{role==="scout"?2:1} 🍖 Food found!</div>}
+                  {sel===curQ.answer&&curQ.type==="critical"&&<div style={{fontSize:13,color:"#3b9bf6",fontWeight:600}}>+1 💧 Water found!</div>}
+                  {sel!==curQ.answer&&role!=="medic"&&<div style={{fontSize:13,color:"#ef4444",fontWeight:600}}>-2 ❤️ Health lost</div>}
+                  {sel!==curQ.answer&&role==="medic"&&<div style={{fontSize:13,color:"#3b9bf6",fontWeight:600}}>🩺 Medic perk: No health lost!</div>}
+                </div>
+                <button className="cb" onClick={nextQuestion} style={BS("rgba(255,255,255,0.1)")}>Continue</button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* TRAIL EVENT */}
+        {scr==="event"&&pendingEvent&&(
+          <div style={{textAlign:"center",zIndex:1,animation:"bi 0.5s ease",maxWidth:400}}>
+            <div style={{fontSize:48,marginBottom:8}}>{pendingEvent.emoji}</div>
+            <div style={{fontSize:11,fontWeight:700,opacity:0.3,letterSpacing:1,marginBottom:8}}>TRAIL EVENT</div>
+            <h3 style={{fontSize:22,fontWeight:700,margin:"0 0 16px"}}>{pendingEvent.text}</h3>
+            {!eventResult?(
+              <div style={{display:"flex",flexDirection:"column",gap:8}}>
+                {pendingEvent.choices.map((c,i)=>(
+                  <button key={i} className="cb" onClick={()=>handleEvent(i)} style={{background:"rgba(255,255,255,0.06)",border:"2px solid rgba(255,255,255,0.08)",borderRadius:14,padding:"14px 18px",color:"#fff",fontSize:14,fontWeight:600,fontFamily:"inherit",textAlign:"left"}}>{c.text}</button>
+                ))}
+              </div>
+            ):(
+              <div style={{animation:"bi 0.3s ease"}}>
+                <div style={{background:"rgba(255,255,255,0.04)",borderRadius:14,padding:"14px",border:"1px solid rgba(255,255,255,0.06)",marginBottom:12}}>
+                  <p style={{fontSize:14,opacity:0.6}}>{eventResult.text}</p>
+                  <div style={{display:"flex",gap:8,justifyContent:"center",marginTop:8}}>
+                    {Object.entries(eventResult.effect).filter(([k,v])=>v!==0).map(([k,v])=>(
+                      <span key={k} style={{fontSize:12,fontWeight:700,color:v>0?"#4ade80":"#ef4444"}}>{v>0?"+":""}{v} {k==="food"?"🍖":k==="water"?"💧":k==="health"?"❤️":"🎒"}</span>
+                    ))}
+                  </div>
+                </div>
+                <button className="cb" onClick={continueAfterEvent} style={BS("rgba(255,255,255,0.1)")}>Continue</button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* BIOME DONE */}
+        {scr==="biomeDone"&&(
+          <div style={{textAlign:"center",zIndex:1,animation:"bi 0.5s ease",maxWidth:400}}>
+            <Particles items={biome.particles}/>
+            <div style={{fontSize:48}}>{biome.emoji}</div>
+            <h2 style={{fontSize:22,fontWeight:700,margin:"4px 0"}}>{biome.name} Complete!</h2>
+            <p style={{fontSize:15}}>{nm}: <strong>{biomeCorrect}/{p.numQ}</strong> correct</p>
+            <div style={{marginTop:28,marginBottom:14}}>
+              <Explorer size={70} gender={gender} role={role} animate speech={biomeCorrect>=2?"Power up!":"Onward!"} showSp/>
+            </div>
+            {biomeCorrect>=2?(
+              <div style={{background:"rgba(74,222,128,0.08)",borderRadius:14,padding:12,border:"2px solid #4ade80",marginBottom:10}}>
+                <div style={{fontSize:10,fontWeight:700,opacity:0.5}}>REWARD EARNED!</div>
+                <div style={{fontSize:26}}>{biome.reward.emoji}</div>
+                <div style={{fontSize:15,fontWeight:700}}>{biome.reward.name}</div>
+              </div>
+            ):(
+              <div style={{background:"rgba(239,68,68,0.06)",borderRadius:14,padding:12,border:"2px solid rgba(239,68,68,0.2)",marginBottom:10}}>
+                <p style={{margin:0,fontSize:13}}>Need 2 correct for the reward. Keep going!</p>
+              </div>
+            )}
+            <button className="cb" onClick={goToCampfire} style={BS("linear-gradient(135deg,#E8958A,#D4726A)","0 3px 10px rgba(232,149,138,0.2)")}>Make Camp</button>
+          </div>
+        )}
+
+        {/* CAMPFIRE */}
+        {scr==="campfire"&&(
+          <div style={{textAlign:"center",zIndex:1,animation:"bi 0.5s ease",maxWidth:420}}>
+            <div style={{fontSize:48,marginBottom:8}}>🔥</div>
+            <h2 style={{fontSize:26,fontWeight:700,margin:"0 0 8px"}}>Camp for the Night</h2>
+            <div style={{background:"rgba(255,255,255,0.03)",borderRadius:16,padding:"16px",border:"1px solid rgba(255,255,255,0.05)",marginBottom:12,textAlign:"left"}}>
+              <p style={{fontSize:15,opacity:0.5,lineHeight:1.65,margin:"0 0 10px"}}>{biome.campfire}</p>
+              <div style={{background:"rgba(232,149,138,0.06)",borderRadius:10,padding:"8px 12px",border:"1px solid rgba(232,149,138,0.1)"}}>
+                <div style={{fontSize:10,fontWeight:700,opacity:0.3,marginBottom:2}}>DID YOU KNOW?</div>
+                <div style={{fontSize:12,opacity:0.4}}>{biome.funFact}</div>
+              </div>
+            </div>
+            <div style={{fontSize:11,opacity:0.3,marginBottom:4}}>Supplies used overnight: -3 🍖 -2 💧</div>
+            {(supplies.food<=2||supplies.water<=1)&&<div style={{fontSize:12,color:"#E8958A",fontWeight:600,marginBottom:8}}>⚠️ Supplies running low!</div>}
+            <button className="cb" onClick={nextBiome} style={BS("linear-gradient(135deg,#E8958A,#D4726A)","0 3px 10px rgba(232,149,138,0.2)")}>
+              {biomeIdx+1>=BIOMES.length?"Approach Summit":"Continue to "+BIOMES[biomeIdx+1]?.name}
+            </button>
+          </div>
+        )}
+
+        {/* PRE-SUMMIT */}
+        {scr==="preSummit"&&(
+          <div style={{textAlign:"center",zIndex:1,animation:"bi 0.5s ease",maxWidth:420}}>
+            <Particles items={["🔥","💀","⚡","💥"]}/>
+            <div style={{fontSize:48,marginBottom:4}}>🏔️</div>
+            <h2 style={{fontSize:28,fontWeight:700,margin:"0 0 8px"}}>The Summit Guardian</h2>
+            <p style={{fontSize:13,opacity:0.4,marginBottom:8}}>A creature guards the peak. Answer its challenges to reach the top.</p>
+            <BossCreature hp={bossHP} maxHp={bossHP}/>
+            <div style={{marginTop:30,marginBottom:16}}>
+              <Explorer size={60} gender={gender} role={role} animate speech="Bring it!" showSp/>
+            </div>
+            <button className="cb" onClick={()=>setScr("summit")} style={{...BS("linear-gradient(135deg,#9333ea,#dc2626)","0 4px 16px rgba(147,51,234,0.3)"),animation:"glow 2s ease-in-out infinite"}}>FIGHT!</button>
+          </div>
+        )}
+
+        {/* SUMMIT BATTLE */}
+        {scr==="summit"&&bossQs[bossQIdx]&&(
+          <div style={{maxWidth:460,width:"100%",zIndex:1,position:"relative"}}>
+            <Particles items={["🔥","💀","⚡","💥"]}/>
+            <HPBar cur={bossHP} max={Math.max(6,p.summitQ*2)} label="Summit Guardian" color="#dc2626"/>
+            <HPBar cur={playerHP} max={Math.max(2,supplies.health*2)||10} label={nm} color="#4ade80"/>
+            <div style={{animation:atkAnim?"screenShake 1.2s ease":"none",position:"relative"}}>
+              {/* SCREEN FLASH */}
+              {atkAnim&&<div style={{position:"absolute",top:0,left:"-10%",right:"-10%",bottom:0,background:atkAnim==="player"?"rgba(74,222,128,0.15)":"rgba(239,68,68,0.15)",animation:"hitFlash 1.2s ease forwards",borderRadius:20,zIndex:5,pointerEvents:"none"}}/>}
+              <div style={{display:"flex",justifyContent:"space-around",alignItems:"center",margin:"10px 0",minHeight:120}}>
+                <div style={{animation:atkAnim==="boss"?"playerHit 1.4s ease":"none",position:"relative"}}>
+                  <Explorer size={65} gender={gender} role={role} animate speech={sp} showSp={shSp}/>
+                  {/* PLAYER ATTACK - sword slash */}
+                  {atkAnim==="player"&&(<>
+                    <div style={{position:"absolute",top:"20%",right:-20,fontSize:36,animation:"slashRight 1s ease forwards",zIndex:10}}>⚔️</div>
+                    <div style={{position:"absolute",top:"10%",right:-30,fontSize:20,animation:"slashRight 1.1s ease 0.15s forwards",opacity:0,zIndex:10}}>💫</div>
+                  </>)}
+                  {/* BOSS ATTACK HITS PLAYER */}
+                  {atkAnim==="boss"&&(<>
+                    <div style={{position:"absolute",top:"15%",left:"20%",width:40,height:40,borderRadius:"50%",background:"rgba(239,68,68,0.4)",animation:"impactBurst 1.2s ease forwards",zIndex:10}}/>
+                    <div style={{position:"absolute",top:"-10%",left:"30%",fontSize:24,fontWeight:900,color:"#ff4444",animation:"dmgNumber 1.5s ease forwards",zIndex:15}}>-2</div>
+                  </>)}
+                </div>
+                <div style={{fontSize:22,fontWeight:900,opacity:atkAnim?0.05:0.2,transition:"opacity 0.2s"}}>VS</div>
+                <div style={{animation:atkAnim==="player"?"bossHit 1.4s ease":"none",position:"relative"}}>
+                  <BossCreature hp={bossHP} maxHp={Math.max(6,p.summitQ*2)}/>
+                  {/* PLAYER ATTACK HITS BOSS */}
+                  {atkAnim==="player"&&(<>
+                    <div style={{position:"absolute",top:"15%",right:"20%",width:40,height:40,borderRadius:"50%",background:"rgba(74,222,128,0.4)",animation:"impactBurst 1.2s ease forwards",zIndex:10}}/>
+                    <div style={{position:"absolute",top:"-10%",right:"25%",fontSize:24,fontWeight:900,color:"#4ade80",animation:"dmgNumber 1.5s ease forwards",zIndex:15}}>-2</div>
+                  </>)}
+                  {/* BOSS ATTACK - claw slash */}
+                  {atkAnim==="boss"&&(<>
+                    <div style={{position:"absolute",top:"20%",left:-20,fontSize:36,animation:"slashLeft 1s ease forwards",zIndex:10}}>💥</div>
+                    <div style={{position:"absolute",top:"35%",left:-15,fontSize:20,animation:"slashLeft 1.1s ease 0.15s forwards",opacity:0,zIndex:10}}>🔥</div>
+                  </>)}
+                </div>
+              </div>
+            </div>
+            <div style={{background:"rgba(0,0,0,0.25)",borderRadius:14,padding:"12px 16px",marginBottom:8,border:"1px solid rgba(255,255,255,0.04)"}}>
+              <div style={{fontSize:9,opacity:0.25,marginBottom:3}}>Q{bossQIdx+1}/{bossQs.length}</div>
+              <div style={{fontSize:15,fontWeight:600,lineHeight:1.4}}>{bossQs[bossQIdx].q}</div>
+            </div>
+            <div style={{display:"flex",flexDirection:"column",gap:7,marginBottom:8}}>
+              {bossQs[bossQIdx].choices.map((c,i)=>{
+                const isC=i===bossQs[bossQIdx].answer,isS=sel===i;
+                let bg2="rgba(255,255,255,0.06)",bd="2px solid rgba(255,255,255,0.06)";
+                if(showResult){if(isC){bg2="rgba(74,222,128,0.15)";bd="2px solid #4ade80";}else if(isS){bg2="rgba(239,68,68,0.15)";bd="2px solid #ef4444";}}
+                return (<button key={i} className="cb" onClick={()=>bossAnswer(i)} disabled={showResult} style={{background:bg2,border:bd,borderRadius:14,padding:"16px 22px",color:"#fff",fontSize:18,fontWeight:600,fontFamily:"inherit",textAlign:"left",opacity:showResult&&!isC&&!isS?0.15:1}}>
+                  {c}
+                </button>);
+              })}
+            </div>
+            {showResult&&(
+              <div style={{textAlign:"center",animation:"bi 0.25s ease"}}>
+                <div style={{fontSize:28,fontWeight:800,color:sel===bossQs[bossQIdx].answer?"#4ade80":"#ff6b6b",marginBottom:8,textShadow:sel===bossQs[bossQIdx].answer?"0 0 10px rgba(74,222,128,0.5)":"0 0 10px rgba(239,68,68,0.5)"}}>{sel===bossQs[bossQIdx].answer?"⚔️ DIRECT HIT!":"💥 OUCH!"}</div>
+                <div style={{background:sel===bossQs[bossQIdx].answer?"rgba(74,222,128,0.08)":"rgba(239,68,68,0.08)",borderRadius:14,padding:"12px 16px",border:sel===bossQs[bossQIdx].answer?"1px solid rgba(74,222,128,0.15)":"1px solid rgba(239,68,68,0.15)",marginBottom:10,textAlign:"left"}}>
+                  <div style={{fontSize:10,fontWeight:700,opacity:0.3,letterSpacing:1,marginBottom:3}}>{sel===bossQs[bossQIdx].answer?"WHY THIS IS RIGHT":"THE RIGHT ANSWER"}</div>
+                  <div style={{fontSize:17,lineHeight:1.5,opacity:0.7}}>{bossQs[bossQIdx].hint}</div>
+                  {sel!==bossQs[bossQIdx].answer&&<div style={{fontSize:13,fontWeight:700,color:"#4ade80",marginTop:6}}>✓ {bossQs[bossQIdx].choices[bossQs[bossQIdx].answer]}</div>}
+                </div>
+                <div style={{fontSize:14,fontWeight:700,color:sel===bossQs[bossQIdx].answer?"#4ade80":"#ef4444",marginBottom:8}}>{sel===bossQs[bossQIdx].answer?"-2 Boss HP":"-2 Your HP"}</div>
+                <button className="cb" onClick={nextBossQ} style={BS("rgba(255,255,255,0.1)")}>Continue</button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* === GAME END === */}
+        {scr==="gameEnd"&&postStep===0&&(
+          <div style={{textAlign:"center",zIndex:1,animation:"bi 0.5s ease",maxWidth:620,width:"100%"}}>
+            {gameOver==="win"?(
+              <div>
+                <div style={{fontSize:48,marginBottom:4}}>🏔️</div>
+                <h2 style={{fontSize:36,fontWeight:800,margin:"0 0 8px"}}>Summit Reached!</h2>
+                <div style={{marginTop:24,marginBottom:10}}><Explorer size={65} gender={gender} role={role} animate speech="CHAMPION!" showSp/></div>
+                <div style={{fontSize:32,fontWeight:800,color:"#ffd700",margin:"8px 0"}}>{score.toLocaleString()} pts</div>
+                <div style={{fontSize:13,opacity:0.3,marginBottom:4}}>({Object.values(skills).reduce((a,b)=>a+b,0).toLocaleString()} skill pts{score!==Object.values(skills).reduce((a,b)=>a+b,0)?" + bonuses":""})</div>
+              </div>
+            ):gameOver==="exhausted"?(
+              <div>
+                <div style={{fontSize:36}}>🏕️</div>
+                <h2 style={{fontSize:22,fontWeight:700,margin:"4px 0"}}>Had to turn back</h2>
+                <p style={{fontSize:13,opacity:0.4}}>You ran out of health. But every explorer learns from the trail.</p>
+                <div style={{fontSize:20,fontWeight:700,margin:"4px 0"}}>{score.toLocaleString()} pts</div>
+              </div>
+            ):(
+              <div>
+                <div style={{fontSize:36}}>⛰️</div>
+                <h2 style={{fontSize:22,fontWeight:700,margin:"4px 0"}}>The Guardian Won</h2>
+                <p style={{fontSize:13,opacity:0.4}}>So close! The summit will wait for your return.</p>
+                <div style={{fontSize:20,fontWeight:700,margin:"4px 0"}}>{score.toLocaleString()} pts</div>
+              </div>
+            )}
+
+            {/* BASELINE REPORT */}
+            <div style={{background:"rgba(255,255,255,0.04)",borderRadius:16,padding:20,margin:"16px 0",border:"1px solid rgba(255,255,255,0.05)",textAlign:"left"}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
+                <div style={{fontSize:12,fontWeight:700,opacity:0.3,letterSpacing:1}}>SESSION 1 BASELINE</div>
+                <div style={{fontSize:8,background:"rgba(232,149,138,0.15)",color:"#E8958A",padding:"2px 8px",borderRadius:10,fontWeight:700}}>NEW</div>
+              </div>
+              <div style={{fontSize:13,opacity:0.4,marginBottom:6}}>{nm} ({getDiff(age).label}) | {ROLES.find(r=>r.id===role)?.name} | Biomes: {biomesDone}/5</div>
+              <div style={{fontSize:10,opacity:0.25,marginBottom:8}}>Here's what {nm} practiced. Next, they can use these skills to build their own game.</div>
+              {SKILLS.map(sk=>{
+                const pts=skills[sk.id]||0;
+                if(pts===0)return null;
+                const mx=Math.max(totSk,1);
+                const pct=Math.min(100,(pts/mx)*200);
+                return (
+                  <div key={sk.id} style={{marginBottom:6}}>
+                    <div style={{display:"flex",justifyContent:"space-between",fontSize:14,fontWeight:600,marginBottom:2}}>
+                      <span>{sk.emoji} {sk.name}</span><span style={{opacity:0.3}}>{pts.toLocaleString()}</span>
+                    </div>
+                    <div style={{background:"rgba(255,255,255,0.08)",borderRadius:5,height:10,overflow:"hidden"}}>
+                      <div style={{width:`${pct}%`,height:"100%",background:sk.color,borderRadius:4,transition:"width 0.5s"}}/>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* GUIDED BUILD MODE PREVIEW */}
+            <div style={{background:"rgba(59,155,246,0.06)",borderRadius:16,padding:14,margin:"8px 0",border:"1px solid rgba(59,155,246,0.12)",textAlign:"left"}}>
+              <div style={{fontSize:16,fontWeight:700,marginBottom:6}}>Next step: <span style={{color:"#E8958A"}}>Guided Build Mode</span></div>
+              <div style={{fontSize:14,opacity:0.4,marginBottom:12}}>{nm} just proved they can do more than play — now help them build something of their own.</div>
+              <div style={{display:"flex",gap:3,alignItems:"center",justifyContent:"center",flexWrap:"wrap",marginBottom:10,padding:"8px",background:"rgba(0,0,0,0.2)",borderRadius:10}}>
+                {[{s:"💡",l:"Pick idea"},{s:"💬",l:"Describe it"},{s:"🤖",l:"AI builds"},{s:"🎮",l:"Play it"},{s:"📁",l:"Save it"}].map((x,i)=>(
+                  <React.Fragment key={i}>
+                    <div style={{textAlign:"center",padding:"0 3px"}}><div style={{fontSize:16}}>{x.s}</div><div style={{fontSize:8,opacity:0.4,fontWeight:600}}>{x.l}</div></div>
+                    {i<4&&<div style={{fontSize:8,opacity:0.15}}>→</div>}
+                  </React.Fragment>
+                ))}
+              </div>
+              <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+                {[{t:"Animal Quiz",w:"Lily, 7",e:"🐾"},{t:"Space Challenge",w:"Marcus, 10",e:"🚀"},{t:"History Blast",w:"Ava, 12",e:"📚"}].map((ex,i)=>(
+                  <div key={i} style={{flex:"1 1 120px",background:"rgba(0,0,0,0.2)",borderRadius:14,padding:"12px 8px",border:"1px solid rgba(255,255,255,0.04)",textAlign:"center"}}>
+                    <div style={{fontSize:24}}>{ex.e}</div>
+                    <div style={{fontSize:14,fontWeight:700}}>{ex.t}</div>
+                    <div style={{fontSize:11,opacity:0.3}}>{ex.w}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <button className="cb" onClick={()=>setPostStep(1)} style={BS("linear-gradient(135deg,#E8958A,#D4726A)","0 4px 14px rgba(232,149,138,0.3)")}>
+              Email Me the Report + Unlock First Build
+            </button>
+            <div style={{display:"flex",gap:8,justifyContent:"center",marginTop:8}}>
+              <button className="cb" onClick={reset} style={{background:"rgba(255,255,255,0.06)",color:"#fff",padding:"10px 18px",borderRadius:50,fontSize:12,fontWeight:600,fontFamily:"inherit",border:"none",cursor:"pointer"}}>Play Again</button>
+              <button className="cb" onClick={()=>setScr("leaderboard")} style={{background:"rgba(255,255,255,0.06)",color:"#fff",padding:"10px 18px",borderRadius:50,fontSize:12,fontWeight:600,fontFamily:"inherit",border:"none",cursor:"pointer"}}>Leaderboard</button>
+            </div>
+          </div>
+        )}
+
+        {/* EMAIL CAPTURE */}
+        {scr==="gameEnd"&&postStep===1&&(
+          <div style={{textAlign:"center",zIndex:1,animation:"bi 0.5s ease",maxWidth:580,width:"100%"}}>
+            <div style={{fontSize:32,marginBottom:4}}>📊</div>
+            <h2 style={{fontSize:20,fontWeight:800,margin:"0 0 6px"}}>Save {nm}'s baseline + unlock Guided Build Mode</h2>
+            <p style={{fontSize:13,opacity:0.4,lineHeight:1.5,marginBottom:8}}>We'll email you today's report, save progress over time, and unlock {nm}'s first project.</p>
+            <div style={{display:"flex",gap:6,justifyContent:"center",flexWrap:"wrap",marginBottom:12}}>
+              {[{i:"📊",t:"Today's baseline"},{i:"📈",t:"Progress updates"},{i:"📁",t:"Project portfolio"}].map((t,i)=>(
+                <div key={i} style={{background:"rgba(255,255,255,0.03)",borderRadius:10,padding:"6px 10px",border:"1px solid rgba(255,255,255,0.04)",display:"flex",alignItems:"center",gap:4}}>
+                  <span style={{fontSize:12}}>{t.i}</span><span style={{fontSize:10,opacity:0.4}}>{t.t}</span>
+                </div>
+              ))}
+            </div>
+            <div style={{maxWidth:320,margin:"0 auto",marginBottom:10}}>
+              <input type="email" placeholder="Parent's email address" value={parentEmail} onChange={e=>setParentEmail(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&parentEmail.includes("@"))setPostStep(2);}} style={{background:"rgba(255,255,255,0.06)",border:"2px solid rgba(255,255,255,0.1)",borderRadius:14,padding:"13px 16px",color:"#fff",fontSize:15,fontFamily:"inherit",width:"100%",boxSizing:"border-box",outline:"none",marginBottom:8}} />
+              <button className="cb" onClick={()=>{if(parentEmail.includes("@"))setPostStep(2);}} style={{...BS("linear-gradient(135deg,#E8958A,#D4726A)","0 4px 14px rgba(232,149,138,0.3)"),width:"100%",fontSize:15}}>
+                Email Me the Report + Unlock First Build
+              </button>
+            </div>
+            <div style={{display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap",marginBottom:6}}>
+              {[{i:"🔒",t:"No spam"},{i:"🛡️",t:"Safe & ad-free"},{i:"👁️",t:"Parent-controlled"}].map((t,i)=>(
+                <div key={i} style={{display:"flex",alignItems:"center",gap:3}}><span style={{fontSize:10}}>{t.i}</span><span style={{fontSize:10,opacity:0.2}}>{t.t}</span></div>
+              ))}
+            </div>
+            <div style={{fontSize:9,opacity:0.15,marginBottom:8}}>For kids under 13, parents stay in control of the account.</div>
+            <button onClick={()=>setPostStep(0)} style={{background:"none",border:"none",color:"#fff",opacity:0.15,fontSize:11,cursor:"pointer",fontFamily:"inherit"}}>← Back</button>
+          </div>
+        )}
+
+        {/* TRIAL CTA */}
+        {scr==="gameEnd"&&postStep===2&&(
+          <div style={{textAlign:"center",zIndex:1,animation:"bi 0.5s ease",maxWidth:600,width:"100%"}}>
+            <div style={{fontSize:32,marginBottom:4}}>🎨</div>
+            <h2 style={{fontSize:20,fontWeight:800,margin:"0 0 4px"}}>From player to creator</h2>
+            <p style={{fontSize:13,opacity:0.4,lineHeight:1.5,marginBottom:6}}>{nm} can build their first project in about 15 minutes with guided AI support.</p>
+            <div style={{background:"rgba(232,149,138,0.06)",borderRadius:12,padding:"8px 12px",border:"1px solid rgba(232,149,138,0.1)",marginBottom:12,fontSize:11,opacity:0.5,lineHeight:1.5}}>
+              {age<=8
+                ?"Every project "+nm+" builds becomes part of their collection — games they made that they can proudly show family and teachers."
+                :"Every project "+nm+" builds becomes part of their WildCoders portfolio — a growing record of creativity, logic, and digital fluency."
+              }
+            </div>
+            <div style={{fontSize:11,fontWeight:700,opacity:0.3,letterSpacing:1,marginBottom:8}}>PICK YOUR FIRST BUILD</div>
+            <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:14}}>
+              {[{e:"🐾",t:"Animal Quiz",d:"Great for younger builders",c:"#E8958A",ages:"5-7",project:"animal-quiz"},
+                {e:"🚀",t:"Space Challenge",d:"Best for creative kids",c:"#3b9bf6",ages:"8-10",project:"space-challenge"},
+                {e:"📚",t:"History Blast",d:"Best for older builders",c:"#4ade80",ages:"11-13",project:"history-blast"}].map((b,i)=>{
+                const isDef=(age<=7&&i===0)||(age>=8&&age<=10&&i===1)||(age>=11&&i===2);
+                return (
+                  <div key={i} onClick={()=>window.location.href="build.html?project="+b.project+"&name="+encodeURIComponent(nm)} style={{flex:"1 1 140px",background:isDef?"rgba(255,255,255,0.06)":"rgba(255,255,255,0.02)",borderRadius:16,padding:"18px 12px",border:isDef?`2px solid ${b.c}`:"2px solid rgba(255,255,255,0.05)",position:"relative",cursor:"pointer",transition:"transform 0.15s,box-shadow 0.15s"}} onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-3px)";e.currentTarget.style.boxShadow="0 8px 24px rgba(0,0,0,0.3)"}} onMouseLeave={e=>{e.currentTarget.style.transform="";e.currentTarget.style.boxShadow=""}}>
+                    {isDef&&<div style={{position:"absolute",top:-7,left:"50%",transform:"translateX(-50%)",background:b.c,color:"#000",fontSize:7,fontWeight:800,padding:"1px 6px",borderRadius:6}}>RECOMMENDED</div>}
+                    <div style={{fontSize:24}}>{b.e}</div>
+                    <div style={{fontSize:16,fontWeight:700}}>{b.t}</div>
+                    <div style={{fontSize:10,opacity:0.3}}>{b.d}</div>
+                  </div>
+                );
+              })}
+            </div>
+            <div style={{background:"rgba(59,155,246,0.06)",borderRadius:16,padding:"14px",border:"1px solid rgba(59,155,246,0.1)",marginBottom:10}}>
+              <div style={{fontSize:14,fontWeight:700,marginBottom:4}}>Guided Build Mode</div>
+              <div style={{fontSize:12,opacity:0.4,marginBottom:8}}>Create your first game with a guided AI tutor.</div>
+              <button className="cb" onClick={()=>window.location.href="build.html?project="+(age<=7?"animal-quiz":age<=10?"space-challenge":"history-blast")+"&name="+encodeURIComponent(nm)} style={{...BS("linear-gradient(135deg,#E8958A,#D4726A)","0 4px 14px rgba(232,149,138,0.3)"),width:"100%",fontSize:15}}>Start Free Trial — No Credit Card</button>
+              <div style={{fontSize:10,opacity:0.2,marginTop:4}}>7 days free. Cancel anytime.</div>
+            </div>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:5,marginBottom:10,fontSize:11,opacity:0.25}}>
+              <span style={{opacity:0.5}}>Play</span><span>→</span><span style={{color:"#E8958A",fontWeight:700}}>Build</span><span>→</span><span>Save</span><span>→</span><span>Share</span><span>→</span><span>Improve</span>
+            </div>
+            <button onClick={()=>setPostStep(0)} style={{background:"none",border:"none",color:"#fff",opacity:0.15,fontSize:11,cursor:"pointer",fontFamily:"inherit"}}>Maybe later — back to results</button>
+          </div>
+        )}
+
+        {/* LEADERBOARD */}
+        {scr==="leaderboard"&&(
+          <div style={{textAlign:"center",zIndex:1,animation:"bi 0.5s ease",maxWidth:580,width:"100%"}}>
+            <h2 style={{fontSize:22,fontWeight:700,margin:"0 0 14px"}}>Leaderboard</h2>
+            {hiScores.length===0&&<p style={{opacity:0.3,fontSize:13}}>No scores yet. Be the first!</p>}
+            {hiScores.map((s,i)=>(<div key={i} style={{display:"flex",alignItems:"center",gap:10,background:i===0?"rgba(255,215,0,0.1)":"rgba(255,255,255,0.04)",borderRadius:14,padding:"10px 14px",marginBottom:5,border:i===0?"2px solid rgba(255,215,0,0.3)":"1px solid rgba(255,255,255,0.04)"}}>
+              <div style={{fontSize:18,fontWeight:800,color:i===0?"#ffd700":i===1?"#c0c0c0":i===2?"#cd7f32":"#fff",minWidth:28,opacity:i<3?1:0.4}}>{i===0?"👑":i+1}</div>
+              <div style={{flex:1,textAlign:"left"}}><div style={{fontSize:14,fontWeight:700}}>{s.name} <span style={{fontSize:10,opacity:0.3}}>age {s.age}</span></div></div>
+              <div style={{fontSize:16,fontWeight:800,color:"#ffd700"}}>{s.score.toLocaleString()}</div>
+            </div>))}
+            <button className="cb" onClick={reset} style={{...BS("linear-gradient(135deg,#ff6b35,#ff3366)","0 3px 10px rgba(255,51,102,0.25)"),marginTop:10}}>New Expedition</button>
+          </div>
+        )}
+
+      </div>
+    </div>
+  );
+}
+
+
+
+function App() {
+  return (
+    <div>
+      <div style={{position:"fixed",top:0,left:0,right:0,zIndex:200,background:"rgba(0,0,0,0.6)",backdropFilter:"blur(8px)",padding:"8px 16px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+        <div style={{display:"flex",alignItems:"center",gap:8,cursor:"pointer"}} onClick={()=>{window.location.href="/";}}>
+          <img src={WC_LOGO} alt="WildCoders" style={{width:36,height:22}} />
+          <span style={{fontSize:15,fontWeight:700,opacity:0.7}}>WildCoders</span>
+        </div>
+        <div style={{fontSize:11,opacity:0.25}}>Wilderness Quest</div>
+      </div>
+      <div style={{paddingTop:48}}>
+        <Game />
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.render(<App />, document.getElementById("root"));
+</script>
+</body>
+</html>
