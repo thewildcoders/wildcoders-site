@@ -1,8 +1,3 @@
-// api/subscribe.js
-// Vercel serverless function — runs server-side, never exposed to browser
-// Deploy by placing this file at /api/subscribe.js in your GitHub repo root
-// Vercel auto-detects it and exposes it at /api/subscribe
-
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 module.exports = async (req, res) => {
