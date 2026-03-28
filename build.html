@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Build Mode — WildCoders</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:#FFFBF7;font-family:'Nunito',sans-serif;color:#1a1a2e;min-height:100vh}
+
+@keyframes fadeSlideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes bounce{0%,80%,100%{transform:scale(0)}40%{transform:scale(1)}}
+@keyframes popIn{0%{opacity:0;transform:scale(0.85)}60%{transform:scale(1.04)}100%{opacity:1;transform:scale(1)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(212,114,106,0.4)}50%{box-shadow:0 0 0 8px rgba(212,114,106,0)}}
+
+.msg-in{animation:fadeSlideUp 0.35s ease both}
+.msg-in-pop{animation:popIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both}
+.choice-appear{animation:fadeSlideUp 0.25s ease both}
+
+.dot{width:9px;height:9px;border-radius:50%;background:#2D6A4F;display:inline-block;margin:0 3px;animation:bounce 1.4s infinite ease-in-out both}
+.dot:nth-child(1){animation-delay:-0.32s}
+.dot:nth-child(2){animation-delay:-0.16s}
+.dot:nth-child(3){animation-delay:0}
+
+.choice-btn{background:#fff;border:2px solid #e8e4df;border-radius:14px;padding:12px 18px;font-size:15px;font-weight:700;color:#1a1a2e;cursor:pointer;font-family:'Nunito',sans-serif;text-align:left;transition:all 0.15s;width:100%}
+.choice-btn:hover{border-color:#2D6A4F;background:#f0fdf4;transform:translateX(3px)}
+.choice-btn:active{transform:translateX(1px)}
+
+.send-btn{background:#2D6A4F;color:#fff;border:none;border-radius:12px;padding:10px 20px;font-size:18px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;transition:all 0.15s;flex-shrink:0}
+.send-btn:hover{background:#1a5a2e;transform:scale(1.05)}
+.send-btn:active{transform:scale(0.98)}
+
+.feedback-send-btn{background:#D4726A;color:#fff;border:none;border-radius:12px;padding:10px 20px;font-size:18px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;transition:all 0.15s;flex-shrink:0}
+.feedback-send-btn:hover{background:#B5544E;transform:scale(1.05)}
+
+.chat-input{flex:1;border:2px solid #e8e4df;border-radius:12px;padding:11px 15px;font-size:15px;font-weight:600;font-family:'Nunito',sans-serif;outline:none;background:#f8f6f3;color:#1a1a2e;transition:border-color 0.15s}
+.chat-input:focus{border-color:#2D6A4F;background:#fff}
+
+.quiz-answer-btn{border-radius:12px;padding:13px 12px;font-size:15px;font-weight:700;font-family:'Nunito',sans-serif;text-align:left;transition:all 0.18s;cursor:pointer;border:2px solid #e8e4df;background:#f8f6f3;color:#1a1a2e}
+.quiz-answer-btn:not(:disabled):hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.08);border-color:#636e72}
+.quiz-answer-btn:disabled{cursor:default}
+
+.next-btn{background:#2D6A4F;color:#fff;border:none;border-radius:12px;padding:11px 28px;font-size:15px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;transition:all 0.15s}
+.next-btn:hover{background:#1a5a2e;transform:translateY(-1px)}
+
+.start-btn{background:#2D6A4F;color:#fff;border:none;border-radius:18px;padding:17px 44px;font-size:20px;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;box-shadow:0 6px 24px rgba(45,106,79,0.28);transition:all 0.2s;animation:pulse 2.5s infinite}
+.start-btn:hover{background:#1a5a2e;transform:translateY(-2px);box-shadow:0 10px 32px rgba(45,106,79,0.35);animation:none}
+.start-btn:active{transform:translateY(0)}
+
+nav a:hover .wc-wordmark{text-decoration:underline;text-decoration-color:#2D6A4F}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+function TigerHead({ size = 38 }) {
+  return (
+    <svg viewBox="40 80 200 160" style={{ width: size, height: size * 0.8, flexShrink: 0 }}>
+      <ellipse cx="120" cy="165" rx="64" ry="68" fill="#E8958A"/>
+      <ellipse cx="115" cy="140" rx="36" ry="30" fill="#F4B8A8" opacity="0.45"/>
+      <ellipse cx="66" cy="106" rx="22" ry="28" fill="#E8958A"/>
+      <ellipse cx="66" cy="108" rx="14" ry="18" fill="#D4726A" opacity="0.3"/>
+      <ellipse cx="66" cy="110" rx="10" ry="14" fill="#FFEEE7"/>
+      <ellipse cx="174" cy="106" rx="22" ry="28" fill="#E8958A"/>
+      <ellipse cx="174" cy="108" rx="14" ry="18" fill="#D4726A" opacity="0.3"/>
+      <ellipse cx="174" cy="110" rx="10" ry="14" fill="#FFEEE7"/>
+      <ellipse cx="88" cy="168" rx="14" ry="12" fill="#F4B8A8" opacity="0.3"/>
+      <ellipse cx="152" cy="168" rx="14" ry="12" fill="#F4B8A8" opacity="0.3"/>
+      <ellipse cx="120" cy="182" rx="34" ry="28" fill="#FFEEE7"/>
+      <ellipse cx="120" cy="176" rx="22" ry="16" fill="#fff" opacity="0.15"/>
+      <path d="M68 124 Q76 134 64 146" fill="none" stroke="#D4726A" strokeWidth="4" strokeLinecap="round" opacity="0.6"/>
+      <path d="M82 116 Q86 124 78 132" fill="none" stroke="#D4726A" strokeWidth="3" strokeLinecap="round" opacity="0.5"/>
+      <path d="M172 124 Q164 134 176 146" fill="none" stroke="#D4726A" strokeWidth="4" strokeLinecap="round" opacity="0.6"/>
+      <path d="M158 116 Q154 124 162 132" fill="none" stroke="#D4726A" strokeWidth="3" strokeLinecap="round" opacity="0.5"/>
+      <ellipse cx="96" cy="158" rx="14" ry="13" fill="#D4726A" opacity="0.1"/>
+      <ellipse cx="96" cy="160" rx="13" ry="12" fill="#fff"/>
+      <ellipse cx="99" cy="161" rx="7.5" ry="9" fill="#4A8A5A"/>
+      <ellipse cx="100" cy="162" rx="4" ry="5.5" fill="#2D3436"/>
+      <circle cx="102" cy="158" r="3" fill="#fff"/>
+      <ellipse cx="144" cy="158" rx="14" ry="13" fill="#D4726A" opacity="0.1"/>
+      <ellipse cx="144" cy="160" rx="13" ry="12" fill="#fff"/>
+      <ellipse cx="141" cy="161" rx="7.5" ry="9" fill="#4A8A5A"/>
+      <ellipse cx="140" cy="162" rx="4" ry="5.5" fill="#2D3436"/>
+      <circle cx="143" cy="158" r="3" fill="#fff"/>
+      <path d="M113 176 Q120 168 127 176 Q120 182 113 176Z" fill="#D4726A"/>
+      <line x1="120" y1="181" x2="120" y2="188" stroke="#B5544E" strokeWidth="1.3" strokeLinecap="round"/>
+      <path d="M110 190 Q120 198 130 190" fill="none" stroke="#B5544E" strokeWidth="1.8" strokeLinecap="round"/>
+      <line x1="30" y1="168" x2="84" y2="178" stroke="#D4726A" strokeWidth="1" strokeLinecap="round" opacity="0.4"/>
+      <line x1="34" y1="178" x2="84" y2="182" stroke="#D4726A" strokeWidth="1" strokeLinecap="round" opacity="0.4"/>
+      <line x1="156" y1="178" x2="210" y2="168" stroke="#D4726A" strokeWidth="1" strokeLinecap="round" opacity="0.4"/>
+      <line x1="156" y1="182" x2="206" y2="178" stroke="#D4726A" strokeWidth="1" strokeLinecap="round" opacity="0.4"/>
+      <ellipse cx="90" cy="174" rx="6" ry="3.5" fill="#F4B8A8" opacity="0.25"/>
+      <ellipse cx="150" cy="174" rx="6" ry="3.5" fill="#F4B8A8" opacity="0.25"/>
+    </svg>
+  );
+}
+
+function BuildMode() {
+  const params = new URLSearchParams(window.location.search);
+  const kidName = params.get('name') || '';
+
+  const [phase, setPhase]                 = useState('intro');
+  const [designStep, setDesignStep]       = useState(0);
+  const [designAnswers, setDesignAnswers] = useState({});
+  const [messages, setMessages]           = useState([]);
+  const [currentInput, setCurrentInput]   = useState('');
+  const [awaitingInput, setAwaitingInput] = useState(false);
+  const [quiz, setQuiz]                   = useState(null);
+  const [quizState, setQuizState]         = useState({
+    step: 0, selectedAnswer: null, showFunFact: false, score: 0, complete: false, version: 0
+  });
+  const [isGenerating, setIsGenerating]   = useState(false);
+  const [iterationCount, setIterationCount] = useState(0);
+  const [genError, setGenError]           = useState(false);
+
+  const chatEndRef = useRef(null);
+  const inputRef   = useRef(null);
+
+  // Scroll to bottom whenever chat content changes
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, isGenerating, quizState.step, quizState.showFunFact, quizState.complete]);
+
+  // Focus text input when it appears
+  useEffect(() => {
+    if (awaitingInput && inputRef.current) {
+      setTimeout(() => inputRef.current && inputRef.current.focus(), 100);
+    }
+  }, [awaitingInput, messages.length]);
+
+  // Trigger post-quiz Stripe message once quiz completes
+  useEffect(() => {
+    if (!quizState.complete || !quiz) return;
+    const score = quizState.score;
+    const total = quiz.questions.length;
+    const pct   = Math.round((score / total) * 100);
+    const praise = pct >= 80
+      ? 'WOW! You are an animal expert!'
+      : pct >= 50
+      ? 'Great job!'
+      : 'Nice work — animals are tricky!';
+
+    const timer = setTimeout(() => {
+      setPhase('feedback');
+      setMessages(prev => [...prev, {
+        role: 'stripe',
+        text: praise + ' You got ' + score + ' out of ' + total + ' right! So... what would you want to CHANGE about your quiz? More questions? Different animals? Harder? Easier? Just tell me! 🐾',
+        showFeedback: true
+      }]);
+      setAwaitingInput(true);
+    }, 1100);
+
+    return () => clearTimeout(timer);
+  }, [quizState.complete]);
+
+  const DESIGN_QUESTIONS = [
+    {
+      id: 'topic',
+      stripe: (kidName ? 'Hey ' + kidName + '! ' : 'Hey! ') + "I'm Stripe, your WildCoders AI tutor! 🐾 We're going to BUILD your very own Animal Quiz right now. First question — what kind of animals do you want it to be about?",
+      type: 'choice',
+      choices: ['Jungle animals 🌴', 'Ocean animals 🌊', 'Safari animals 🦁', 'Backyard animals 🏡', 'All kinds of animals 🌍']
+    },
+    {
+      id: 'count',
+      stripe: 'Love it! How many questions should your quiz have?',
+      type: 'choice',
+      choices: ['5 questions', '8 questions', '10 questions']
+    },
+    {
+      id: 'difficulty',
+      stripe: 'Cool! How hard should the questions be?',
+      type: 'choice',
+      choices: ['Easy 🟢', 'Medium 🟡', 'Hard 🔴']
+    },
+    {
+      id: 'favoriteAnimal',
+      stripe: "Nice! What's your favorite animal? I'll make sure it shows up in your quiz! 🐾",
+      type: 'text',
+      placeholder: 'Type your favorite animal...'
+    },
+    {
+      id: 'quizName',
+      stripe: "Almost there! What do you want to call your quiz?",
+      type: 'text',
+      placeholder: 'Give your quiz an awesome name...'
+    }
+  ];
+
+  const startDesign = () => {
+    const firstQ = DESIGN_QUESTIONS[0];
+    setPhase('design');
+    setMessages([{
+      role: 'stripe',
+      text: firstQ.stripe,
+      type: firstQ.type,
+      choices: firstQ.choices,
+      questionId: firstQ.id
+    }]);
+    setAwaitingInput(true);
+  };
+
+  const handleChoice = (choice, questionId) => {
+    if (!awaitingInput) return;
+    setAwaitingInput(false);
+    const newAnswers = { ...designAnswers, [questionId]: choice };
+    setDesignAnswers(newAnswers);
+    setMessages(prev => [...prev, { role: 'kid', text: choice }]);
+    advanceDesign(newAnswers);
+  };
+
+  const handleTextSubmit = (questionId) => {
+    const text = currentInput.trim();
+    if (!text || !awaitingInput) return;
+    setAwaitingInput(false);
+    setCurrentInput('');
+    const newAnswers = { ...designAnswers, [questionId]: text };
+    setDesignAnswers(newAnswers);
+    setMessages(prev => [...prev, { role: 'kid', text }]);
+    advanceDesign(newAnswers);
+  };
+
+  const handleFeedback = () => {
+    const text = currentInput.trim();
+    if (!text || !awaitingInput) return;
+    setAwaitingInput(false);
+    setCurrentInput('');
+    setMessages(prev => [...prev, { role: 'kid', text }]);
+    setTimeout(() => {
+      setMessages(prev => [...prev, {
+        role: 'stripe',
+        text: 'Great idea! Rebuilding your quiz right now... 🔨'
+      }]);
+      setIsGenerating(true);
+      setTimeout(() => generateQuiz(designAnswers, text), 1000);
+    }, 400);
+  };
+
+  const advanceDesign = (answers) => {
+    const nextStep = designStep + 1;
+    setDesignStep(nextStep);
+    if (nextStep < DESIGN_QUESTIONS.length) {
+      setTimeout(() => {
+        const nextQ = DESIGN_QUESTIONS[nextStep];
+        setMessages(prev => [...prev, {
+          role: 'stripe',
+          text: nextQ.stripe,
+          type: nextQ.type,
+          choices: nextQ.choices,
+          placeholder: nextQ.placeholder,
+          questionId: nextQ.id
+        }]);
+        setAwaitingInput(true);
+      }, 650);
+    } else {
+      const name = answers.quizName || 'My Animal Quiz';
+      setTimeout(() => {
+        setMessages(prev => [...prev, {
+          role: 'stripe',
+          text: 'Perfect! "' + name + '" is going to be SO good! Hold tight while I build it... 🐾'
+        }]);
+        setIsGenerating(true);
+        setTimeout(() => generateQuiz(answers, null), 1000);
+      }, 650);
+    }
+  };
+
+  const generateQuiz = async (answers, feedbackText) => {
+    setIsGenerating(true);
+    setGenError(false);
+    setPhase('generating');
+
+    const countNum   = parseInt(answers.count) || 8;
+    const difficulty = (answers.difficulty || 'Medium').split(' ')[0];
+    const topic      = answers.topic      || 'All kinds of animals';
+    const favAnimal  = answers.favoriteAnimal || 'a dog';
+    const quizTitle  = answers.quizName   || 'My Animal Quiz';
+
+    const diffDesc = difficulty === 'Easy'
+      ? 'basic animal facts that most kids know (sounds, foods, colors, sizes)'
+      : difficulty === 'Medium'
+      ? 'less-common facts about animal behavior, habitats, and lifespans'
+      : 'scientific facts, record-breaking stats, and detailed animal adaptations';
+
+    let systemPrompt = 'You generate animal quiz questions for kids ages 8-10. Output ONLY valid JSON — no text before or after, no markdown code blocks. Start with { and end with }.\n\nExact format:\n{"title":"Quiz title","questions":[{"question":"Question text?","answers":["Option A","Option B","Option C","Option D"],"correct":0,"funFact":"Fun fact about the correct answer!"}]}\n\nRules:\n- Generate exactly ' + countNum + ' questions\n- Topic: ' + topic + '\n- Difficulty: ' + difficulty + ' — ' + diffDesc + '\n- Include the kid\'s favorite animal (' + favAnimal + ') in at least one question\n- Fun facts must be surprising and exciting for kids\n- Each question: exactly 4 answer choices\n- "correct": 0-based index (0, 1, 2, or 3) of the right answer\n- All content 100% appropriate for children ages 8-10\n- Quiz title: "' + quizTitle + '"';
+
+    if (feedbackText) {
+      systemPrompt += '\n- Kid\'s improvement request: "' + feedbackText.replace(/"/g, '\\"') + '" — apply this change';
+    }
+
+    const userMsg = feedbackText
+      ? 'Rebuild this quiz applying the feedback: "' + feedbackText.replace(/"/g, '\\"') + '". Original: ' + JSON.stringify(quiz)
+      : 'Generate the quiz now.';
+
+    try {
+      const res  = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          system: systemPrompt,
+          messages: [{ role: 'user', content: userMsg }]
+        })
+      });
+
+      const data = await res.json();
+      if (!data.content || !data.content[0]) throw new Error('No content');
+
+      let raw = data.content[0].text.trim();
+      // Strip any markdown fences just in case
+      raw = raw.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/\s*```$/i, '').trim();
+      const quizData = JSON.parse(raw);
+
+      if (!quizData.questions || !Array.isArray(quizData.questions) || quizData.questions.length === 0) {
+        throw new Error('Invalid quiz structure');
+      }
+
+      const newVer = iterationCount + 1;
+      setIterationCount(newVer);
+      setQuiz(quizData);
+      setQuizState({ step: 0, selectedAnswer: null, showFunFact: false, score: 0, complete: false, version: newVer });
+      setIsGenerating(false);
+      setPhase('playing');
+
+      const verb = feedbackText ? 'rebuilt' : 'built';
+      const label = feedbackText ? 'Version ' + newVer + ' is ready! Can you beat your last score? 🎉' : 'Your quiz is READY — I ' + verb + ' it just the way you wanted. Let\'s see how you do! 🎉';
+      setMessages(prev => [...prev, { role: 'stripe', text: label }]);
+      setMessages(prev => [...prev, { role: 'quiz', quiz: quizData, version: newVer }]);
+
+    } catch (err) {
+      console.error('Quiz generation failed:', err);
+      setGenError(true);
+      setIsGenerating(false);
+      setPhase(feedbackText ? 'playing' : 'design');
+      setMessages(prev => [...prev, {
+        role: 'stripe',
+        text: "Hmm, I had a little hiccup building that! Let me try again in just a second... 🐾"
+      }]);
+      setTimeout(() => {
+        setGenError(false);
+        generateQuiz(answers, feedbackText);
+      }, 3000);
+    }
+  };
+
+  const handleQuizAnswer = (answerIndex) => {
+    if (quizState.selectedAnswer !== null || quizState.complete) return;
+    const isCorrect = answerIndex === quiz.questions[quizState.step].correct;
+    setQuizState(prev => ({
+      ...prev,
+      selectedAnswer: answerIndex,
+      showFunFact: true,
+      score: isCorrect ? prev.score + 1 : prev.score
+    }));
+  };
+
+  const handleNextQuestion = () => {
+    const isLast = quizState.step + 1 >= quiz.questions.length;
+    if (isLast) {
+      setQuizState(prev => ({ ...prev, complete: true, showFunFact: false, selectedAnswer: null }));
+    } else {
+      setQuizState(prev => ({
+        ...prev,
+        step: prev.step + 1,
+        selectedAnswer: null,
+        showFunFact: false
+      }));
+    }
+  };
+
+  // ─── RENDER HELPERS ──────────────────────────────────────────────────────────
+
+  const renderNav = () => (
+    <nav style={{
+      position: 'sticky', top: 0, zIndex: 100,
+      background: 'rgba(255,251,247,0.96)',
+      borderBottom: '1.5px solid #e8e4df',
+      backdropFilter: 'blur(10px)',
+      display: 'flex', alignItems: 'center',
+      padding: '0 24px', height: 60
+    }}>
+      <a href="index.html" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
+        <TigerHead size={36} />
+        <span className="wc-wordmark" style={{ fontFamily: '"Baloo 2", sans-serif', fontWeight: 800, fontSize: 21, color: '#2D6A4F', lineHeight: 1 }}>WildCoders</span>
+      </a>
+      <div style={{ flex: 1 }} />
+      <span style={{ fontSize: 12, fontWeight: 800, letterSpacing: 2.5, textTransform: 'uppercase', color: '#D4726A' }}>
+        🐾 Build Mode
+      </span>
+    </nav>
+  );
+
+  const renderIntro = () => (
+    <div style={{
+      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+      minHeight: 'calc(100vh - 60px)', padding: '40px 20px', textAlign: 'center',
+      animation: 'fadeIn 0.5s ease'
+    }}>
+      <TigerHead size={96} />
+      <div style={{ marginTop: 12, marginBottom: 6, fontSize: 12, fontWeight: 800, letterSpacing: 3, textTransform: 'uppercase', color: '#2D6A4F' }}>
+        Build Mode
+      </div>
+      <h1 style={{ fontSize: 34, fontWeight: 900, color: '#1a1a2e', marginBottom: 28 }}>
+        Animal Quiz Builder
+      </h1>
+
+      {/* Stripe's speech bubble */}
+      <div style={{
+        background: '#fff',
+        border: '2px solid #bbf7d0',
+        borderRadius: 24,
+        padding: '22px 26px',
+        maxWidth: 460,
+        marginBottom: 32,
+        boxShadow: '0 6px 28px rgba(45,106,79,0.09)',
+        textAlign: 'left',
+        position: 'relative'
+      }}>
+        {/* Bubble tail */}
+        <div style={{
+          position: 'absolute', top: -14, left: '50%', transform: 'translateX(-50%)',
+          width: 0, height: 0,
+          borderLeft: '10px solid transparent',
+          borderRight: '10px solid transparent',
+          borderBottom: '14px solid #bbf7d0'
+        }} />
+        <div style={{
+          position: 'absolute', top: -11, left: '50%', transform: 'translateX(-50%)',
+          width: 0, height: 0,
+          borderLeft: '9px solid transparent',
+          borderRight: '9px solid transparent',
+          borderBottom: '13px solid #fff'
+        }} />
+
+        <p style={{ fontSize: 17, fontWeight: 700, color: '#1a1a2e', lineHeight: 1.55, marginBottom: 10 }}>
+          {kidName ? 'Hi ' + kidName + '! ' : 'Hey there! '}
+          I'm <span style={{ color: '#D4726A', fontWeight: 900 }}>Stripe</span>, your WildCoders AI tutor! 🐾
+        </p>
+        <p style={{ fontSize: 16, color: '#636e72', lineHeight: 1.6, fontWeight: 600 }}>
+          Today we're going to <strong style={{ color: '#2D6A4F' }}>build</strong> your very own Animal Quiz together!
+          I'll ask you <strong>5 quick questions</strong>, then I'll create your quiz and you can play it!
+        </p>
+
+        {/* Step preview pills */}
+        <div style={{ display: 'flex', gap: 6, marginTop: 16, flexWrap: 'wrap' }}>
+          {['🌍 Topic', '🔢 Length', '💪 Difficulty', '🐾 Favorite animal', '🏷️ Quiz name'].map((s, i) => (
+            <span key={i} style={{
+              background: '#f0fdf4', border: '1px solid #bbf7d0',
+              borderRadius: 20, padding: '3px 10px',
+              fontSize: 12, fontWeight: 700, color: '#2D6A4F'
+            }}>{s}</span>
+          ))}
+        </div>
+      </div>
+
+      <button className="start-btn" onClick={startDesign}>
+        Let's Build It! 🐾
+      </button>
+    </div>
+  );
+
+  const renderQuizCard = (quizData, version) => {
+    const isActive = version === iterationCount;
+
+    // Completed quiz from a previous iteration
+    if (!isActive) {
+      return (
+        <div style={{
+          padding: '10px 16px',
+          background: '#f0fdf4',
+          border: '1.5px solid #bbf7d0',
+          borderRadius: 14,
+          color: '#2D6A4F',
+          fontSize: 14,
+          fontWeight: 700
+        }}>
+          ✓ Quiz v{version}: "{quizData.title}" — completed
+        </div>
+      );
+    }
+
+    // Score screen
+    if (quizState.complete) {
+      const total = quizData.questions.length;
+      const pct   = Math.round((quizState.score / total) * 100);
+      const stars = pct >= 80 ? '⭐⭐⭐' : pct >= 50 ? '⭐⭐' : '⭐';
+      const label = pct >= 80 ? 'Animal expert!' : pct >= 50 ? 'Well done!' : 'Keep it up!';
+      return (
+        <div style={{
+          background: '#fff', border: '2px solid #2D6A4F', borderRadius: 20,
+          overflow: 'hidden', boxShadow: '0 6px 24px rgba(45,106,79,0.12)',
+          animation: 'popIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both'
+        }}>
+          <div style={{ background: '#2D6A4F', color: '#fff', padding: '13px 20px', fontWeight: 800, fontSize: 16 }}>
+            🐾 {quizData.title}
+          </div>
+          <div style={{ padding: '32px 20px', textAlign: 'center' }}>
+            <div style={{ fontSize: 48, lineHeight: 1 }}>{stars}</div>
+            <div style={{ fontSize: 36, fontWeight: 900, color: '#2D6A4F', marginTop: 10 }}>
+              {quizState.score}<span style={{ fontSize: 22, color: '#95A89B', fontWeight: 700 }}>/{total}</span>
+            </div>
+            <div style={{ fontSize: 17, color: '#636e72', marginTop: 6, fontWeight: 700 }}>{label}</div>
+          </div>
+        </div>
+      );
+    }
+
+    // Active question
+    const q        = quizData.questions[quizState.step];
+    const answered = quizState.selectedAnswer !== null;
+
+    return (
+      <div style={{
+        background: '#fff', border: '2px solid #2D6A4F', borderRadius: 20,
+        overflow: 'hidden', boxShadow: '0 6px 24px rgba(45,106,79,0.12)',
+        animation: 'popIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both'
+      }}>
+        {/* Quiz header */}
+        <div style={{
+          background: '#2D6A4F', color: '#fff', padding: '13px 20px',
+          display: 'flex', justifyContent: 'space-between', alignItems: 'center'
+        }}>
+          <span style={{ fontWeight: 800, fontSize: 15 }}>🐾 {quizData.title}</span>
+          <span style={{ fontSize: 13, opacity: 0.85, fontWeight: 700 }}>
+            Q{quizState.step + 1} / {quizData.questions.length}
+          </span>
+        </div>
+
+        {/* Progress bar */}
+        <div style={{ height: 4, background: '#e8e4df' }}>
+          <div style={{
+            height: '100%',
+            width: Math.round(((quizState.step + (answered ? 1 : 0)) / quizData.questions.length) * 100) + '%',
+            background: '#D4726A',
+            transition: 'width 0.4s ease'
+          }} />
+        </div>
+
+        {/* Question */}
+        <div style={{ padding: '20px 20px 14px' }}>
+          <p style={{ fontSize: 19, fontWeight: 800, color: '#1a1a2e', lineHeight: 1.4 }}>{q.question}</p>
+        </div>
+
+        {/* Answer grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, padding: '0 20px' }}>
+          {q.answers.map((answer, i) => {
+            let bg = '#f8f6f3', border = '#e8e4df', color = '#1a1a2e';
+            let icon = null;
+            if (answered) {
+              if (i === q.correct) {
+                bg = '#f0fdf4'; border = '#2D6A4F'; color = '#2D6A4F'; icon = '✓ ';
+              } else if (i === quizState.selectedAnswer) {
+                bg = '#fff1f0'; border = '#D4726A'; color = '#B5544E'; icon = '✗ ';
+              } else {
+                bg = '#f8f6f3'; color = '#b2bec3';
+              }
+            }
+            return (
+              <button
+                key={i}
+                className="quiz-answer-btn"
+                onClick={() => handleQuizAnswer(i)}
+                disabled={answered}
+                style={{ background: bg, borderColor: border, color }}
+              >
+                <span style={{ opacity: 0.45, fontSize: 12, marginRight: 5 }}>
+                  {['A', 'B', 'C', 'D'][i]}.
+                </span>
+                {icon && <span style={{ fontWeight: 900 }}>{icon}</span>}
+                {answer}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Fun fact */}
+        {quizState.showFunFact && (
+          <div style={{
+            margin: '14px 20px 0',
+            background: quizState.selectedAnswer === q.correct ? '#f0fdf4' : '#fff8f5',
+            border: '1.5px solid ' + (quizState.selectedAnswer === q.correct ? '#bbf7d0' : '#F4B8A8'),
+            borderRadius: 14,
+            padding: '13px 16px',
+            animation: 'fadeSlideUp 0.3s ease both'
+          }}>
+            <p style={{
+              fontSize: 14, fontWeight: 800, marginBottom: 5,
+              color: quizState.selectedAnswer === q.correct ? '#2D6A4F' : '#B5544E'
+            }}>
+              {quizState.selectedAnswer === q.correct
+                ? '✓ Correct!'
+                : '✗ Not quite! The answer was: ' + q.answers[q.correct]}
+            </p>
+            <p style={{ fontSize: 14, color: '#636e72', fontWeight: 600, lineHeight: 1.45 }}>
+              🌟 {q.funFact}
+            </p>
+          </div>
+        )}
+
+        {/* Next button */}
+        {quizState.showFunFact && (
+          <div style={{ padding: '12px 20px 20px', textAlign: 'right', animation: 'fadeIn 0.3s ease' }}>
+            <button className="next-btn" onClick={handleNextQuestion}>
+              {quizState.step + 1 >= quizData.questions.length ? 'See my score! 🏆' : 'Next →'}
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const renderMessage = (msg, index, isLastStripe) => {
+    if (msg.role === 'stripe') {
+      return (
+        <div key={index} className="msg-in" style={{ marginBottom: 18 }}>
+          {/* Stripe row */}
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+            <TigerHead size={42} />
+            <div style={{
+              background: '#f0fdf4',
+              border: '1.5px solid #bbf7d0',
+              borderRadius: '6px 18px 18px 18px',
+              padding: '12px 16px',
+              maxWidth: 390,
+              fontSize: 15, fontWeight: 600, color: '#1a1a2e', lineHeight: 1.55
+            }}>
+              {msg.text}
+            </div>
+          </div>
+
+          {/* Choices */}
+          {isLastStripe && awaitingInput && msg.type === 'choice' && (
+            <div style={{ paddingLeft: 52, marginTop: 10, display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {msg.choices.map((choice, ci) => (
+                <button
+                  key={ci}
+                  className={'choice-btn choice-appear'}
+                  style={{ animationDelay: (ci * 0.06) + 's' }}
+                  onClick={() => handleChoice(choice, msg.questionId)}
+                >
+                  {choice}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Text input for design questions */}
+          {isLastStripe && awaitingInput && msg.type === 'text' && (
+            <div style={{ paddingLeft: 52, marginTop: 10, display: 'flex', gap: 8, animation: 'fadeSlideUp 0.25s ease' }}>
+              <input
+                ref={inputRef}
+                type="text"
+                className="chat-input"
+                value={currentInput}
+                onChange={e => setCurrentInput(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter') handleTextSubmit(msg.questionId); }}
+                placeholder={msg.placeholder || 'Type here...'}
+              />
+              <button className="send-btn" onClick={() => handleTextSubmit(msg.questionId)}>→</button>
+            </div>
+          )}
+
+          {/* Feedback input after quiz */}
+          {isLastStripe && awaitingInput && msg.showFeedback && (
+            <div style={{ paddingLeft: 52, marginTop: 10, display: 'flex', gap: 8, animation: 'fadeSlideUp 0.25s ease' }}>
+              <input
+                ref={inputRef}
+                type="text"
+                className="chat-input"
+                value={currentInput}
+                onChange={e => setCurrentInput(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter') handleFeedback(); }}
+                placeholder="Tell me what to change..."
+              />
+              <button className="feedback-send-btn" onClick={handleFeedback}>→</button>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    if (msg.role === 'kid') {
+      return (
+        <div key={index} className="msg-in" style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 14 }}>
+          <div style={{
+            background: '#FDDAD0',
+            border: '1.5px solid #E8958A',
+            borderRadius: '18px 6px 18px 18px',
+            padding: '11px 17px',
+            maxWidth: 300,
+            fontSize: 15, fontWeight: 700, color: '#1a1a2e', lineHeight: 1.4
+          }}>
+            {msg.text}
+          </div>
+        </div>
+      );
+    }
+
+    if (msg.role === 'quiz') {
+      return (
+        <div key={index} className="msg-in" style={{ marginBottom: 14 }}>
+          {renderQuizCard(msg.quiz, msg.version)}
+        </div>
+      );
+    }
+
+    return null;
+  };
+
+  const renderChat = () => {
+    // Find index of the last Stripe message
+    let lastStripeIdx = -1;
+    messages.forEach((m, i) => { if (m.role === 'stripe') lastStripeIdx = i; });
+
+    return (
+      <div style={{
+        maxWidth: 700, margin: '0 auto',
+        padding: '28px 20px 140px',
+        minHeight: 'calc(100vh - 60px)'
+      }}>
+        {messages.map((msg, i) => renderMessage(msg, i, i === lastStripeIdx))}
+
+        {/* Generating indicator */}
+        {isGenerating && (
+          <div className="msg-in" style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginBottom: 16 }}>
+            <TigerHead size={42} />
+            <div style={{
+              background: '#f0fdf4', border: '1.5px solid #bbf7d0',
+              borderRadius: '6px 18px 18px 18px',
+              padding: '14px 20px'
+            }}>
+              <span className="dot" />
+              <span className="dot" />
+              <span className="dot" />
+            </div>
+          </div>
+        )}
+
+        <div ref={chatEndRef} />
+      </div>
+    );
+  };
+
+  // ─── MAIN RENDER ─────────────────────────────────────────────────────────────
+  return (
+    <div style={{ minHeight: '100vh', background: '#FFFBF7' }}>
+      {renderNav()}
+      {phase === 'intro' ? renderIntro() : renderChat()}
+    </div>
+  );
+}
+
+ReactDOM.render(React.createElement(BuildMode), document.getElementById('root'));
+</script>
+</body>
+</html>
