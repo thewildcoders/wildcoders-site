@@ -1,7 +1,20 @@
+// api/subscribe.js
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
+// Vercel doesn't auto-parse bodies for plain Node functions — do it manually
+function parseBody(req) {
+  return new Promise((resolve, reject) => {
+    let data = '';
+    req.on('data', chunk => { data += chunk; });
+    req.on('end', () => {
+      try { resolve(JSON.parse(data)); }
+      catch (e) { resolve({}); }
+    });
+    req.on('error', reject);
+  });
+}
+
 module.exports = async (req, res) => {
-  // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -9,103 +22,76 @@ module.exports = async (req, res) => {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST')   return res.status(405).json({ error: 'Method not allowed' });
 
-  const { email, kidName, age, plan, paymentMethodId } = req.body;
+  // Parse body explicitly
+  const body = req.body && typeof req.body === 'object' ? req.body : await parseBody(req);
+  const { email, kidName, age, plan, paymentMethodId } = body;
 
-  // ── Validation ──────────────────────────────────────────────────────────────
+  // Debug log — shows in Vercel function logs, never sent to browser
+  console.log('Request body received:', { email, kidName, age, plan, hasPaymentMethod: !!paymentMethodId });
+  console.log('Env vars present:', {
+    hasSecretKey:    !!process.env.STRIPE_SECRET_KEY,
+    hasPriceMonthly: !!process.env.STRIPE_PRICE_MONTHLY,
+    hasPriceAnnual:  !!process.env.STRIPE_PRICE_ANNUAL,
+    hasHubspot:      !!process.env.HUBSPOT_TOKEN,
+  });
+
   if (!email || !paymentMethodId) {
     return res.status(400).json({ error: 'Missing required fields.' });
   }
-  if (!email.includes('@')) {
-    return res.status(400).json({ error: 'Invalid email address.' });
-  }
 
-  // Pick the right price based on plan selection
   const priceId = plan === 'annual'
     ? process.env.STRIPE_PRICE_ANNUAL
     : process.env.STRIPE_PRICE_MONTHLY;
 
+  console.log('Selected plan:', plan, '-> priceId:', priceId);
+
   if (!priceId) {
-    console.error('Missing price ID env var for plan:', plan);
     return res.status(500).json({ error: 'Server configuration error. Please contact hello@wildcoders.org.' });
   }
 
   try {
-    // ── 1. Create Stripe customer ────────────────────────────────────────────
     const customer = await stripe.customers.create({
       email,
       name: kidName || 'WildCoder',
       payment_method: paymentMethodId,
       invoice_settings: { default_payment_method: paymentMethodId },
-      metadata: {
-        kidName: kidName || '',
-        kidAge:  String(age || ''),
-        plan:    plan    || 'monthly',
-        source:  'wildcoders-subscribe'
-      }
+      metadata: { kidName: kidName || '', kidAge: String(age || ''), plan: plan || 'monthly', source: 'wildcoders-subscribe' }
     });
 
-    // ── 2. Create subscription with 7-day trial ──────────────────────────────
     const subscription = await stripe.subscriptions.create({
-      customer:            customer.id,
-      items:               [{ price: priceId }],
-      trial_period_days:   7,
-      payment_behavior:    'default_incomplete',
-      expand:              ['latest_invoice.payment_intent'],
-      metadata: {
-        kidName: kidName || '',
-        kidAge:  String(age || ''),
-        plan:    plan    || 'monthly'
-      }
+      customer:          customer.id,
+      items:             [{ price: priceId }],
+      trial_period_days: 7,
+      payment_behavior:  'default_incomplete',
+      expand:            ['latest_invoice.payment_intent'],
+      metadata:          { kidName: kidName || '', kidAge: String(age || ''), plan: plan || 'monthly' }
     });
 
-    // ── 3. Create HubSpot contact ────────────────────────────────────────────
+    // HubSpot — non-fatal if it fails
     try {
       await fetch('https://api.hubapi.com/crm/v3/objects/contacts', {
         method: 'POST',
-        headers: {
-          'Content-Type':  'application/json',
-          'Authorization': `Bearer ${process.env.HUBSPOT_TOKEN}`
-        },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.HUBSPOT_TOKEN}` },
         body: JSON.stringify({
-          properties: {
-            email,
-            firstname:        kidName || '',
-            lifecyclestage:   'customer',
-            hs_lead_source:   'WildCoders Trial',
-            // Custom properties — add these in HubSpot if you want them stored:
-            // kid_age:       String(age || ''),
-            // subscription_plan: plan || 'monthly',
-            // stripe_customer_id: customer.id
-          }
+          properties: { email, firstname: kidName || '', lifecyclestage: 'customer', hs_lead_source: 'WildCoders Trial' }
         })
       });
-    } catch (hubspotErr) {
-      // Don't fail the whole request if HubSpot is down — log and continue
-      console.error('HubSpot contact creation failed:', hubspotErr.message);
+    } catch (hubErr) {
+      console.error('HubSpot failed (non-fatal):', hubErr.message);
     }
 
-    // ── 4. Return success ────────────────────────────────────────────────────
     return res.status(200).json({
       success:        true,
       subscriptionId: subscription.id,
       customerId:     customer.id,
-      trialEnd:       subscription.trial_end,   // Unix timestamp
+      trialEnd:       subscription.trial_end,
       plan
     });
 
   } catch (err) {
-    console.error('Stripe error:', err);
-
-    // Surface Stripe's card errors clearly to the user
-    if (err.type === 'StripeCardError') {
-      return res.status(402).json({ error: err.message });
-    }
-    if (err.type === 'StripeInvalidRequestError') {
-      return res.status(400).json({ error: 'Invalid payment details. Please try again.' });
-    }
-
-    return res.status(500).json({
-      error: 'Something went wrong on our end. Please try again or email hello@wildcoders.org.'
-    });
+    console.error('Stripe error:', err.type, err.message);
+    if (err.type === 'StripeCardError')           return res.status(402).json({ error: err.message });
+    if (err.type === 'StripeInvalidRequestError') return res.status(400).json({ error: 'Invalid payment details. Please try again.' });
+    return res.status(500).json({ error: 'Something went wrong. Please try again or email hello@wildcoders.org.' });
   }
 };
