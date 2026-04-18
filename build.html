@@ -106,7 +106,8 @@ function TigerHead({ size = 38 }) {
 
 function BuildMode() {
   const params = new URLSearchParams(window.location.search);
-  const kidName = params.get('name') || localStorage.getItem('wc_kid_name') || '';
+  const kidName  = params.get('name')    || localStorage.getItem('wc_kid_name') || '';
+  const project  = params.get('project') || localStorage.getItem('wc_project')  || 'animal-quiz';
 
   // ── Access gate ────────────────────────────────────────────────────────────
   // Allow bypass with ?preview=true for internal testing
@@ -180,9 +181,17 @@ function BuildMode() {
   const DESIGN_QUESTIONS = [
     {
       id: 'topic',
-      stripe: (kidName ? 'Hey ' + kidName + '! ' : 'Hey there! ') + "My name is Koda. I'm a WildCoders AI — I pay attention to how you think and work with you to go a little further each time. Ready to build something real? First question: what kind of animals should your quiz be about?",
+      stripe: (() => {
+        if (project === 'space-challenge') return (kidName ? 'Alright ' + kidName + ', let\'s build your Space Challenge! ' : 'Let\'s build your Space Challenge! ') + "First decision is yours: what should the quiz be about?";
+        if (project === 'history-blast')  return (kidName ? 'Alright ' + kidName + ', let\'s build your History Blast! ' : 'Let\'s build your History Blast! ') + "You\'re in charge of the design. First decision: what era or topic should it cover?";
+        return (kidName ? 'Alright ' + kidName + ', let\'s build your Animal Quiz! ' : 'Let\'s build your Animal Quiz! ') + "You\'re making every decision here. First up: what kind of animals should the quiz be about?";
+      })(),
       type: 'choice',
-      choices: ['Jungle animals 🌴', 'Ocean animals 🌊', 'Safari animals 🦁', 'Backyard animals 🏡', 'All kinds of animals 🌍']
+      choices: project === 'space-challenge'
+        ? ['Planets & moons 🪐', 'Stars & galaxies ⭐', 'Space missions 🚀', 'Astronauts & history 👨‍🚀', 'The whole universe 🌌']
+        : project === 'history-blast'
+        ? ['Ancient civilizations 🏛️', 'World wars ⚔️', 'Explorers & discoveries 🗺️', 'Inventions & science 💡', 'All of history 📚']
+        : ['Jungle animals 🌴', 'Ocean animals 🌊', 'Safari animals 🦁', 'Backyard animals 🏡', 'All kinds of animals 🌍']
     },
     {
       id: 'count',
@@ -296,16 +305,28 @@ function BuildMode() {
     const countNum   = parseInt(answers.count) || 8;
     const difficulty = (answers.difficulty || 'Medium').split(' ')[0];
     const topic      = answers.topic      || 'All kinds of animals';
-    const favAnimal  = answers.favoriteAnimal || 'a dog';
-    const quizTitle  = answers.quizName   || 'My Animal Quiz';
+    const favAnimal  = answers.favoriteAnimal || (project === 'space-challenge' ? 'black holes' : project === 'history-blast' ? 'ancient Egypt' : 'a dog');
+    const quizTitle  = answers.quizName   || (project === 'space-challenge' ? 'My Space Challenge' : project === 'history-blast' ? 'My History Blast' : 'My Animal Quiz');
 
+    const isSpace   = project === 'space-challenge';
+    const isHistory = project === 'history-blast';
     const diffDesc = difficulty === 'Easy'
-      ? 'basic animal facts that most kids know (sounds, foods, colors, sizes)'
+      ? (isSpace ? 'basic space facts kids know (planet order, moon names, famous astronauts)'
+       : isHistory ? 'basic history facts (well-known events, famous leaders, simple dates)'
+       : 'basic animal facts that most kids know (sounds, foods, colors, sizes)')
       : difficulty === 'Medium'
-      ? 'less-common facts about animal behavior, habitats, and lifespans'
-      : 'scientific facts, record-breaking stats, and detailed animal adaptations';
+      ? (isSpace ? 'less-common space science (orbital mechanics, star types, mission details)'
+       : isHistory ? 'less-common history (causes of events, cultural context, lesser-known figures)'
+       : 'less-common facts about animal behavior, habitats, and lifespans')
+      : (isSpace ? 'advanced astrophysics, exact distances, record-breaking space stats'
+       : isHistory ? 'specific dates, treaties, battles, and detailed historical analysis'
+       : 'scientific facts, record-breaking stats, and detailed animal adaptations');
 
-    let systemPrompt = 'You generate animal quiz questions for kids ages 8-10. Output ONLY valid JSON — no text before or after, no markdown code blocks. Start with { and end with }.\n\nExact format:\n{"title":"Quiz title","questions":[{"question":"Question text?","answers":["Option A","Option B","Option C","Option D"],"correct":0,"funFact":"Fun fact about the correct answer!"}]}\n\nRules:\n- Generate exactly ' + countNum + ' questions\n- Topic: ' + topic + '\n- Difficulty: ' + difficulty + ' — ' + diffDesc + '\n- Include the kid\'s favorite animal (' + favAnimal + ') in at least one question\n- Fun facts must be surprising and exciting for kids\n- Each question: exactly 4 answer choices\n- "correct": 0-based index (0, 1, 2, or 3) of the right answer\n- All content 100% appropriate for children ages 8-10\n- Quiz title: "' + quizTitle + '"';
+    const subjectLabel = isSpace ? 'space and astronomy' : isHistory ? 'history' : 'animals';
+    const favLabel     = isSpace ? 'favorite space topic (' + favAnimal + ')'
+                       : isHistory ? 'favorite historical topic (' + favAnimal + ')'
+                       : 'favorite animal (' + favAnimal + ')';
+    let systemPrompt = 'You generate ' + subjectLabel + ' quiz questions for kids ages 8-10. Output ONLY valid JSON — no text before or after, no markdown code blocks. Start with { and end with }.\n\nExact format:\n{"title":"Quiz title","questions":[{"question":"Question text?","answers":["Option A","Option B","Option C","Option D"],"correct":0,"funFact":"Fun fact about the correct answer!"}]}\n\nRules:\n- Generate exactly ' + countNum + ' questions\n- Topic: ' + topic + '\n- Difficulty: ' + difficulty + ' — ' + diffDesc + '\n- Include the kid\'s ' + favLabel + ' in at least one question\n- Fun facts must be surprising and exciting for kids\n- Each question: exactly 4 answer choices\n- "correct": 0-based index (0, 1, 2, or 3) of the right answer\n- All content 100% appropriate for children ages 8-10\n- Quiz title: "' + quizTitle + '"';
 
     if (feedbackText) {
       systemPrompt += '\n- Kid\'s improvement request: "' + feedbackText.replace(/"/g, '\\"') + '" — apply this change';
@@ -318,9 +339,9 @@ function BuildMode() {
     try {
       const res  = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'x-no-transform': '1' },
         body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
+          model: 'claude-sonnet-4-5',
           max_tokens: 4000,
           system: systemPrompt,
           messages: [{ role: 'user', content: userMsg }]

@@ -191,11 +191,18 @@ const SUMMIT_QS = [
 ];
 
 const TRAIL_EVENTS = [
-  {text:"Dark clouds roll in. A storm is approaching fast.",emoji:"⛈️",choices:[{text:"Find shelter and wait",effect:{food:-1,health:0},result:"You stay dry but use time and food."},{text:"Push through the rain",effect:{food:0,health:-1},result:"You save time but get soaked. Your health drops."}]},
-  {text:"You discover an abandoned campsite with supplies scattered around.",emoji:"🏕️",choices:[{text:"Search carefully for useful items",effect:{food:2,gear:1},result:"You find dried food and a useful tool!"},{text:"Leave it — could be a trap",effect:{food:0,health:0},result:"You play it safe. Nothing gained, nothing lost."}]},
-  {text:"A friendly traveler offers to trade: 2 food for 1 gear item.",emoji:"🤝",choices:[{text:"Accept the trade",effect:{food:-2,gear:1},result:"Less food, but the gear could save you later."},{text:"Decline politely",effect:{food:0,gear:0},result:"You keep your food. Smart if supplies are low."}]},
-  {text:"You find a patch of wild berries growing by the trail.",emoji:"🫐",choices:[{text:"Pick and eat them carefully",effect:{food:3,health:0},result:"Delicious! Your food supply grows."},{text:"Leave them — some berries are poisonous",effect:{food:0,health:0},result:"Safe choice. You can't be too careful."}]},
-  {text:"Your path splits. A shortcut through a cave, or the long way around?",emoji:"🕳️",choices:[{text:"Take the cave shortcut",effect:{food:0,health:-1},result:"Faster, but you bump your head in the dark."},{text:"Go the long way around",effect:{food:-1,health:0},result:"Safer, but you use extra food traveling further."}]},
+  {text:"Dark clouds roll in. A storm is coming fast.",emoji:"⛈️",choices:[{text:"Find shelter and wait it out",effect:{food:-1,health:0},result:"Smart call. You stay dry but burn through some food waiting."},{text:"Push through the rain",effect:{food:0,health:-1},result:"You save time but you're soaked to the bone. Health drops."}]},
+  {text:"You spot an abandoned campsite — supplies scattered everywhere.",emoji:"🏕️",choices:[{text:"Search carefully through the gear",effect:{food:2,gear:1},result:"Score! Dried rations and a tool you can actually use."},{text:"Leave it alone — looks suspicious",effect:{food:0,health:0},result:"Better safe than sorry. You walk on without touching anything."}]},
+  {text:"A weathered traveler wants to trade: your food for their gear.",emoji:"🤝",choices:[{text:"Make the trade",effect:{food:-2,gear:1},result:"The gear is useful, but your stomach's already grumbling."},{text:"Decline — food matters more right now",effect:{food:0,gear:0},result:"You hold your ground. Full belly, lighter pack."}]},
+  {text:"Wild berries growing right beside the trail. Lots of them.",emoji:"🫐",choices:[{text:"Pick and eat carefully",effect:{food:3,health:0},result:"They're actually delicious. Food situation improved."},{text:"Leave them — berries can be deadly",effect:{food:0,health:0},result:"Wise move. Some berries look edible and absolutely aren't."}]},
+  {text:"The trail forks. A dark cave shortcut, or the long safe route?",emoji:"🕳️",choices:[{text:"Take the cave — faster",effect:{food:0,health:-1},result:"Faster yes. But you walked into a rock face in the dark."},{text:"Go the long way around",effect:{food:-1,health:0},result:"It costs you food but you arrive in one piece."}]},
+  {text:"You hear rushing water nearby. Could be a river crossing ahead.",emoji:"🌊",choices:[{text:"Investigate and find a safe route",effect:{food:-1,water:3},result:"Takes time, but you find a crossing and refill your water supply."},{text:"Push on and deal with it when you get there",effect:{food:0,water:0},result:"You save time. The crossing ends up being manageable."}]},
+  {text:"A small animal is caught in a snare on the trail.",emoji:"🐇",choices:[{text:"Free it and move on",effect:{food:0,health:1},result:"It feels good. Something about doing the right thing gives you energy."},{text:"Leave it — not your problem",effect:{food:0,health:0},result:"You push your feelings down and keep moving. Efficient, if not kind."}]},
+  {text:"You find a map scratched into tree bark pointing to a cache nearby.",emoji:"🗺️",choices:[{text:"Follow it — could be supplies",effect:{food:2,water:1},result:"It's real. Whoever left it saved you a rough stretch."},{text:"Ignore it — probably nothing",effect:{food:0,health:0},result:"Could have been something. You'll never know."}]},
+  {text:"Thick fog rolls in. You can barely see the trail ahead.",emoji:"🌫️",choices:[{text:"Slow down and navigate carefully",effect:{food:-1,health:0},result:"Slow but safe. The fog clears and you're still on track."},{text:"Keep your pace — you remember the route",effect:{food:0,health:-1},result:"Overconfident. You twist your ankle on a root you didn't see."}]},
+  {text:"You reach a river. Cold, fast, knee-deep.",emoji:"🏞️",choices:[{text:"Wade across at the widest point",effect:{food:0,health:-1},result:"Wider means slower water, but it's still freezing. Health takes a hit."},{text:"Search for a better crossing upstream",effect:{food:-1,water:2},result:"Takes extra time and food, but you cross dry and refill your water."}]},
+  {text:"A massive eagle is circling overhead, watching you closely.",emoji:"🦅",choices:[{text:"Stay still and wait for it to lose interest",effect:{food:0,health:0},result:"It peels away after a minute. You breathe again."},{text:"Move quickly and stay under the trees",effect:{food:-1,health:0},result:"Smart instinct. You lose a little energy moving fast but stay calm."}]},
+  {text:"You stumble on a ranger's supply cache marked on no map you've seen.",emoji:"📦",choices:[{text:"Take what you need",effect:{food:3,gear:1},result:"Jackpot. Whoever stashed this knew what they were doing."},{text:"Leave it for whoever needs it more",effect:{food:0,health:1},result:"You walk away lighter — but somehow feeling stronger for it."}]},
 ];
 
 function getDiff(age){
@@ -1061,85 +1068,20 @@ function Game(){
               </div>
             </div>
 
-            <button className="cb" onClick={()=>setPostStep(1)} style={BS("linear-gradient(135deg,#E8958A,#D4726A)","0 4px 14px rgba(232,149,138,0.3)")}>
-              Email Me the Report + Unlock First Build
+            <button className="cb" onClick={()=>window.location.href="subscribe.html?name="+encodeURIComponent(nm)+"&age="+encodeURIComponent(age)+"&plan=annual&from=game"} style={{...BS("linear-gradient(135deg,#E8958A,#D4726A)","0 4px 14px rgba(232,149,138,0.3)"),fontSize:17,padding:"16px 28px",width:"100%"}}>
+              Start Building — Meet Koda 🐾
             </button>
-            <div style={{display:"flex",gap:8,justifyContent:"center",marginTop:8}}>
+            <div style={{fontSize:11,opacity:0.3,marginTop:6,marginBottom:10}}>No charge for 7 days. Cancel anytime.</div>
+            <div style={{display:"flex",gap:8,justifyContent:"center"}}>
               <button className="cb" onClick={reset} style={{background:"rgba(255,255,255,0.06)",color:"#fff",padding:"10px 18px",borderRadius:50,fontSize:12,fontWeight:600,fontFamily:"inherit",border:"none",cursor:"pointer"}}>Play Again</button>
               <button className="cb" onClick={()=>setScr("leaderboard")} style={{background:"rgba(255,255,255,0.06)",color:"#fff",padding:"10px 18px",borderRadius:50,fontSize:12,fontWeight:600,fontFamily:"inherit",border:"none",cursor:"pointer"}}>Leaderboard</button>
             </div>
           </div>
         )}
 
-        {/* EMAIL CAPTURE */}
-        {scr==="gameEnd"&&postStep===1&&(
-          <div style={{textAlign:"center",zIndex:1,animation:"bi 0.5s ease",maxWidth:580,width:"100%"}}>
-            <div style={{fontSize:32,marginBottom:4}}>📊</div>
-            <h2 style={{fontSize:20,fontWeight:800,margin:"0 0 6px"}}>Save {nm}'s baseline + unlock Guided Build Mode</h2>
-            <p style={{fontSize:13,opacity:0.4,lineHeight:1.5,marginBottom:8}}>We'll email you today's report, save progress over time, and unlock {nm}'s first project.</p>
-            <div style={{display:"flex",gap:6,justifyContent:"center",flexWrap:"wrap",marginBottom:12}}>
-              {[{i:"📊",t:"Today's baseline"},{i:"📈",t:"Progress updates"},{i:"📁",t:"Project portfolio"}].map((t,i)=>(
-                <div key={i} style={{background:"rgba(255,255,255,0.03)",borderRadius:10,padding:"6px 10px",border:"1px solid rgba(255,255,255,0.04)",display:"flex",alignItems:"center",gap:4}}>
-                  <span style={{fontSize:12}}>{t.i}</span><span style={{fontSize:10,opacity:0.4}}>{t.t}</span>
-                </div>
-              ))}
-            </div>
-            <div style={{maxWidth:320,margin:"0 auto",marginBottom:10}}>
-              <input type="email" placeholder="Parent's email address" value={parentEmail} onChange={e=>setParentEmail(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&parentEmail.includes("@"))setPostStep(2);}} style={{background:"rgba(255,255,255,0.06)",border:"2px solid rgba(255,255,255,0.1)",borderRadius:14,padding:"13px 16px",color:"#fff",fontSize:15,fontFamily:"inherit",width:"100%",boxSizing:"border-box",outline:"none",marginBottom:8}} />
-              <button className="cb" onClick={()=>{if(parentEmail.includes("@"))setPostStep(2);}} style={{...BS("linear-gradient(135deg,#E8958A,#D4726A)","0 4px 14px rgba(232,149,138,0.3)"),width:"100%",fontSize:15}}>
-                Email Me the Report + Unlock First Build
-              </button>
-            </div>
-            <div style={{display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap",marginBottom:6}}>
-              {[{i:"🔒",t:"No spam"},{i:"🛡️",t:"Safe & ad-free"},{i:"👁️",t:"Parent-controlled"}].map((t,i)=>(
-                <div key={i} style={{display:"flex",alignItems:"center",gap:3}}><span style={{fontSize:10}}>{t.i}</span><span style={{fontSize:10,opacity:0.2}}>{t.t}</span></div>
-              ))}
-            </div>
-            <div style={{fontSize:9,opacity:0.15,marginBottom:8}}>For kids under 13, parents stay in control of the account.</div>
-            <button onClick={()=>setPostStep(0)} style={{background:"none",border:"none",color:"#fff",opacity:0.15,fontSize:11,cursor:"pointer",fontFamily:"inherit"}}>← Back</button>
-          </div>
-        )}
 
-        {/* TRIAL CTA */}
-        {scr==="gameEnd"&&postStep===2&&(
-          <div style={{textAlign:"center",zIndex:1,animation:"bi 0.5s ease",maxWidth:600,width:"100%"}}>
-            <div style={{fontSize:32,marginBottom:4}}>🎨</div>
-            <h2 style={{fontSize:20,fontWeight:800,margin:"0 0 4px"}}>From player to creator</h2>
-            <p style={{fontSize:13,opacity:0.4,lineHeight:1.5,marginBottom:6}}>{nm} can build their first project in about 15 minutes with guided AI support.</p>
-            <div style={{background:"rgba(232,149,138,0.06)",borderRadius:12,padding:"8px 12px",border:"1px solid rgba(232,149,138,0.1)",marginBottom:12,fontSize:11,opacity:0.5,lineHeight:1.5}}>
-              {age<=8
-                ?"Every project "+nm+" builds becomes part of their collection — games they made that they can proudly show family and teachers."
-                :"Every project "+nm+" builds becomes part of their WildCoders portfolio — a growing record of creativity, logic, and digital fluency."
-              }
-            </div>
-            <div style={{fontSize:11,fontWeight:700,opacity:0.3,letterSpacing:1,marginBottom:8}}>PICK YOUR FIRST BUILD</div>
-            <div style={{display:"flex",gap:8,flexWrap:"wrap",marginBottom:14}}>
-              {[{e:"🐾",t:"Animal Quiz",d:"Great for younger builders",c:"#E8958A",ages:"5-7",project:"animal-quiz"},
-                {e:"🚀",t:"Space Challenge",d:"Best for creative kids",c:"#3b9bf6",ages:"8-10",project:"space-challenge"},
-                {e:"📚",t:"History Blast",d:"Best for older builders",c:"#4ade80",ages:"11-13",project:"history-blast"}].map((b,i)=>{
-                const isDef=(age<=7&&i===0)||(age>=8&&age<=10&&i===1)||(age>=11&&i===2);
-                return (
-                  <div key={i} onClick={()=>window.location.href="build.html?project="+b.project+"&name="+encodeURIComponent(nm)} style={{flex:"1 1 140px",background:isDef?"rgba(255,255,255,0.06)":"rgba(255,255,255,0.02)",borderRadius:16,padding:"18px 12px",border:isDef?`2px solid ${b.c}`:"2px solid rgba(255,255,255,0.05)",position:"relative",cursor:"pointer",transition:"transform 0.15s,box-shadow 0.15s"}} onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-3px)";e.currentTarget.style.boxShadow="0 8px 24px rgba(0,0,0,0.3)"}} onMouseLeave={e=>{e.currentTarget.style.transform="";e.currentTarget.style.boxShadow=""}}>
-                    {isDef&&<div style={{position:"absolute",top:-7,left:"50%",transform:"translateX(-50%)",background:b.c,color:"#000",fontSize:7,fontWeight:800,padding:"1px 6px",borderRadius:6}}>RECOMMENDED</div>}
-                    <div style={{fontSize:24,fontFamily:'"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif'}}>{b.e}</div>
-                    <div style={{fontSize:16,fontWeight:700}}>{b.t}</div>
-                    <div style={{fontSize:10,opacity:0.3}}>{b.d}</div>
-                  </div>
-                );
-              })}
-            </div>
-            <div style={{background:"rgba(59,155,246,0.06)",borderRadius:16,padding:"14px",border:"1px solid rgba(59,155,246,0.1)",marginBottom:10}}>
-              <div style={{fontSize:14,fontWeight:700,marginBottom:4}}>Guided Build Mode</div>
-              <div style={{fontSize:12,opacity:0.4,marginBottom:8}}>Create your first game with a guided AI tutor.</div>
-              <button className="cb" onClick={()=>window.location.href="build.html?project="+(age<=7?"animal-quiz":age<=10?"space-challenge":"history-blast")+"&name="+encodeURIComponent(nm)} style={{...BS("linear-gradient(135deg,#E8958A,#D4726A)","0 4px 14px rgba(232,149,138,0.3)"),width:"100%",fontSize:15}}>Start Free Trial — No Credit Card</button>
-              <div style={{fontSize:10,opacity:0.2,marginTop:4}}>7 days free. Cancel anytime.</div>
-            </div>
-            <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:5,marginBottom:10,fontSize:11,opacity:0.25}}>
-              <span style={{opacity:0.5}}>Play</span><span>→</span><span style={{color:"#E8958A",fontWeight:700}}>Build</span><span>→</span><span>Save</span><span>→</span><span>Share</span><span>→</span><span>Improve</span>
-            </div>
-            <button onClick={()=>setPostStep(0)} style={{background:"none",border:"none",color:"#fff",opacity:0.15,fontSize:11,cursor:"pointer",fontFamily:"inherit"}}>Maybe later — back to results</button>
-          </div>
-        )}
+
+
 
         {/* LEADERBOARD */}
         {scr==="leaderboard"&&(
@@ -1151,7 +1093,17 @@ function Game(){
               <div style={{flex:1,textAlign:"left"}}><div style={{fontSize:14,fontWeight:700}}>{s.name} <span style={{fontSize:10,opacity:0.3}}>age {s.age}</span></div></div>
               <div style={{fontSize:16,fontWeight:800,color:"#ffd700"}}>{s.score.toLocaleString()}</div>
             </div>))}
-            <button className="cb" onClick={reset} style={{...BS("linear-gradient(135deg,#ff6b35,#ff3366)","0 3px 10px rgba(255,51,102,0.25)"),marginTop:10}}>New Expedition</button>
+            <div style={{display:"flex",gap:8,justifyContent:"center",marginTop:14,flexWrap:"wrap"}}>
+              <button className="cb" onClick={()=>setScr("gameEnd")} style={{background:"rgba(255,255,255,0.08)",color:"#fff",padding:"10px 18px",borderRadius:50,fontSize:12,fontWeight:700,fontFamily:"inherit",border:"1px solid rgba(255,255,255,0.12)",cursor:"pointer"}}>← Back to My Results</button>
+              <button className="cb" onClick={reset} style={{...BS("rgba(255,255,255,0.06)"),fontSize:12,fontWeight:700}}>New Expedition</button>
+            </div>
+            <div style={{marginTop:16,background:"rgba(232,149,138,0.08)",border:"1px solid rgba(232,149,138,0.15)",borderRadius:16,padding:"14px 16px"}}>
+              <div style={{fontSize:13,opacity:0.7,marginBottom:8,fontWeight:600}}>Ready to build your own game with Koda?</div>
+              <button className="cb" onClick={()=>window.location.href="subscribe.html?plan=annual&name="+encodeURIComponent(nm)+"&age="+encodeURIComponent(age)+"&from=leaderboard"} style={{...BS("linear-gradient(135deg,#E8958A,#D4726A)","0 3px 12px rgba(232,149,138,0.3)"),fontSize:14,fontWeight:800,padding:"11px 24px"}}>
+                Start Building — 7 Days Free 🐾
+              </button>
+              <div style={{fontSize:10,opacity:0.3,marginTop:6}}>No charge for 7 days. Cancel anytime.</div>
+            </div>
           </div>
         )}
 
