@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WildCoders — Turn Screen Time Into Build Time</title>
+<meta name="description" content="WildCoders gives kids ages 8-13 a safe AI tutor named Koda who helps them build real games, think clearly, and grow into confident creators. Free to start.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
+<script src="https://js-na2.hsforms.net/forms/embed/245560513.js" defer></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#FFFBF7;color:#2d3436;font-family:'Nunito',sans-serif}
+html{scroll-behavior:smooth}
+.cb{transition:all 0.2s;cursor:pointer;border:none}
+.cb:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.1)}
+.cb:active{transform:translateY(0)}
+@media(max-width:768px){.hide-mobile{display:none !important}}
+.hs-form-frame input[type="email"],.hs-form input[type="email"]{background:#f8f6f3!important;border:2px solid #e8e4df!important;border-radius:14px!important;padding:13px 16px!important;color:#2d3436!important;font-size:15px!important;font-family:"Nunito",sans-serif!important;width:100%!important}
+.hs-form-frame input[type="submit"],.hs-form input[type="submit"],.hs-form .hs-button{background:#D4726A!important;color:#fff!important;padding:13px 20px!important;border-radius:14px!important;font-size:15px!important;font-weight:800!important;font-family:"Nunito",sans-serif!important;border:none!important;cursor:pointer!important;width:100%!important;margin-top:8px!important}
+.hs-form-frame label,.hs-form label{display:none!important}
+.hs-form-frame .submitted-message,.hs-form .submitted-message{color:#2D6A4F!important;font-size:16px!important;font-weight:700!important;text-align:center!important}
+.hs-form-frame,.hs-form{max-width:360px!important;margin:0 auto!important}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<script type="text/babel">
+const { useState } = React;
+
+function TigerHead({ size = 38 }) {
+  return (
+    <svg viewBox="40 80 200 160" style={{ width: size, height: size * 0.75 }}>
+      <ellipse cx="120" cy="165" rx="64" ry="68" fill="#E8958A"/>
+      <ellipse cx="115" cy="140" rx="36" ry="30" fill="#F4B8A8" opacity="0.45"/>
+      <ellipse cx="66" cy="106" rx="22" ry="28" fill="#E8958A"/>
+      <ellipse cx="66" cy="108" rx="14" ry="18" fill="#D4726A" opacity="0.3"/>
+      <ellipse cx="66" cy="110" rx="10" ry="14" fill="#FFEEE7"/>
+      <ellipse cx="174" cy="106" rx="22" ry="28" fill="#E8958A"/>
+      <ellipse cx="174" cy="108" rx="14" ry="18" fill="#D4726A" opacity="0.3"/>
+      <ellipse cx="174" cy="110" rx="10" ry="14" fill="#FFEEE7"/>
+      <ellipse cx="88" cy="168" rx="14" ry="12" fill="#F4B8A8" opacity="0.3"/>
+      <ellipse cx="152" cy="168" rx="14" ry="12" fill="#F4B8A8" opacity="0.3"/>
+      <ellipse cx="120" cy="182" rx="34" ry="28" fill="#FFEEE7"/>
+      <ellipse cx="120" cy="176" rx="22" ry="16" fill="#fff" opacity="0.15"/>
+      <path d="M68 124 Q76 134 64 146" fill="none" stroke="#D4726A" strokeWidth="4" strokeLinecap="round" opacity="0.6"/>
+      <path d="M82 116 Q86 124 78 132" fill="none" stroke="#D4726A" strokeWidth="3" strokeLinecap="round" opacity="0.5"/>
+      <path d="M172 124 Q164 134 176 146" fill="none" stroke="#D4726A" strokeWidth="4" strokeLinecap="round" opacity="0.6"/>
+      <path d="M158 116 Q154 124 162 132" fill="none" stroke="#D4726A" strokeWidth="3" strokeLinecap="round" opacity="0.5"/>
+      <ellipse cx="96" cy="160" rx="13" ry="12" fill="#fff"/>
+      <ellipse cx="99" cy="161" rx="7.5" ry="9" fill="#4A8A5A"/>
+      <ellipse cx="100" cy="162" rx="4" ry="5.5" fill="#2D3436"/>
+      <circle cx="102" cy="158" r="3" fill="#fff"/>
+      <ellipse cx="144" cy="160" rx="13" ry="12" fill="#fff"/>
+      <ellipse cx="141" cy="161" rx="7.5" ry="9" fill="#4A8A5A"/>
+      <ellipse cx="140" cy="162" rx="4" ry="5.5" fill="#2D3436"/>
+      <circle cx="143" cy="158" r="3" fill="#fff"/>
+      <path d="M113 176 Q120 168 127 176 Q120 182 113 176Z" fill="#D4726A"/>
+      <line x1="120" y1="181" x2="120" y2="188" stroke="#B5544E" strokeWidth="1.3" strokeLinecap="round"/>
+      <path d="M110 190 Q120 198 130 190" fill="none" stroke="#B5544E" strokeWidth="1.8" strokeLinecap="round"/>
+      <line x1="30" y1="168" x2="84" y2="178" stroke="#D4726A" strokeWidth="1" strokeLinecap="round" opacity="0.4"/>
+      <line x1="34" y1="178" x2="84" y2="182" stroke="#D4726A" strokeWidth="1" strokeLinecap="round" opacity="0.4"/>
+      <line x1="156" y1="178" x2="210" y2="168" stroke="#D4726A" strokeWidth="1" strokeLinecap="round" opacity="0.4"/>
+      <line x1="156" y1="182" x2="206" y2="178" stroke="#D4726A" strokeWidth="1" strokeLinecap="round" opacity="0.4"/>
+      <ellipse cx="90" cy="174" rx="6" ry="3.5" fill="#F4B8A8" opacity="0.25"/>
+      <ellipse cx="150" cy="174" rx="6" ry="3.5" fill="#F4B8A8" opacity="0.25"/>
+    </svg>
+  );
+}
+
+function TigerLogo({ size = 38 }) {
+  return (
+    <svg viewBox="0 0 280 400" style={{ width: size, height: size * 400/280 }}>
+      <path d="M180 290 Q215 260 235 290 Q255 330 235 350 Q225 358 218 350" fill="none" stroke="#E8958A" strokeWidth="14" strokeLinecap="round"/>
+      <ellipse cx="68" cy="330" rx="40" ry="22" fill="#E8958A"/>
+      <ellipse cx="172" cy="330" rx="40" ry="22" fill="#E8958A"/>
+      <ellipse cx="46" cy="345" rx="22" ry="13" fill="#FFEEE7"/>
+      <ellipse cx="190" cy="345" rx="22" ry="13" fill="#FFEEE7"/>
+      <ellipse cx="120" cy="270" rx="70" ry="75" fill="#E8958A"/>
+      <ellipse cx="112" cy="252" rx="40" ry="42" fill="#F4B8A8" opacity="0.35"/>
+      <ellipse cx="120" cy="290" rx="42" ry="42" fill="#FFEEE7" opacity="0.55"/>
+      <ellipse cx="75" cy="220" rx="24" ry="30" fill="#E8958A"/>
+      <ellipse cx="165" cy="220" rx="24" ry="30" fill="#E8958A"/>
+      <ellipse cx="75" cy="222" rx="15" ry="20" fill="#D4726A" opacity="0.3"/>
+      <ellipse cx="165" cy="222" rx="15" ry="20" fill="#D4726A" opacity="0.3"/>
+      <ellipse cx="75" cy="225" rx="10" ry="14" fill="#FFEEE7"/>
+      <ellipse cx="165" cy="225" rx="10" ry="14" fill="#FFEEE7"/>
+      <ellipse cx="100" cy="268" rx="15" ry="13" fill="#fff"/>
+      <ellipse cx="103" cy="269" rx="8" ry="10" fill="#4A8A5A"/>
+      <ellipse cx="104" cy="270" rx="5" ry="6" fill="#2D3436"/>
+      <circle cx="106" cy="265" r="3" fill="#fff"/>
+      <ellipse cx="140" cy="268" rx="15" ry="13" fill="#fff"/>
+      <ellipse cx="137" cy="269" rx="8" ry="10" fill="#4A8A5A"/>
+      <ellipse cx="136" cy="270" rx="5" ry="6" fill="#2D3436"/>
+      <circle cx="142" cy="265" r="3" fill="#fff"/>
+      <ellipse cx="120" cy="290" rx="38" ry="30" fill="#FFEEE7"/>
+      <path d="M108 288 Q120 278 132 288 Q120 296 108 288Z" fill="#D4726A"/>
+    </svg>
+  );
+}
+
+function FAQ({ q, a }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div style={{ borderBottom: "1px solid #e8e4df", padding: "18px 0" }}>
+      <button onClick={() => setOpen(!open)} style={{ background: "none", border: "none", color: "#2d3436", fontSize: 17, fontWeight: 600, fontFamily: "inherit", cursor: "pointer", width: "100%", textAlign: "left", display: "flex", justifyContent: "space-between", alignItems: "center", padding: 0, lineHeight: 1.45 }}>
+        <span style={{ paddingRight: 20 }}>{q}</span>
+        <span style={{ fontSize: 22, color: "#2D6A4F", transform: open ? "rotate(45deg)" : "none", transition: "transform 0.2s", flexShrink: 0 }}>+</span>
+      </button>
+      {open && <div style={{ fontSize: 15, color: "#636e72", lineHeight: 1.7, marginTop: 10, paddingRight: 30 }}>{a}</div>}
+    </div>
+  );
+}
+
+function Section({ children, bg, id, narrow }) {
+  return (
+    <section id={id} style={{ padding: "72px 24px", background: bg || "transparent" }}>
+      <div style={{ maxWidth: narrow ? 700 : 960, margin: "0 auto" }}>
+        {children}
+      </div>
+    </section>
+  );
+}
+
+function App() {
+  const [plan, setPlan] = useState("annual");
+  const [ageBand, setAgeBand] = useState(0);
+  const scrollTo = (id) => { const el = document.getElementById(id); if (el) el.scrollIntoView({ behavior: "smooth" }); };
+
+  // Reframed as a relationship arc, not feature tiers
+  const ageBands = [
+    {
+      range: "Ages 8–10", label: "The beginning of the relationship",
+      relationship: "Koda meets your child where they are — curious, energetic, and ready to make things. He keeps the bar high without making it hard.",
+      builds: "Custom quiz games and trivia challenges on any topic they love — animals, space, sports, history, science. Every choice is theirs.",
+      growth: "Your child learns to break a problem into steps, test ideas, and improve them. Koda tracks how they think and gets harder as they get better.",
+      milestone: "By the end of year one, your child has a portfolio of games they actually built — and they know how to make something from nothing.",
+      project: "Space Brain Blast — 5 hard questions about planets, designed, built, and tested by your kid",
+    },
+    {
+      range: "Ages 11–12", label: "The relationship deepens",
+      relationship: "Koda starts challenging your child like a real mentor — asking harder questions, pushing back on first ideas, teaching them to be specific.",
+      builds: "More complex quiz games, choose-your-own-adventure stories, and school subject projects. Koda remembers their portfolio and builds on it.",
+      growth: "Your child learns to communicate precisely with AI, give sharp feedback, and think several steps ahead. These are real professional skills.",
+      milestone: "By now, Koda knows your child — their interests, how they think, what they find hard. That context compounds every session.",
+      project: "The Ultimate History Challenge — 8 expert-level questions with custom scoring, built entirely by your kid",
+    },
+    {
+      range: "Age 13", label: "A trusted resource for harder problems",
+      relationship: "Koda becomes a thinking partner, not just a builder. Your child uses Koda to work through school projects, break down challenges, and tackle harder questions.",
+      builds: "School subject projects, creative writing, problem-solving challenges, and custom games at a level that surprises even parents.",
+      growth: "Your child is fluent in working with AI — giving clear instructions, evaluating output critically, iterating toward something good. A skill that transfers everywhere.",
+      milestone: "This is the payoff. A 13-year-old who has been working with Koda for two years knows something most adults don't: how to think and build with AI.",
+      project: "Their own project — Koda helps them design and build something that solves a problem they actually care about",
+    },
+  ];
+
+  const DOLLAR = "$";
+
+  return (
+    <div style={{ minHeight: "100vh", background: "#FFFBF7", color: "#2d3436", fontFamily: "'Nunito', sans-serif" }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Baloo+2:wght@700;800&display=swap');
+        .cb{transition:all 0.2s;cursor:pointer;border:none}
+        .cb:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.1)}
+        .cb:active{transform:translateY(0)}
+        html{scroll-behavior:smooth}
+        @media(max-width:768px){.hide-mobile{display:none !important}}
+      `}</style>
+
+      {/* ====== NAV ====== */}
+      <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, background: "rgba(255,251,247,0.95)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(0,0,0,0.05)", padding: "12px 24px", display: "flex", justifyContent: "center" }}>
+        <div style={{ maxWidth: 960, width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <TigerHead size={38} />
+            <span style={{ fontSize: 22, fontWeight: 800, fontFamily: "'Baloo 2', cursive", color: "#2D6A4F" }}>WildCoders</span>
+          </div>
+          <div style={{ display: "flex", gap: 20, alignItems: "center" }}>
+            <button onClick={() => scrollTo("koda")} className="hide-mobile" style={{ background: "none", border: "none", color: "#636e72", fontSize: 14, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Meet Koda</button>
+            <button onClick={() => scrollTo("safety")} className="hide-mobile" style={{ background: "none", border: "none", color: "#636e72", fontSize: 14, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Safety</button>
+            <button onClick={() => scrollTo("how")} className="hide-mobile" style={{ background: "none", border: "none", color: "#636e72", fontSize: 14, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>How It Works</button>
+            <button onClick={() => scrollTo("pricing")} className="hide-mobile" style={{ background: "none", border: "none", color: "#636e72", fontSize: 14, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>Pricing</button>
+            <button className="cb" onClick={() => window.location.href="play.html"} style={{ background: "#2D6A4F", color: "#fff", padding: "10px 22px", borderRadius: 50, fontSize: 14, fontWeight: 700, fontFamily: "inherit" }}>Play Free</button>
+          </div>
+        </div>
+      </nav>
+
+      {/* ====== HERO — Screen Time Hook ====== */}
+      <Section bg="linear-gradient(180deg, #FFFBF7, #FFF5EC)">
+        <div style={{ paddingTop: 72 }}>
+          <div style={{ display: "flex", gap: 48, alignItems: "center", flexWrap: "wrap" }}>
+            <div style={{ flex: "1 1 380px" }}>
+              {/* Builder badge */}
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "#FFF", border: "1px solid #e8e4df", borderRadius: 50, padding: "6px 16px 6px 6px", marginBottom: 20, boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
+                <div style={{ width: 28, height: 28, borderRadius: "50%", background: "linear-gradient(135deg, #E8958A, #D4726A)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 800, color: "#fff" }}>G</div>
+                <span style={{ fontSize: 13, fontWeight: 600, color: "#636e72" }}>Built by a dad. Tested by his son. Ages 8–13.</span>
+              </div>
+
+              <h1 style={{ fontSize: "clamp(30px, 4.5vw, 50px)", fontWeight: 900, lineHeight: 1.1, margin: "0 0 16px", color: "#1a1a2e" }}>
+                Screen time is not going away.
+                <br/>
+                <span style={{ color: "#2D6A4F" }}>Make it build something.</span>
+              </h1>
+
+              <p style={{ fontSize: 18, color: "#636e72", lineHeight: 1.65, marginBottom: 12, maxWidth: 480 }}>
+                WildCoders turns screen time into build time. Kids ages 8–13 build real games guided by Koda — a safe AI tutor who helps them think, create, and grow. Not passive. Not addictive. Creative.
+              </p>
+              <p style={{ fontSize: 15, color: "#95A89B", lineHeight: 1.6, marginBottom: 28, maxWidth: 480, fontWeight: 600 }}>
+                The goal is not less screen time. The goal is <em>better</em> screen time — where your child walks away with something real and a little more capable than before.
+              </p>
+
+              <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+                <button className="cb" onClick={() => window.location.href="play.html"} style={{ background: "#2D6A4F", color: "#fff", padding: "16px 32px", borderRadius: 50, fontSize: 17, fontWeight: 800, fontFamily: "inherit", boxShadow: "0 4px 16px rgba(45,106,79,0.25)" }}>
+                  Play Free Now — No Account
+                </button>
+                <button className="cb" onClick={() => scrollTo("koda")} style={{ background: "#fff", color: "#2D6A4F", padding: "16px 28px", borderRadius: 50, fontSize: 16, fontWeight: 700, fontFamily: "inherit", border: "2px solid #2D6A4F" }}>Meet Koda</button>
+              </div>
+
+              <div style={{ display: "flex", gap: 20, marginTop: 20, flexWrap: "wrap" }}>
+                {[{ text: "Free to start" }, { text: "Ages 8–13" }, { text: "No ads" }, { text: "Safe by design" }].map((b, i) => (
+                  <div key={i} style={{ fontSize: 13, color: "#95A89B", fontWeight: 600, display: "flex", alignItems: "center", gap: 5 }}>
+                    <span style={{ color: "#2D6A4F" }}>✓</span> {b.text}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Koda demo — live conversation */}
+            <div style={{ flex: "1 1 300px", maxWidth: 400 }}>
+              <div style={{ background: "#fff", borderRadius: 20, border: "1px solid #e8e4df", overflow: "hidden", boxShadow: "0 8px 32px rgba(0,0,0,0.06)" }}>
+                <div style={{ background: "#1a1a2e", padding: "12px 16px", display: "flex", alignItems: "center", gap: 8 }}>
+                  <TigerHead size={28} />
+                  <span style={{ fontSize: 11, color: "#b2bec3", marginLeft: 4, fontWeight: 600 }}>🐾 Koda — Build Mode</span>
+                </div>
+                <div style={{ padding: "20px 18px", fontSize: 14, lineHeight: 1.7, color: "#636e72" }}>
+                  <div style={{ color: "#2D6A4F", fontWeight: 700 }}>Koda:</div>
+                  <div style={{ marginBottom: 14 }}>"Alright, let's build your Space Challenge. You're making every decision here. First up — what should the quiz be about?"</div>
+                  <div style={{ color: "#D4726A", fontWeight: 700 }}>Emma:</div>
+                  <div style={{ marginBottom: 14 }}>"Black holes and planets!"</div>
+                  <div style={{ color: "#2D6A4F", fontWeight: 700 }}>Koda:</div>
+                  <div style={{ marginBottom: 14 }}>"Bold choice. Difficulty — Easy, or are you braver than that?"</div>
+                  <div style={{ color: "#D4726A", fontWeight: 700 }}>Emma:</div>
+                  <div style={{ marginBottom: 14 }}>"...medium. Fine."</div>
+                  <div style={{ color: "#2D6A4F", fontWeight: 700 }}>Koda:</div>
+                  <div>"That's the Emma I know. Building now. 🔨"</div>
+                </div>
+              </div>
+              <div style={{ textAlign: "center", marginTop: 10, fontSize: 12, color: "#b2bec3", fontWeight: 600 }}>
+                Koda adapts to every child. The thinking is always theirs.
+              </div>
+            </div>
+          </div>
+        </div>
+      </Section>
+
+      {/* ====== THE PIVOT SECTION — Screen Time → Build Time ====== */}
+      <Section bg="#FFFBF7">
+        <div style={{ textAlign: "center", maxWidth: 780, margin: "0 auto" }}>
+          <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: 3, color: "#2D6A4F", marginBottom: 8 }}>THE DIFFERENCE</div>
+          <h2 style={{ fontSize: "clamp(24px, 3.5vw, 36px)", fontWeight: 900, margin: "0 0 14px", lineHeight: 1.2 }}>
+            Most apps keep kids busy.<br/><span style={{ color: "#2D6A4F" }}>Koda helps them grow.</span>
+          </h2>
+          <p style={{ fontSize: 16, color: "#636e72", lineHeight: 1.7, marginBottom: 36 }}>
+            Your child is already spending hours on screens. The question is whether those hours leave them better than they found them. Watching videos, playing other people's games, scrolling — none of it compounds. Building does.
+          </p>
+          <div style={{ display: "flex", gap: 16, flexWrap: "wrap", justifyContent: "center" }}>
+            {[
+              { icon: "📺", label: "Passive screen time", desc: "Watching. Playing someone else's game. Consuming content. Entertained but not growing.", bad: true },
+              { icon: "🔨", label: "Active build time", desc: "Making decisions. Designing. Testing. Improving. Every session produces something real.", bad: false },
+            ].map((c, i) => (
+              <div key={i} style={{ flex: "1 1 280px", background: c.bad ? "#FFF5F2" : "#f0fdf4", borderRadius: 18, padding: "28px 24px", border: c.bad ? "1px solid #FDDAD0" : "1px solid #bbf7d0", textAlign: "left" }}>
+                <div style={{ fontSize: 28, marginBottom: 10 }}>{c.icon}</div>
+                <div style={{ fontSize: 17, fontWeight: 800, color: c.bad ? "#B5544E" : "#1A5A2E", marginBottom: 8 }}>{c.label}</div>
+                <div style={{ fontSize: 14, color: "#636e72", lineHeight: 1.65 }}>{c.desc}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{ marginTop: 28, padding: "18px 28px", background: "#fff", borderRadius: 16, border: "1px solid #e8e4df", fontSize: 15, color: "#636e72", lineHeight: 1.65, fontStyle: "italic" }}>
+            "It feels like play. Underneath, they are learning how to think, communicate, and create with AI — skills they will use across school, work, and life."
+          </div>
+        </div>
+      </Section>
+
+      {/* ====== MEET KODA — Tutor section ====== */}
+      <Section bg="#fff" id="koda">
+        <div style={{ maxWidth: 820, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: 32 }}>
+            <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: 3, color: "#2D6A4F", marginBottom: 8 }}>MEET YOUR CHILD'S TUTOR</div>
+            <h2 style={{ fontSize: "clamp(24px, 3.5vw, 34px)", fontWeight: 900, margin: "0 0 10px", lineHeight: 1.2 }}>Meet Koda.</h2>
+            <p style={{ fontSize: 16, color: "#636e72", maxWidth: 600, margin: "0 auto", lineHeight: 1.65, fontWeight: 600 }}>
+              Koda is WildCoders' AI tutor — a safe, patient tiger companion who meets your child at age 8 and grows with them to 13. He adapts to their skill level, remembers what they've built, and shows up for harder problems as they get older.
+            </p>
+          </div>
+
+          <div style={{ display: "flex", gap: 28, flexWrap: "wrap", alignItems: "flex-start" }}>
+            {/* Koda visual */}
+            <div style={{ flex: "0 0 200px", textAlign: "center" }}>
+              <div style={{ background: "#FFFBF7", borderRadius: 20, padding: "24px 20px", border: "1px solid #e8e4df", marginBottom: 14 }}>
+                <TigerLogo size={80} />
+                <div style={{ fontSize: 22, fontWeight: 900, color: "#1a1a2e", margin: "12px 0 4px" }}>Koda</div>
+                <div style={{ fontSize: 12, color: "#b2bec3", fontWeight: 600 }}>WildCoders AI Tutor</div>
+                <div style={{ margin: "14px 0 0", padding: "14px", background: "#FFF5EC", borderRadius: 12, border: "1px solid #FDDAD0" }}>
+                  <div style={{ fontSize: 13, fontWeight: 800, color: "#D4726A", marginBottom: 8 }}>Koda's charter</div>
+                  <div style={{ fontSize: 12, color: "#636e72", lineHeight: 1.65, fontStyle: "italic" }}>"I meet you where you are. I help you go further. Every decision is yours. I only exist inside WildCoders."</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Koda principles */}
+            <div style={{ flex: "1 1 300px" }}>
+              <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: 3, color: "#1a1a2e", marginBottom: 16 }}>WHAT KODA WILL AND WON'T DO</div>
+              {[
+                { num: "1", head: "Koda only talks about building.", body: "If your child goes off-topic, Koda redirects to the project — every time, without exception." },
+                { num: "2", head: "Koda never does the work.", body: "He guides, questions, and builds what your child describes. The thinking is always theirs." },
+                { num: "3", head: "Koda asks more than he tells.", body: "Good tutors ask questions. Koda is designed to make your child think, not to hand them answers." },
+                { num: "4", head: "Every response is filtered.", body: "Two layers of age-appropriate safety before anything reaches your child." },
+                { num: "5", head: "Koda is always kind.", body: "He challenges kids to think harder. He never criticises, dismisses, or discourages." },
+              ].map((r, i) => (
+                <div key={i} style={{ display: "flex", gap: 12, marginBottom: 16, alignItems: "flex-start" }}>
+                  <div style={{ width: 26, height: 26, borderRadius: "50%", background: "#2D6A4F", color: "#fff", fontSize: 12, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2 }}>{r.num}</div>
+                  <div>
+                    <div style={{ fontSize: 15, fontWeight: 800, color: "#1a1a2e", marginBottom: 2 }}>{r.head}</div>
+                    <div style={{ fontSize: 13, color: "#636e72", lineHeight: 1.55 }}>{r.body}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Koda adapts box */}
+          <div style={{ marginTop: 28, background: "#FFFBF7", borderRadius: 18, padding: "24px 28px", border: "1px solid #e8e4df" }}>
+            <div style={{ fontSize: 15, fontWeight: 900, color: "#1a1a2e", marginBottom: 8 }}>Koda meets every child where they are — and works with them to go further.</div>
+            <div style={{ fontSize: 14, color: "#636e72", lineHeight: 1.65 }}>
+              A 8-year-old and a 13-year-old building the same quiz get completely different experiences. Koda reads their age, their choices, and how they respond — then adapts his language, his challenge level, and his encouragement in real time. Not one-size-fits-all. A tutor that genuinely adjusts to your child.
+            </div>
+          </div>
+        </div>
+      </Section>
+
+      {/* ====== THE COMPANION SECTION — Most important new section ====== */}
+      <section style={{ padding: "80px 24px", background: "#1a1a2e" }}>
+        <div style={{ maxWidth: 860, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: 48 }}>
+            <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: 3, color: "#D8F0E4", marginBottom: 12 }}>THE BIGGER PICTURE</div>
+            <h2 style={{ fontSize: "clamp(26px, 4vw, 44px)", fontWeight: 900, color: "#fff", lineHeight: 1.15, margin: "0 0 18px" }}>
+              Today, Koda helps your child build games.<br/>
+              <span style={{ color: "#D4726A" }}>Over time, Koda helps your child build themselves.</span>
+            </h2>
+            <p style={{ fontSize: 17, color: "#AABBC4", lineHeight: 1.7, maxWidth: 640, margin: "0 auto" }}>
+              There is a difference between a product your child uses and a resource your child trusts. Koda is designed to be the second one — a safe, patient AI companion who meets your child at age 8 and is still genuinely useful to them at 13. Not because it has more features. Because it remembers who they are and helps them become who they're becoming.
+            </p>
+          </div>
+
+          {/* Vision ladder */}
+          <div style={{ display: "flex", gap: 16, flexWrap: "wrap", justifyContent: "center", marginBottom: 40 }}>
+            {[
+              { age: "Age 8", color: "#D4726A", icon: "🎮", title: "Build games with Koda", desc: "Your child makes creative decisions for the first time. They see something real come from their own ideas. That feeling is the hook." },
+              { age: "Ages 9–11", color: "#E8958A", icon: "🧠", title: "Think and communicate clearly", desc: "Koda gets harder. Your child learns to give specific instructions, evaluate output, and iterate. The skills that transfer to every subject." },
+              { age: "Ages 12–13", color: "#2D6A4F", icon: "🚀", title: "A trusted resource for harder problems", desc: "School projects. Big questions. Koda becomes the thinking partner your child reaches for because they trust it — and because it knows them." },
+            ].map((v, i) => (
+              <div key={i} style={{ flex: "1 1 240px", background: "rgba(255,255,255,0.05)", borderRadius: 18, padding: "24px 20px", border: "1px solid rgba(255,255,255,0.1)" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+                  <div style={{ background: v.color, color: "#fff", borderRadius: 20, padding: "3px 12px", fontSize: 11, fontWeight: 800 }}>{v.age}</div>
+                  <span style={{ fontSize: 20 }}>{v.icon}</span>
+                </div>
+                <div style={{ fontSize: 15, fontWeight: 800, color: "#fff", marginBottom: 8 }}>{v.title}</div>
+                <div style={{ fontSize: 13, color: "#AABBC4", lineHeight: 1.65 }}>{v.desc}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* The line */}
+          <div style={{ textAlign: "center", padding: "28px 32px", background: "rgba(45,106,79,0.2)", borderRadius: 18, border: "1px solid rgba(45,106,79,0.3)" }}>
+            <div style={{ fontSize: 18, fontWeight: 900, color: "#D8F0E4", lineHeight: 1.5, marginBottom: 8 }}>
+              "The goal is not to create little software engineers. The goal is to help kids become confident creators in an AI-powered world."
+            </div>
+            <div style={{ fontSize: 13, color: "#667788" }}>— Gavin Lantzy, Founder</div>
+          </div>
+        </div>
+      </section>
+
+      {/* ====== THE RELATIONSHIP ARC — reframed age bands ====== */}
+      <Section bg="#FFFBF7" id="ages">
+        <div style={{ maxWidth: 820, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: 28 }}>
+            <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: 3, color: "#2D6A4F", marginBottom: 8 }}>THE KODA RELATIONSHIP</div>
+            <h2 style={{ fontSize: "clamp(22px, 3.5vw, 32px)", fontWeight: 900, margin: "0 0 10px", lineHeight: 1.2 }}>What the relationship looks like as your child grows.</h2>
+            <p style={{ fontSize: 15, color: "#636e72", maxWidth: 580, margin: "0 auto" }}>This is not a different product at each age. It's the same trusted companion — getting more out of them as they grow.</p>
+          </div>
+
+          <div style={{ display: "flex", gap: 8, marginBottom: 24, justifyContent: "center", flexWrap: "wrap" }}>
+            {ageBands.map((ab, i) => (
+              <button key={i} onClick={() => setAgeBand(i)} style={{ background: ageBand === i ? "#2D6A4F" : "#fff", color: ageBand === i ? "#fff" : "#2d3436", border: ageBand === i ? "2px solid #2D6A4F" : "2px solid #e8e4df", borderRadius: 50, padding: "8px 20px", fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
+                {ab.range}
+              </button>
+            ))}
+          </div>
+
+          <div style={{ background: "#fff", borderRadius: 20, border: "1px solid #e8e4df", overflow: "hidden" }}>
+            <div style={{ background: "#2D6A4F", padding: "16px 24px" }}>
+              <div style={{ fontSize: 18, fontWeight: 800, color: "#fff" }}>{ageBands[ageBand].range}</div>
+              <div style={{ fontSize: 13, color: "#D8F0E4", marginTop: 2 }}>{ageBands[ageBand].label}</div>
+            </div>
+            <div style={{ padding: "24px", display: "flex", flexWrap: "wrap", gap: 20 }}>
+              {[
+                { label: "THE RELATIONSHIP", text: ageBands[ageBand].relationship },
+                { label: "WHAT THEY BUILD", text: ageBands[ageBand].builds },
+                { label: "HOW THEY GROW", text: ageBands[ageBand].growth },
+                { label: "THE MILESTONE", text: ageBands[ageBand].milestone },
+              ].map((item, i) => (
+                <div key={i} style={{ flex: "1 1 45%", minWidth: 220 }}>
+                  <div style={{ fontSize: 10, fontWeight: 800, letterSpacing: 2, color: "#2D6A4F", marginBottom: 6 }}>{item.label}</div>
+                  <div style={{ fontSize: 14, color: "#636e72", lineHeight: 1.6 }}>{item.text}</div>
+                </div>
+              ))}
+            </div>
+            <div style={{ padding: "0 24px 24px" }}>
+              <div style={{ background: "#FFF5EC", borderRadius: 12, padding: "14px 18px", border: "1px solid #FDDAD0" }}>
+                <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: 2, color: "#D4726A", marginBottom: 4 }}>FIRST PROJECT EXAMPLE</div>
+                <div style={{ fontSize: 14, color: "#636e72", lineHeight: 1.5 }}>{ageBands[ageBand].project}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Section>
+
+      {/* ====== SAFETY ====== */}
+      <Section bg="#fff" id="safety">
+        <div style={{ maxWidth: 800, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: 28 }}>
+            <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: 3, color: "#2D6A4F", marginBottom: 8 }}>SAFETY FIRST</div>
+            <h2 style={{ fontSize: "clamp(24px, 3.5vw, 34px)", fontWeight: 900, margin: "0 0 10px", lineHeight: 1.2 }}>We built this for our own kids. Safety is the foundation, not a feature.</h2>
+            <p style={{ fontSize: 15, color: "#636e72" }}>Before we thought about features, pricing, or design — we thought about safety. Every decision starts there.</p>
+          </div>
+
+          {/* Fear → Answer format */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 20 }}>
+            {[
+              { fear: "My child might see inappropriate content.", answer: "Every response Koda generates passes two layers of age-appropriate safety filters. A blocklist catches inappropriate input. No exceptions." },
+              { fear: "I don't know what my kid is talking to.", answer: "Koda is a closed AI. No internet, no social media, no external links, no public chat. Koda can only talk about building. You can read every conversation." },
+              { fear: "Apps collect my child's data.", answer: "WildCoders collects only a first name and age. No school, address, last name, or contact details. Data is never sold or shared. Designed with COPPA principles." },
+              { fear: "Online tools are designed to be addictive.", answer: "No infinite scroll. No streaks. No push notifications. No engagement mechanics. Sessions end with something finished. You stay in control of screen time." },
+            ].map((item, i) => (
+              <div key={i} style={{ display: "flex", gap: 0, borderRadius: 14, overflow: "hidden", border: "1px solid #e8e4df" }}>
+                <div style={{ flex: "1 1 45%", background: "#FFF5F2", padding: "16px 18px", borderRight: "1px solid #e8e4df" }}>
+                  <div style={{ fontSize: 12, fontWeight: 800, color: "#B5544E", marginBottom: 4, letterSpacing: 1 }}>PARENT CONCERN</div>
+                  <div style={{ fontSize: 14, color: "#636e72", lineHeight: 1.55, fontStyle: "italic" }}>{item.fear}</div>
+                </div>
+                <div style={{ flex: "1 1 55%", background: "#f0fdf4", padding: "16px 18px" }}>
+                  <div style={{ fontSize: 12, fontWeight: 800, color: "#1A5A2E", marginBottom: 4, letterSpacing: 1 }}>HOW WILDCOODERS HANDLES IT</div>
+                  <div style={{ fontSize: 14, color: "#636e72", lineHeight: 1.55 }}>{item.answer}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ background: "#f0fdf4", borderRadius: 14, padding: "16px 24px", border: "1px solid #bbf7d0", textAlign: "center", fontSize: 14, color: "#2D6A4F", lineHeight: 1.6, fontWeight: 600 }}>
+            "I built this for my own son Teddy. Every safety decision I made, I asked myself: would I put Teddy in front of this?" — Gavin, Founder
+          </div>
+        </div>
+      </Section>
+
+      {/* ====== WHY KIDS COME BACK — Ongoing value ====== */}
+      <Section bg="#FFFBF7" id="value">
+        <div style={{ maxWidth: 820, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: 32 }}>
+            <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: 3, color: "#2D6A4F", marginBottom: 8 }}>ONGOING VALUE</div>
+            <h2 style={{ fontSize: "clamp(22px, 3.5vw, 32px)", fontWeight: 900, margin: "0 0 10px", lineHeight: 1.2 }}>Not a one-time demo. A habit your child chooses.</h2>
+            <p style={{ fontSize: 15, color: "#636e72", maxWidth: 560, margin: "0 auto" }}>WildCoders is designed to pull kids back every week — with new challenges, new game types, and a relationship with Koda that gets more valuable the longer it lasts.</p>
+          </div>
+
+          <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+            {[
+              { icon: "📅", title: "New weekly build challenges", desc: "Fresh prompts every week so there's always something new to make." },
+              { icon: "🗂️", title: "A growing personal portfolio", desc: "Every game your child builds is saved. They can show it, play it, and improve it — a real record of creation over time." },
+              { icon: "🧩", title: "Koda remembers their interests", desc: "Over time, Koda learns what each child loves and builds sessions around it. The relationship compounds." },
+              { icon: "🔁", title: "Every game can be improved", desc: "Kids can revisit old games and tell Koda what to change. Iteration is the real skill — and they practice it every session." },
+              { icon: "📊", title: "Parent report after every session", desc: "See exactly what was built, what decisions were made, and what skills were practised. You're never in the dark." },
+              { icon: "🚀", title: "New game types coming", desc: "Quiz games today. Stories, maths challenges, science projects, and school-subject games next. The platform grows with your child." },
+            ].map((r, i) => (
+              <div key={i} style={{ flex: "1 1 240px", background: "#fff", borderRadius: 16, padding: "22px 20px", border: "1px solid #e8e4df" }}>
+                <div style={{ fontSize: 26, marginBottom: 10 }}>{r.icon}</div>
+                <div style={{ fontSize: 15, fontWeight: 800, color: "#1a1a2e", marginBottom: 6 }}>{r.title}</div>
+                <div style={{ fontSize: 13, color: "#636e72", lineHeight: 1.6 }}>{r.desc}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Section>
+
+      {/* ====== HOW IT WORKS ====== */}
+      <Section bg="#fff" id="how">
+        <div style={{ textAlign: "center" }}>
+          <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: 3, color: "#2D6A4F", marginBottom: 8 }}>HOW IT WORKS</div>
+          <h2 style={{ fontSize: "clamp(24px, 3.5vw, 34px)", fontWeight: 900, margin: "0 0 10px", lineHeight: 1.2 }}>Free to start. Built to grow.</h2>
+          <p style={{ fontSize: 15, color: "#636e72", marginBottom: 32 }}>Play the free game. Meet Koda. Build something real — in 20 minutes.</p>
+
+          <div style={{ display: "flex", gap: 20, flexWrap: "wrap", justifyContent: "center" }}>
+            {[
+              { num: "1", title: "Play", sub: "Free forever", desc: "Your kid plays an expedition game through wilderness biomes. They manage supplies, survive trail events, answer trivia, and defeat a boss. Real decisions, real learning.", color: "#2D6A4F", bg: "#f0fdf4", border: "#bbf7d0" },
+              { num: "2", title: "Build", sub: DOLLAR + "12.99/mo", desc: "Koda guides your child through building their own game. They choose the topic, make every design decision, test it, and improve it. Everything goes into their portfolio.", color: "#D4726A", bg: "#FFF5F2", border: "#FDDAD0" },
+              { num: "3", title: "Create", sub: "Coming soon", desc: "New guided projects every month — stories, maths challenges, science games, school-subject projects. Each one harder than the last. The platform grows with your child.", color: "#2D6A4F", bg: "#f0fdf4", border: "#bbf7d0" },
+            ].map((s, i) => (
+              <div key={i} style={{ flex: "1 1 240px", maxWidth: 300, background: s.bg, border: "2px solid " + s.border, borderRadius: 20, padding: "28px 22px", textAlign: "center" }}>
+                <div style={{ width: 44, height: 44, borderRadius: "50%", background: s.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, fontWeight: 800, margin: "0 auto 12px", color: "#fff" }}>{s.num}</div>
+                <div style={{ fontSize: 24, fontWeight: 800, marginBottom: 4, color: "#1a1a2e" }}>{s.title}</div>
+                <div style={{ fontSize: 13, color: s.color, fontWeight: 700, marginBottom: 10 }}>{s.sub}</div>
+                <div style={{ fontSize: 14, color: "#636e72", lineHeight: 1.55 }}>{s.desc}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* BUILD → TEST → IMPROVE loop */}
+          <div style={{ marginTop: 32, background: "#1a1a2e", borderRadius: 16, padding: "18px 28px", display: "inline-block" }}>
+            <div style={{ fontSize: 14, fontWeight: 800, color: "#D8F0E4", letterSpacing: 2 }}>
+              BUILD &nbsp;→&nbsp; TEST &nbsp;→&nbsp; IMPROVE &nbsp;→&nbsp; BUILD AGAIN
+            </div>
+            <div style={{ fontSize: 12, color: "#AABBC4", marginTop: 4 }}>The learning loop that compounds every session.</div>
+          </div>
+        </div>
+      </Section>
+
+      {/* ====== WHAT THEY BUILD — game types ====== */}
+      <Section bg="#FFFBF7">
+        <div style={{ maxWidth: 820, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: 28 }}>
+            <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: 3, color: "#D4726A", marginBottom: 8 }}>WHAT KIDS BUILD</div>
+            <h2 style={{ fontSize: "clamp(22px, 3.5vw, 32px)", fontWeight: 900, margin: "0 0 10px", lineHeight: 1.2 }}>Real games. Built from their own ideas.</h2>
+            <p style={{ fontSize: 15, color: "#636e72" }}>Every game is different because every kid is different.</p>
+          </div>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+            {[
+              { icon: "🦁", name: "Animal Quiz", desc: "Ocean, safari, jungle — their choice" },
+              { icon: "🚀", name: "Space Challenge", desc: "Planets, missions, black holes" },
+              { icon: "📚", name: "History Blast", desc: "Civilisations, explorers, world events" },
+              { icon: "⚽", name: "Sports Trivia", desc: "Their favourite sport and team" },
+              { icon: "🔢", name: "Math Challenge", desc: "Fast-paced maths they design" },
+              { icon: "🌿", name: "Science Game", desc: "Biology, physics, nature" },
+              { icon: "✏️", name: "Story Adventure", desc: "Choose-your-own-adventure tales" },
+              { icon: "🎨", name: "Creative Game", desc: "Open format — anything they imagine" },
+              { icon: "🔮", name: "More coming", desc: "New types added regularly" },
+            ].map((g, i) => (
+              <div key={i} style={{ flex: "1 1 160px", background: "#fff", borderRadius: 14, padding: "16px 14px", border: "1px solid #e8e4df", textAlign: "center" }}>
+                <div style={{ fontSize: 24, marginBottom: 6 }}>{g.icon}</div>
+                <div style={{ fontSize: 13, fontWeight: 800, color: "#1a1a2e", marginBottom: 3 }}>{g.name}</div>
+                <div style={{ fontSize: 11, color: "#b2bec3" }}>{g.desc}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Section>
+
+      {/* ====== WHY NOT SCRATCH / FREE TOOLS ====== */}
+      <Section bg="#fff">
+        <div style={{ maxWidth: 780, margin: "0 auto" }}>
+          <h2 style={{ fontSize: "clamp(22px, 3vw, 30px)", fontWeight: 900, margin: "0 0 12px", textAlign: "center" }}>What makes WildCoders different from free tools?</h2>
+          <p style={{ fontSize: 15, color: "#636e72", textAlign: "center", marginBottom: 28 }}>
+            Coding classes teach one important skill. YouTube teaches passively. Generic AI tools aren't designed for kids. WildCoders teaches kids how to create with AI — a skill they'll use across school, work, and life.
+          </p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {[
+              { tool: "Scratch", note: "Great for coding basics. Doesn't teach AI communication, iteration, or creative decision-making with AI." },
+              { tool: "YouTube tutorials", note: "Passive consumption. Kids follow along but own nothing. The thinking is the teacher's, not theirs." },
+              { tool: "ChatGPT / free AI", note: "Unfiltered, not designed for children, no structure, no safety layers, no learning arc. Just a chat box." },
+              { tool: "WildCoders", note: "A safe AI tutor who guides your child through building something real — and gets harder as they get better.", highlight: true },
+            ].map((r, i) => (
+              <div key={i} style={{ display: "flex", gap: 14, alignItems: "flex-start", padding: "14px 18px", borderRadius: 12, background: r.highlight ? "#f0fdf4" : "#FFFBF7", border: r.highlight ? "1px solid #bbf7d0" : "1px solid #e8e4df" }}>
+                <div style={{ fontSize: 14, fontWeight: 800, color: r.highlight ? "#2D6A4F" : "#1a1a2e", minWidth: 140, paddingTop: 2 }}>{r.highlight ? "✓ " : ""}{r.tool}</div>
+                <div style={{ fontSize: 14, color: "#636e72", lineHeight: 1.55 }}>{r.note}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Section>
+
+      {/* ====== SOCIAL PROOF ====== */}
+      <Section bg="#FFFBF7">
+        <div style={{ maxWidth: 820, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: 8 }}>
+            <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: 3, color: "#2D6A4F", marginBottom: 8 }}>PROOF</div>
+            <h2 style={{ fontSize: 28, fontWeight: 900, margin: "0 0 12px", textAlign: "center" }}>Proof your child is learning. Not just playing.</h2>
+          </div>
+          <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginBottom: 28 }}>
+            {[
+              { icon: "📋", title: "Session report", desc: "After every Build Mode session, parents receive a summary: what was built, what decisions were made, what skills were practised." },
+              { icon: "📁", title: "Portfolio", desc: "Every project is saved to your child's portfolio. Watch it grow session by session — a real record of things they built." },
+              { icon: "📈", title: "Skill progression", desc: "Koda tracks how your child's thinking develops over time. More specific feedback, harder challenges, sharper decisions — you'll see it." },
+            ].map((item, i) => (
+              <div key={i} style={{ flex: "1 1 240px", background: "#fff", borderRadius: 16, padding: "22px", border: "1px solid #e8e4df" }}>
+                <div style={{ fontSize: 26, marginBottom: 8 }}>{item.icon}</div>
+                <div style={{ fontSize: 15, fontWeight: 800, color: "#1a1a2e", marginBottom: 6 }}>{item.title}</div>
+                <div style={{ fontSize: 13, color: "#636e72", lineHeight: 1.6 }}>{item.desc}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Section>
+
+      {/* ====== TESTIMONIALS ====== */}
+      <Section bg="#fff">
+        <h2 style={{ fontSize: 28, fontWeight: 900, margin: "0 0 24px", textAlign: "center" }}>From parents who tried it.</h2>
+        <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+          {[
+            { quote: "He played for 20 minutes and asked when he could do it again. I had to explain it was bedtime. That has never happened with anything educational.", name: "Sarah M.", detail: "Parent of a 9-year-old" },
+            { quote: "She built a Space quiz and then immediately asked if she could make it harder. She was iterating. At 11. I didn't expect that.", name: "James K.", detail: "Parent of an 11-year-old" },
+            { quote: "The parent report after each session is genuinely useful. I can see exactly what he's thinking about and what Koda challenged him on.", name: "Priya L.", detail: "Parent of a 10-year-old" },
+          ].map((t, i) => (
+            <div key={i} style={{ flex: "1 1 260px", background: "#FFFBF7", borderRadius: 18, padding: "22px", border: "1px solid #e8e4df" }}>
+              <div style={{ fontSize: 24, color: "#2D6A4F", marginBottom: 8, fontFamily: "Georgia, serif" }}>"</div>
+              <p style={{ fontSize: 15, color: "#636e72", lineHeight: 1.65, margin: "0 0 14px", fontStyle: "italic" }}>{t.quote}</p>
+              <div style={{ fontSize: 14, fontWeight: 800, color: "#1a1a2e" }}>{t.name}</div>
+              <div style={{ fontSize: 12, color: "#b2bec3" }}>{t.detail}</div>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      {/* ====== PRICING ====== */}
+      <Section bg="#FFFBF7" id="pricing">
+        <div style={{ textAlign: "center" }}>
+          <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: 3, color: "#2D6A4F", marginBottom: 8 }}>PRICING</div>
+          <h2 style={{ fontSize: "clamp(24px, 3.5vw, 34px)", fontWeight: 900, margin: "0 0 8px" }}>Start free. Upgrade when they're ready.</h2>
+          <p style={{ fontSize: 15, color: "#636e72", marginBottom: 36 }}>The adventure game is free forever. Build Mode starts with a 7-day free trial.</p>
+
+          <div style={{ display: "flex", gap: 20, flexWrap: "wrap", justifyContent: "center" }}>
+            {/* Free tier */}
+            <div style={{ flex: "1 1 260px", maxWidth: 300, background: "#fff", borderRadius: 20, padding: "32px 24px", border: "2px solid #e8e4df", textAlign: "center" }}>
+              <div style={{ fontSize: 14, fontWeight: 800, color: "#636e72", marginBottom: 10 }}>WILDERNESS QUEST</div>
+              <div style={{ fontSize: 48, fontWeight: 900, color: "#1a1a2e" }}>Free</div>
+              <div style={{ fontSize: 14, color: "#b2bec3", marginBottom: 24 }}>forever</div>
+              <div style={{ textAlign: "left", fontSize: 15, lineHeight: 2.2, color: "#636e72" }}>
+                {["Full adventure game", "12 trail events + boss", "Wilderness trivia", "Leaderboard", "No account needed"].map((f, i) => (
+                  <div key={i}>✓ {f}</div>
+                ))}
+              </div>
+              <button className="cb" onClick={() => window.location.href="play.html"} style={{ background: "#fff", color: "#2D6A4F", padding: "14px 28px", borderRadius: 50, fontSize: 15, fontWeight: 800, fontFamily: "inherit", marginTop: 24, width: "100%", border: "2px solid #2D6A4F" }}>Play Free Now</button>
+            </div>
+
+            {/* Build Mode */}
+            <div style={{ flex: "1 1 260px", maxWidth: 300, background: "#fff", borderRadius: 20, padding: "32px 24px", border: "2px solid #2D6A4F", textAlign: "center", position: "relative" }}>
+              <div style={{ position: "absolute", top: -13, left: "50%", transform: "translateX(-50%)", background: "#2D6A4F", color: "#fff", padding: "5px 16px", borderRadius: 20, fontSize: 12, fontWeight: 800, letterSpacing: 1 }}>RECOMMENDED</div>
+              <div style={{ fontSize: 14, fontWeight: 800, color: "#636e72", marginBottom: 10, marginTop: 6 }}>BUILD MODE</div>
+              <div style={{ display: "flex", justifyContent: "center", gap: 3, marginBottom: 12, background: "#f0ebe6", borderRadius: 10, padding: 3 }}>
+                <button onClick={() => setPlan("monthly")} style={{ background: plan === "monthly" ? "#fff" : "transparent", border: "none", color: "#2d3436", padding: "6px 14px", borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", boxShadow: plan === "monthly" ? "0 1px 3px rgba(0,0,0,0.1)" : "none" }}>Monthly</button>
+                <button onClick={() => setPlan("annual")} style={{ background: plan === "annual" ? "#fff" : "transparent", border: "none", color: "#2d3436", padding: "6px 14px", borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", boxShadow: plan === "annual" ? "0 1px 3px rgba(0,0,0,0.1)" : "none" }}>Annual</button>
+              </div>
+              <div style={{ fontSize: 48, fontWeight: 900, color: "#1a1a2e" }}>{plan === "annual" ? DOLLAR + "99" : DOLLAR + "12.99"}</div>
+              <div style={{ fontSize: 14, color: "#b2bec3" }}>{plan === "annual" ? "/year" : "/mo"}</div>
+              {plan === "annual" && <div style={{ fontSize: 13, color: "#2D6A4F", fontWeight: 700, marginTop: 2 }}>Save 37%</div>}
+              <div style={{ fontSize: 13, color: "#b2bec3", marginBottom: 24, marginTop: 4 }}>7-day free trial</div>
+              <div style={{ textAlign: "left", fontSize: 15, lineHeight: 2.2, color: "#636e72" }}>
+                <div style={{ fontWeight: 800, color: "#1a1a2e" }}>Everything free, plus:</div>
+                {["Personal AI tutor (Koda)", "Build real games — your child's ideas", "New guided projects monthly", "Growing personal portfolio", "Detailed parent reports", "3 kids per account"].map((f, i) => (
+                  <div key={i}>✓ {f}</div>
+                ))}
+              </div>
+              <button className="cb" onClick={() => window.location.href="subscribe.html?plan="+plan} style={{ background: "#2D6A4F", color: "#fff", padding: "14px 28px", borderRadius: 50, fontSize: 16, fontWeight: 800, fontFamily: "inherit", marginTop: 24, width: "100%", boxShadow: "0 4px 12px rgba(45,106,79,0.2)" }}>Start 7-Day Free Trial</button>
+            </div>
+          </div>
+        </div>
+      </Section>
+
+      {/* ====== FAQ ====== */}
+      <Section bg="#fff" narrow>
+        <h2 style={{ fontSize: 28, fontWeight: 900, margin: "0 0 24px", textAlign: "center" }}>Common questions</h2>
+        <FAQ q="What exactly does Koda do?" a="Koda guides your child through building a real game. He asks what they want to create, helps them make design choices, builds what they describe, then teaches them to test and improve it. He adapts to their age and skill level — a 8-year-old and a 13-year-old get completely different experiences." />
+        <FAQ q="Is AI doing the work or is my child learning?" a="Your child does all the thinking. They choose the topic, make every design decision, play what they built, decide what to change, and give specific feedback. Koda is the building tool. Your child is the architect." />
+        <FAQ q="Is this safe for kids?" a="Every AI response passes through two safety layers. No ads, no social features, no external links, no way for strangers to reach your child. Koda cannot browse the internet or connect to anything outside WildCoders. Designed with COPPA principles." />
+        <FAQ q="Why pay for this when free tools exist?" a="Free tools like Scratch teach traditional coding. YouTube is passive watching. ChatGPT is unfiltered and not designed for children. WildCoders gives your child a safe AI tutor with a structured learning arc, real project output, and parent reports. It's the difference between giving a kid a piano and giving them a piano teacher." />
+        <FAQ q="How does Koda grow with my child over time?" a="Koda remembers your child's portfolio, tracks how their thinking develops, and increases challenge as they improve. A child who starts at 8 and is still with WildCoders at 11 gets a fundamentally different experience — one built on years of context. That's the value that compounds." />
+        <FAQ q="How much time does this take?" a="20 to 30 minutes per session. No schedule, no live classes, no homework. Your child works at their own pace — and comes back because they want to, not because they have to." />
+        <FAQ q="What if my child doesn't like it?" a="The game is free with no account needed. Build Mode starts with a 7-day free trial. No charge until they've had a real chance to try it. Cancel anytime." />
+      </Section>
+
+      {/* ====== OUR STORY ====== */}
+      <Section bg="#FFFBF7" id="story">
+        <div style={{ maxWidth: 640, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: 24 }}>
+            <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: 3, color: "#2D6A4F", marginBottom: 8 }}>OUR STORY</div>
+            <h2 style={{ fontSize: 28, fontWeight: 900 }}>How Teddy's feedback built a product.</h2>
+          </div>
+          <div style={{ background: "#fff", borderRadius: 20, padding: "28px", border: "1px solid #e8e4df" }}>
+            <p style={{ fontSize: 16, color: "#636e72", lineHeight: 1.75, margin: "0 0 14px" }}>I'm Gavin. I work in tech. When AI transformed my industry overnight, I had one thought: my son Teddy is going to grow up in a world where working with AI matters more than memorising any programming language.</p>
+            <p style={{ fontSize: 16, color: "#636e72", lineHeight: 1.75, margin: "0 0 14px" }}>I looked for something that would teach him — not by lecturing, but by letting him build. Nothing existed for kids. So I started building WildCoders, and Teddy became my first tester.</p>
+            <p style={{ fontSize: 16, color: "#636e72", lineHeight: 1.75, margin: "0 0 14px" }}>"The boss is too easy." "I want a girl character." "Make the questions harder." "Can I build my OWN game?" Every note from Teddy made it better. He was learning to work with AI and didn't even know it.</p>
+            <p style={{ fontSize: 16, color: "#636e72", lineHeight: 1.75, margin: 0 }}>That's what WildCoders does for every kid who uses it.</p>
+          </div>
+          <div style={{ display: "flex", gap: 14, alignItems: "center", marginTop: 16 }}>
+            <div style={{ width: 48, height: 48, borderRadius: "50%", background: "linear-gradient(135deg, #E8958A, #D4726A)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, fontWeight: 800, color: "#fff" }}>G</div>
+            <div>
+              <div style={{ fontSize: 15, fontWeight: 800, color: "#1a1a2e" }}>Gavin Lantzy</div>
+              <div style={{ fontSize: 13, color: "#b2bec3" }}>Founder, WildCoders. Dad.</div>
+            </div>
+          </div>
+        </div>
+      </Section>
+
+      {/* ====== FINAL CTA ====== */}
+      <Section bg="#fff" id="cta">
+        <div style={{ textAlign: "center", maxWidth: 480, margin: "0 auto" }}>
+          <div style={{ marginBottom: 8 }}><TigerLogo size={72} /></div>
+          <h2 style={{ fontSize: 30, fontWeight: 900, margin: "0 0 10px" }}>Try it with your child today.</h2>
+          <p style={{ fontSize: 16, color: "#636e72", marginBottom: 8, lineHeight: 1.55 }}>Free adventure game. 20 minutes. No account needed.</p>
+          <p style={{ fontSize: 14, color: "#95A89B", marginBottom: 28, lineHeight: 1.55 }}>Play the free game. Meet Koda. Build something real.</p>
+          <button className="cb" onClick={() => window.location.href="play.html"} style={{ background: "#2D6A4F", color: "#fff", padding: "18px 40px", borderRadius: 50, fontSize: 18, fontWeight: 800, fontFamily: "inherit", boxShadow: "0 4px 16px rgba(45,106,79,0.25)", marginBottom: 16 }}>Play Free Now</button>
+          <div style={{ fontSize: 14, color: "#95A89B", marginBottom: 12, fontWeight: 600 }}>Already played? Start building.</div>
+          <button className="cb" onClick={() => window.location.href="subscribe.html?plan=annual"} style={{ background: "#D4726A", color: "#fff", padding: "15px 36px", borderRadius: 50, fontSize: 16, fontWeight: 800, fontFamily: "inherit", boxShadow: "0 4px 16px rgba(212,114,106,0.3)", marginBottom: 10 }}>Start 7-Day Free Trial</button>
+          <div style={{ fontSize: 12, color: "#b2bec3" }}>No charge for 7 days. Cancel anytime.</div>
+        </div>
+      </Section>
+
+      {/* ====== FOOTER ====== */}
+      <footer style={{ padding: "28px 24px", borderTop: "1px solid #e8e4df", textAlign: "center" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginBottom: 6 }}>
+          <TigerHead size={28} />
+          <span style={{ fontWeight: 800, fontSize: 18, fontFamily: "'Baloo 2', cursive", color: "#2D6A4F" }}>WildCoders</span>
+        </div>
+        <div style={{ fontSize: 13, color: "#b2bec3" }}>Turn screen time into build time. Ages 8–13.</div>
+        <div style={{ fontSize: 12, color: "#ddd", marginTop: 4 }}>hello@wildcoders.org</div>
+      </footer>
+    </div>
+  );
+}
+
+ReactDOM.render(<App />, document.getElementById("root"));
+</script>
+</body>
+</html>
