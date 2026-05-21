@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Privacy Policy — WildCoders</title>
+<meta name="description" content="How WildCoders handles information about kids and parents. Written for humans, COPPA-compliant." />
+<meta name="theme-color" content="#E8958A" />
+<link rel="icon" type="image/png" href="/favicon.png" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --cream: #FBF6EC;
+    --ivory: #FFFCF5;
+    --ink: #1B2A3D;
+    --ink-soft: #3D4F66;
+    --ink-muted: #6B7B92;
+    --pink-soft: #E8958A;
+    --pink: #D4726A;
+    --pink-deep: #B5544E;
+    --forest: #2F6E5A;
+    --line: rgba(27,42,61,0.08);
+    --shadow-soft: 0 1px 2px rgba(27,42,61,0.04), 0 8px 24px rgba(27,42,61,0.06);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--ink);
+    background: var(--cream);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.1 0 0 0 0 0.1 0 0 0 0 0.15 0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.5;
+  }
+  a { color: var(--pink-deep); text-decoration: none; }
+  a:hover { color: var(--pink); text-decoration: underline; }
+
+  .container { max-width: 760px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 2; }
+
+  /* Nav */
+  nav {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(251,246,236,0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-inner {
+    max-width: 1200px; margin: 0 auto; padding: 16px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 700; font-size: 22px; color: var(--ink);
+  }
+  .logo:hover { text-decoration: none; color: var(--ink); }
+  .nav-back {
+    font-size: 14px; font-weight: 500; color: var(--ink-soft);
+    padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line);
+    background: white; transition: all .2s ease;
+  }
+  .nav-back:hover { color: var(--ink); border-color: var(--ink-soft); text-decoration: none; }
+
+  /* Hero */
+  .hero { padding: 64px 0 32px; }
+  .eyebrow {
+    display: inline-block; font-size: 13px; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--pink-deep); margin-bottom: 12px;
+  }
+  h1 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 700; font-size: clamp(40px, 6vw, 56px);
+    line-height: 1.05; letter-spacing: -0.02em; color: var(--ink);
+    margin-bottom: 20px;
+  }
+  .updated { color: var(--ink-muted); font-size: 15px; }
+
+  /* TL;DR card */
+  .tldr {
+    margin: 40px 0 48px;
+    background: var(--ivory);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 28px 32px;
+    box-shadow: var(--shadow-soft);
+  }
+  .tldr h2 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 22px; font-weight: 600; color: var(--ink);
+    margin-bottom: 14px;
+  }
+  .tldr ul { list-style: none; padding: 0; }
+  .tldr li {
+    padding: 10px 0 10px 30px; position: relative;
+    color: var(--ink-soft); font-size: 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .tldr li:last-child { border-bottom: none; }
+  .tldr li::before {
+    content: '✓'; position: absolute; left: 0; top: 10px;
+    color: var(--forest); font-weight: 700;
+  }
+
+  /* Body content */
+  main { padding-bottom: 80px; }
+  h2.section {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 28px; font-weight: 600; color: var(--ink);
+    margin: 48px 0 14px; letter-spacing: -0.01em;
+  }
+  h3.sub {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 17px; font-weight: 700; color: var(--ink);
+    margin: 24px 0 8px;
+  }
+  p { color: var(--ink-soft); font-size: 16.5px; margin-bottom: 14px; }
+  main ul { color: var(--ink-soft); font-size: 16.5px; padding-left: 22px; margin-bottom: 14px; }
+  main ul li { padding: 4px 0; }
+  strong { color: var(--ink); font-weight: 600; }
+
+  /* Contact card */
+  .contact-card {
+    margin-top: 56px; padding: 28px 32px;
+    background: white; border: 1px solid var(--line); border-radius: 18px;
+  }
+  .contact-card h2 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 22px; font-weight: 600; color: var(--ink);
+    margin-bottom: 10px;
+  }
+  .contact-card p { margin-bottom: 4px; font-size: 16px; }
+
+  /* Footer */
+  footer {
+    background: var(--ink); color: rgba(251,246,236,0.6);
+    padding: 32px 0; font-size: 14px; text-align: center;
+    position: relative; z-index: 2;
+  }
+  footer a { color: rgba(251,246,236,0.75); }
+  footer a:hover { color: var(--pink-soft); }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="logo">WildCoders</a>
+    <a href="/" class="nav-back">← Back to site</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="container">
+    <span class="eyebrow">Privacy Policy</span>
+    <h1>How we handle your kid's information.</h1>
+    <p class="updated">Effective May 20, 2026</p>
+
+    <section class="tldr" aria-label="At a glance">
+      <h2>For parents — at a glance</h2>
+      <ul>
+        <li>Kids can play the free version with <strong>no signup, no email, no personal information</strong>.</li>
+        <li>We only ask for parent info — name, email, payment — at the paid subscription step.</li>
+        <li>We never sell, rent, or trade your child's information. No ads, no behavioral profiling.</li>
+        <li>You can review, export, or delete everything we have at any time from your parent settings.</li>
+        <li>We follow the FTC's COPPA Rule (16 C.F.R. Part 312) for children under 13.</li>
+      </ul>
+    </section>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+
+    <h2 class="section">1. Who we are</h2>
+    <p><strong>WildCoders LLC</strong> ("WildCoders," "we") runs <a href="https://www.wildcoders.org">wildcoders.org</a> and any associated apps (the "Service"). Questions, requests, or concerns:</p>
+    <ul>
+      <li>Email: <a href="mailto:hello@wildcoders.org">hello@wildcoders.org</a></li>
+      <li>Mailing address: 1912 Krameria St., Denver, CO 80220</li>
+      <li>Phone: 720-389-7115</li>
+    </ul>
+
+    <h2 class="section">2. How WildCoders works</h2>
+    <h3 class="sub">Free play</h3>
+    <p>Anyone can play WildCoders for free without signing up or giving us any information. Progress in the free phase is saved in the player's own browser on their own device. We don't ask for a name, email, or anything else, and we don't link gameplay to an identified person.</p>
+    <h3 class="sub">Subscribed accounts</h3>
+    <p>To unlock the full Service, a parent or legal guardian (at least 18 years old) creates a WildCoders account at the paywall by providing their name, email, and payment information. The parent owns the account. Children participate through "player profiles" the parent creates inside that account. Kids never create accounts themselves and are never asked to give us personal information directly.</p>
+
+    <h2 class="section">3. What we collect</h2>
+    <h3 class="sub">In the free phase</h3>
+    <p>Nothing that identifies a child. Our servers receive standard web-traffic information (IP address, browser type, request logs) when the site is loaded, which we treat as a "persistent identifier" under COPPA and use only for the support of internal operations (see Section 5). We do not use it to contact anyone, profile anyone, or serve behavioral advertising.</p>
+    <h3 class="sub">From the parent at the paywall</h3>
+    <ul>
+      <li>Parent first and last name</li>
+      <li>Parent email address</li>
+      <li>Billing information, processed by our payment processor — we do not store full card numbers</li>
+      <li>Records of consent (date, method, scope, policy version)</li>
+    </ul>
+    <h3 class="sub">From or about the child inside a subscribed account</h3>
+    <ul>
+      <li>A first name or nickname chosen by the parent</li>
+      <li>A grade or age band selected by the parent</li>
+      <li>Gameplay activity (lessons started/completed, puzzles solved, time spent, in-game choices)</li>
+      <li>A persistent identifier (session cookie, login token, device identifier) used to keep the child signed in and to operate the Service</li>
+    </ul>
+    <p>We never ask kids for last names, addresses, phone numbers, government IDs, photos, video, voice, precise location, or biometrics. We don't let kids make personal information publicly available through the Service.</p>
+
+    <h2 class="section">4. How we use information</h2>
+    <ul>
+      <li>To operate the Service — sign-in, saving progress, personalizing in-game content, remembering settings</li>
+      <li>To communicate with the parent about the account, billing, technical issues, consent, and material changes to this policy</li>
+      <li>To keep the Service secure and working properly</li>
+      <li>To meet legal obligations and protect users' safety</li>
+    </ul>
+    <p>We do not use information collected from children to market to them, build profiles about them, serve behavioral advertising, or for any purpose unrelated to operating the Service.</p>
+
+    <h2 class="section">5. Persistent identifiers &amp; "internal operations"</h2>
+    <p>In both the free and subscribed phases, we use persistent identifiers (cookies, session tokens, device identifiers, IP addresses, and similar technologies) only for the "support for the internal operations" of the Service as defined by the COPPA Rule — specifically to:</p>
+    <ul>
+      <li>Maintain and analyze how the Service is functioning</li>
+      <li>Authenticate users and keep them signed in (subscribed phase)</li>
+      <li>Personalize in-game content within the Service</li>
+      <li>Protect the security and integrity of the Service</li>
+      <li>Comply with legal and regulatory obligations</li>
+    </ul>
+    <p>We do not use persistent identifiers to contact a specific individual, amass a profile, serve behavioral advertising, or for any other purpose outside that list.</p>
+
+    <h2 class="section">6. How we share information</h2>
+    <p>We do not sell, rent, or trade personal information from or about children. We share only as follows:</p>
+    <ul>
+      <li><strong>Service providers acting on our behalf</strong> — cloud hosting, payment processing for parent billing, transactional email, and error monitoring. These vendors are contractually required to safeguard the information and use it only to provide services to us.</li>
+      <li><strong>Legal compliance and safety</strong> — when required by law, valid legal process, or to protect a child's safety or the integrity of the Service.</li>
+      <li><strong>Business transfers</strong> — in connection with a merger, acquisition, or sale of assets, in which case we will require the recipient to honor this policy or notify the parent.</li>
+    </ul>
+    <p>A current list of categories of third parties is available on request at <a href="mailto:hello@wildcoders.org">hello@wildcoders.org</a>.</p>
+
+    <h2 class="section">7. Parental consent</h2>
+    <p>The free phase does not collect personal information from children, so no parental consent is required to play it.</p>
+    <p>When a parent creates a subscribed WildCoders account at the paywall, we obtain verifiable parental consent before any personal information is collected from a child. We use the monetary-transaction method permitted by 16 C.F.R. § 312.5(b)(2)(ii): the parent provides a payment method that generates a record of the transaction to the primary account holder, and the initial subscription charge is that transaction. Immediately after, we send the parent a direct notice email describing what we collect from the child, how we use it, and the parent's rights, with a link to this policy.</p>
+    <p>A parent may revoke consent at any time using the methods in Section 8.</p>
+
+    <h2 class="section">8. Parent rights &amp; choices</h2>
+    <p>At any time, a parent of a child whose information is in a subscribed account may:</p>
+    <ul>
+      <li>Review the personal information we have collected about the child</li>
+      <li>Refuse to permit further collection or use of the child's information</li>
+      <li>Request that we delete the child's information</li>
+      <li>Revoke previously given consent</li>
+    </ul>
+    <p>You can do any of the above from your Parent Settings page or by emailing <a href="mailto:hello@wildcoders.org">hello@wildcoders.org</a>. We will verify you are the child's parent before acting on the request. If you revoke consent, we may discontinue the affected parts of the Service for that child.</p>
+
+    <h2 class="section">9. Data retention &amp; deletion</h2>
+    <p>We keep personal information collected from a child only as long as is reasonably necessary for the purpose it was collected. Our written Data Retention Policy sets timeframes by data type, including:</p>
+    <ul>
+      <li>Child player-profile data and gameplay progress: retained while the account is active; auto-deleted after 24 months of inactivity</li>
+      <li>Parent account data: retained while the account is active and for a reasonable period after closure for legal and tax purposes</li>
+      <li>Free-phase server logs containing IP addresses or other persistent identifiers: rolling 90-day window</li>
+      <li>Consent records: the longer of three years or applicable legal requirements</li>
+    </ul>
+    <p>When information is no longer reasonably necessary, we delete it using reasonable measures to protect against unauthorized access during deletion. We do not retain children's personal information indefinitely.</p>
+
+    <h2 class="section">10. Security</h2>
+    <p>We maintain a written Information Security Program with administrative, technical, and physical safeguards appropriate to the sensitivity of the information we collect and the size and scope of our business. Safeguards include encryption in transit, encryption at rest for stored personal information, access on a least-privilege basis, regular risk assessments, and written assurances from service providers who handle children's information.</p>
+
+    <h2 class="section">11. No conditioning of participation</h2>
+    <p>We do not condition a child's participation in a game, activity, or prize on the child disclosing more personal information than is reasonably necessary to participate.</p>
+
+    <h2 class="section">12. Changes to this policy</h2>
+    <p>If we make a material change to our information practices, we will notify parents of subscribed accounts directly and obtain new consent before the change applies to information we already collected from a child.</p>
+
+    <div class="contact-card">
+      <h2>Contact us</h2>
+      <p><strong>WildCoders LLC</strong></p>
+      <p>1912 Krameria St., Denver, CO 80220</p>
+      <p><a href="mailto:hello@wildcoders.org">hello@wildcoders.org</a> · 720-389-7115</p>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p>© 2026 WildCoders LLC. Built in Colorado. · <a href="/">Home</a> · <a href="mailto:hello@wildcoders.org">Contact</a></p>
+  </div>
+</footer>
+
+</body>
+</html>
